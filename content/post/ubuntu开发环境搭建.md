@@ -1,7 +1,7 @@
 ---
 title: "Ubuntu开发环境搭建"
 date: 2020-12-15T22:21:25+08:00
-draft: true
+draft: false
 ---
 
 # 一、换源

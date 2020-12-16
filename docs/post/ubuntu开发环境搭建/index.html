@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.68.3" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Ubuntu开发环境搭建 &middot; 我的文档</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://shuishen-cang.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://shuishen-cang.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://shuishen-cang.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://shuishen-cang.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://shuishen-cang.github.io/"><h1>我的文档</h1></a>
+      <p class="lead">
+      An elegant open source and mobile first theme for <a href="http://hugo.spf13.com">hugo</a> made by <a href="http://twitter.com/mdo">@mdo</a>. Originally made for Jekyll.
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://shuishen-cang.github.io/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Ubuntu开发环境搭建</h1>
+  <time datetime=2020-12-15T22:21:25&#43;0800 class="post-date">Tue, Dec 15, 2020</time>
+  <h1 id="一换源">一、换源</h1>
+<h1 id="二安装软件">二、安装软件</h1>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install vim
+sudo apt install gcc
+sudo apt install openocd
+sudo apt install libusb
+sudo apt install git
+sudo apt install minicom
+
+git config --global user.email <span style="color:#e6db74">&#34;335403241@qq.com&#34;</span>
+git config --global user.name <span style="color:#e6db74">&#34;cang&#34;</span>
+</code></pre></div><h1 id="三nfs">三、NFS</h1>
+<p>搭建NFS服务器环境，供ARM板挂载</p>
+<h3 id="安装--配置">安装 &amp; 配置</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install nfs-kernel-server
+sudo vim /etc/exports
+<span style="color:#75715e"># 添加：</span>
+/home/luocang/workspace *<span style="color:#f92672">(</span>rw,sync,no_subtree_check<span style="color:#f92672">)</span>
+
+<span style="color:#75715e">#重启nfs服务</span>
+sudo service nfs-kernel-server restart
+</code></pre></div><h3 id="测试">测试</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo mount -t nfs -o nolock 127.0.0.1:/home/luocang/workspace /mnt
+</code></pre></div><h3 id="脚本">脚本</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/sh
+</span><span style="color:#75715e"></span>
+sudo apt install nfs-kernel-server
+echo <span style="color:#e6db74">&#39;/home/luocang/workspace *(rw,sync,no_subtree_check)&#39;</span> &gt;&gt; cang.txt
+sudo service nfs-kernel-server restart
+
+</code></pre></div><h1 id="四ssh">四、SSH</h1>
+<h3 id="安装--配置-1">安装 &amp; 配置</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install ssh
+ssh-keygen -t rsa
+cat ~/.ssh/id_rsa.pub
+</code></pre></div><h3 id="添加远程公钥-在目标远程机器中">添加远程公钥 (在目标远程机器中)</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd ~/.ssh
+vim authorized_keys
+<span style="color:#75715e">#添加 讲主机的id_ras.pub的内容复制到该文件中</span>
+
+
+sudo service sshd restart
+</code></pre></div><h3 id="ssh清楚know">SSH清楚know</h3>
+<p>当同样的ip地址，目标机的信息和保存的信息不同的时候，便会登录失败</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ssh-keygen -R 192.168.xx.xx
+
+</code></pre></div><h1 id="五tftpd">五、tftpd</h1>
+<p>搭建TFTPD服务器环境，供ARM板下载</p>
+<h3 id="安装--配置-2">安装 &amp; 配置</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 不需要安装tftpd，否则可能搭建失败</span>
+sudo apt install tftpd-hpa
+sudo apt install tftp
+
+sudo vim /etc//default/tftpd-hpa 
+<span style="color:#75715e">#修改为：</span>
+TFTP_USERNAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;tftp&#34;</span>
+TFTP_DIRECTORY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/home/srv/tftp&#34;</span>
+TFTP_ADDRESS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;:69&#34;</span>
+TFTP_OPTIONS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-l -c -s&#34;</span>
+<span style="color:#75715e">#TFTP_OPTIONS=&#34;--secure&#34;</span>
+
+<span style="color:#75715e"># 新建目录</span>
+cd /home/srv
+mkdir tftp
+chmod <span style="color:#ae81ff">777</span> tftp
+cd tftp
+touch lk.txt
+echo <span style="color:#ae81ff">12</span> &gt; lk.txt
+
+sudo service tftpd-hpa restart
+</code></pre></div><h3 id="测试-1">测试</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">tftp localhost
+get lk.txt
+cat lk.txt
+</code></pre></div><h1 id="六docker">六、docker</h1>
+<h3 id="安装--配置-3">安装 &amp; 配置</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt-get update
+
+sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+sudo curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | apt-key add -
+
+sudo apt-key fingerprint 0EBFCD88
+<span style="color:#75715e"># 正常输出为：</span>
+<span style="color:#75715e"># pub   rsa4096 2017-02-22 [SCEA]</span>
+<span style="color:#75715e">#      9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88</span>
+<span style="color:#75715e"># uid           [ unknown] Docker Release (CE deb) &lt;docker@docker.com&gt;</span>
+<span style="color:#75715e"># sub   rsa4096 2017-02-22 [S]</span>
+
+sudo add-apt-repository <span style="color:#e6db74">&#34;deb [arch=amd64] https://mirrors.aliyun.com/docker-ce/linux/ubuntu </span><span style="color:#66d9ef">$(</span>lsb_release -cs<span style="color:#66d9ef">)</span><span style="color:#e6db74"> stable&#34;</span>
+sudo apt-get update
+sudo apt-get install docker-ce
+
+sudo groupadd docker                <span style="color:#75715e">#添加docker用户组</span>
+sudo gpasswd -a $luocang docker     <span style="color:#75715e">#检测当前用户是否已经在docker用户组中，其中XXX为用户名，例如我的，luocang</span>
+sudo gpasswd -a $USER docker        <span style="color:#75715e">#将当前用户添加至docker用户组</span>
+newgrp docker                       <span style="color:#75715e">#更新docker用户组</span>
+</code></pre></div><h3 id="docker开启镜像">docker开启镜像</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 挂载共享卷</span>
+docker run -it --name<span style="color:#f92672">=</span>hisys -v /home/luocang/workspace/04work:/work -v /home/srv/tftp:/tftp hiubuntu14 /bin/sh
+
+
+
+</code></pre></div>
+</div>
+
+
+    </main>
+
+    
+      
+    
+  </body>
+</html>

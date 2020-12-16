@@ -6,10 +6,20 @@
     <description>Recent content on 我的文档</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 15 Dec 2020 22:15:18 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 15 Dec 2020 22:21:25 +0800</lastBuildDate>
     
 	<atom:link href="https://shuishen-cang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ubuntu开发环境搭建</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>一、换源 二、安装软件 sudo apt install vim sudo apt install gcc sudo apt install openocd sudo apt install libusb sudo apt install git sudo apt install minicom git config --global user.email &amp;#34;335403241@qq.com&amp;#34; git config --global user.name &amp;#34;cang&amp;#34; 三、NFS 搭建NFS服务器环境，供ARM板挂载
+安装 &amp;amp; 配置 sudo apt install nfs-kernel-server sudo vim /etc/exports # 添加： /home/luocang/workspace *(rw,sync,no_subtree_check) #重启nfs服务 sudo service nfs-kernel-server restart 测试 sudo mount -t nfs -o nolock 127.0.0.1:/home/luocang/workspace /mnt 脚本 #!/bin/sh  sudo apt install nfs-kernel-server echo &amp;#39;/home/luocang/workspace *(rw,sync,no_subtree_check)&amp;#39; &amp;gt;&amp;gt; cang.</description>
+    </item>
     
     <item>
       <title>树莓派环境搭建(一)</title>
