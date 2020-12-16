@@ -1,4 +1,4 @@
 baseURL = "https://shuishen-cang.github.io/"
 languageCode = "en-us"
 title = "我的文档"
-theme = "hyde"
+theme = "m10c"

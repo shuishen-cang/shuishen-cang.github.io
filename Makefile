@@ -1,9 +1,9 @@
 
 all:
-	hugo server -D
+	hugo server --baseURL="http://localhost/"
 
 install:
-	hugo --baseURL="http://localhost/" -D
+	hugo --baseURL="http://localhost/"
 	sudo cp -r public/* /var/www/html/	
 	@echo http://localhost/
 
