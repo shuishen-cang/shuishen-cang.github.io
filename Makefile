@@ -8,8 +8,8 @@ install:
 	@echo http://localhost/
 
 remote:
-	hugo --baseURL="shuishen-cang.github.io/" -D
-	@echo shuishen-cang.github.io
+	hugo --baseURL="https://shuishen-cang.github.io/" -D
+	@echo https://shuishen-cang.github.io/
 
 	
 

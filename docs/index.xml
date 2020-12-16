@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>我的文档</title>
-    <link>shuishen-cang.github.io/</link>
+    <link>https://shuishen-cang.github.io/</link>
     <description>Recent content on 我的文档</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 15 Dec 2020 22:15:18 +0800</lastBuildDate>
     
-	<atom:link href="shuishen-cang.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://shuishen-cang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>树莓派环境搭建(一)</title>
-      <link>shuishen-cang.github.io/post/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%80/</link>
+      <link>https://shuishen-cang.github.io/post/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%80/</link>
       <pubDate>Tue, 15 Dec 2020 22:15:18 +0800</pubDate>
       
-      <guid>shuishen-cang.github.io/post/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%80/</guid>
+      <guid>https://shuishen-cang.github.io/post/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%80/</guid>
       <description>工作环境：ubuntu20.04
 一、搭建交叉编译器 git clone git://github.com/raspberrypi/tools.git cd tools cp -r arm-bcm2708 /home/installed/opt/ # 配置路径 sudo vim ~/.bashrc export PATH=$PATH:/home/installed/opt/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin #export PATH=$PATH:/home/installed/opt/arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi/bin export CFLAGS_RASP=&amp;#34;-O2 -pipe -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -w&amp;#34; # 安装32位兼容库 sudo apt install lib32ncurses6 lib32ncurses-dev # 测试 arm-linux-gnueabihf-gcc -v 二、交叉编译qt 编译(在宿主机) 不带tslib
 # 之前在安装qt软件的时候便已经安装了源码，因此不需要再额外下载源码 cd /home/installed/Qt5.9.9/5.9.9/Src/ # 建立编译脚本 subl mkrasp0.sh ## 脚本 #!/bin/sh ./configure -verbose \ -prefix /home/installed/opt/qt_rasp0 \ -device-option CROSS_COMPILE=bcm2708hardfp- \ -confirm-license \ -opensource \ -release \ -make libs \ -device linux-rasp-pi-g++ \ -optimized-qmake \ -pch \ -no-sql-sqlite \ -no-sqlite \ -qt-libjpeg \ -qt-libpng \ -qt-zlib \ -no-tslib \ -no-opengl \ -no-sse2 \ -no-openssl \ -no-cups \ -no-glib \ -no-dbus \ -no-xcb \ -no-iconv \ -no-separate-debug-info \ -no-qml-debug \ -skip qtdoc \ -skip qtquick1 \ -skip qtquickcontrols \ -skip qtscript \ -skip qtxmlpatterns \ -skip qtactiveqt \ -skip qtwebsockets \ -nomake examples \ -nomake tools \ -nomake tests #编译 chmod +x mkrasp0.</description>
