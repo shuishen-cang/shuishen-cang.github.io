@@ -6,10 +6,22 @@
     <description>Recent content in Posts on 我的文档</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 15 Dec 2020 22:21:25 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 17 Dec 2020 09:25:21 +0800</lastBuildDate>
     
 	<atom:link href="https://shuishen-cang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Hi3559a_系统烧写</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</link>
+      <pubDate>Thu, 17 Dec 2020 09:25:21 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</guid>
+      <description>运行环境：
+   类型 参数     CPU HI3559A   FLASH 64G   系统 big-little    一、地址划分    uboot kernel rootfs a53up m7 user     1M 9M 96M 10M 1M     目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。
+二、烧写脚本 可以采用脚本一键烧写，其脚本如下：
+import sys,os,shutil import serial IS_Biglittle = True WRITE_SYSTEM = False WRITE_M7_FG = False WRITE_A53UP_FG = True MMC_BLK_SIZE = 0x800 DDR_BLK_SIZE = 0x100000 DDR_AMP_START = 0x52000000 DDR_A53_START = 0x45000000 TFTP_DDR_ADDR = DDR_A53_START ############################## big-little ##############################3333 # A53UP 0x44000000 # SMP Ox52000000 class class_downlinux_emmc(object): def __init__(self,blk_size): self.</description>
+    </item>
     
     <item>
       <title>Ubuntu开发环境搭建</title>

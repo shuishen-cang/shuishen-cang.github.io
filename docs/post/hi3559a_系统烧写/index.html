@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Hi3559a_系统烧写 // 我的文档</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hi3559a_系统烧写"/>
+<meta name="twitter:description" content="运行环境：
+   类型 参数     CPU HI3559A   FLASH 64G   系统 big-little    一、地址划分    uboot kernel rootfs a53up m7 user     1M 9M 96M 10M 1M     目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。
+二、烧写脚本 可以采用脚本一键烧写，其脚本如下：
+import sys,os,shutil import serial IS_Biglittle = True WRITE_SYSTEM = False WRITE_M7_FG = False WRITE_A53UP_FG = True MMC_BLK_SIZE = 0x800 DDR_BLK_SIZE = 0x100000 DDR_AMP_START = 0x52000000 DDR_A53_START = 0x45000000 TFTP_DDR_ADDR = DDR_A53_START ############################## big-little ##############################3333 # A53UP 0x44000000 # SMP Ox52000000 class class_downlinux_emmc(object): def __init__(self,blk_size): self."/>
+
+    <meta property="og:title" content="Hi3559a_系统烧写" />
+<meta property="og:description" content="运行环境：
+   类型 参数     CPU HI3559A   FLASH 64G   系统 big-little    一、地址划分    uboot kernel rootfs a53up m7 user     1M 9M 96M 10M 1M     目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。
+二、烧写脚本 可以采用脚本一键烧写，其脚本如下：
+import sys,os,shutil import serial IS_Biglittle = True WRITE_SYSTEM = False WRITE_M7_FG = False WRITE_A53UP_FG = True MMC_BLK_SIZE = 0x800 DDR_BLK_SIZE = 0x100000 DDR_AMP_START = 0x52000000 DDR_A53_START = 0x45000000 TFTP_DDR_ADDR = DDR_A53_START ############################## big-little ##############################3333 # A53UP 0x44000000 # SMP Ox52000000 class class_downlinux_emmc(object): def __init__(self,blk_size): self." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/" />
+<meta property="article:published_time" content="2020-12-17T09:25:21+08:00" />
+<meta property="article:modified_time" content="2020-12-17T09:25:21+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>我的文档</h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Hi3559a_系统烧写</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Dec 17, 2020
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>运行环境：</p>
+<table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">CPU</td>
+<td align="left">HI3559A</td>
+</tr>
+<tr>
+<td align="left">FLASH</td>
+<td align="left">64G</td>
+</tr>
+<tr>
+<td align="left">系统</td>
+<td align="left">big-little</td>
+</tr>
+</tbody>
+</table>
+<h1 id="一地址划分">一、地址划分</h1>
+<table>
+<thead>
+<tr>
+<th align="left">uboot</th>
+<th align="left">kernel</th>
+<th align="left">rootfs</th>
+<th align="left">a53up</th>
+<th align="left">m7</th>
+<th align="left">user</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">1M</td>
+<td align="left">9M</td>
+<td align="left">96M</td>
+<td align="left">10M</td>
+<td align="left">1M</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。</p>
+<h1 id="二烧写脚本">二、烧写脚本</h1>
+<p>可以采用脚本一键烧写，其脚本如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> sys<span style="color:#f92672">,</span>os<span style="color:#f92672">,</span>shutil
+<span style="color:#f92672">import</span> serial
+
+IS_Biglittle    <span style="color:#f92672">=</span> True
+WRITE_SYSTEM    <span style="color:#f92672">=</span> False
+WRITE_M7_FG     <span style="color:#f92672">=</span> False
+WRITE_A53UP_FG  <span style="color:#f92672">=</span> True
+
+MMC_BLK_SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x800</span>
+DDR_BLK_SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x100000</span>
+DDR_AMP_START <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x52000000</span>
+DDR_A53_START <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x45000000</span>
+TFTP_DDR_ADDR <span style="color:#f92672">=</span> DDR_A53_START
+
+<span style="color:#75715e">############################## big-little ##############################3333</span>
+<span style="color:#75715e"># A53UP     0x44000000</span>
+<span style="color:#75715e"># SMP       Ox52000000</span>
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">class_downlinux_emmc</span>(object):
+    <span style="color:#66d9ef">def</span> __init__(self,blk_size):
+        self<span style="color:#f92672">.</span>cmd_list <span style="color:#f92672">=</span> []
+
+        self<span style="color:#f92672">.</span>emmc_curr_addr <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        self<span style="color:#f92672">.</span>a53up_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        self<span style="color:#f92672">.</span>m7_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">write_enternet</span>(self):
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;setenv ipaddr 192.168.4.100&#39;</span>)
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;setenv netmask 255.255.255.0 &#39;</span>)
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;setenv gatewayip 192.168.4.1&#39;</span>)
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;setenv serverip 192.168.4.1&#39;</span>)
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;setenv ethaddr 00:11:22:33:44:55&#39;</span>)
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;sa&#39;</span>)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">write_blk_emmc</span>(self,size,name,isext4 <span style="color:#f92672">=</span> False, writecmd <span style="color:#f92672">=</span> True):
+        <span style="color:#66d9ef">if</span>(writecmd <span style="color:#f92672">==</span> True):
+            self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;mw.b 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0xff 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(TFTP_DDR_ADDR, size <span style="color:#f92672">*</span> DDR_BLK_SIZE))
+            self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;tftp 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(TFTP_DDR_ADDR, name))
+            self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;mmc erase 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(self<span style="color:#f92672">.</span>emmc_curr_addr, size <span style="color:#f92672">*</span> MMC_BLK_SIZE))
+            <span style="color:#66d9ef">if</span>(isext4):
+                self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;mmc write.ext4sp 0 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(TFTP_DDR_ADDR, self<span style="color:#f92672">.</span>emmc_curr_addr, size <span style="color:#f92672">*</span> MMC_BLK_SIZE))   
+            <span style="color:#66d9ef">else</span>:
+                self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;mmc write 0 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(TFTP_DDR_ADDR, self<span style="color:#f92672">.</span>emmc_curr_addr, size <span style="color:#f92672">*</span> MMC_BLK_SIZE))     
+        self<span style="color:#f92672">.</span>emmc_curr_addr <span style="color:#f92672">+=</span> size <span style="color:#f92672">*</span> MMC_BLK_SIZE
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">write_uboot</span>(self,size):
+        self<span style="color:#f92672">.</span>uboot_size <span style="color:#f92672">=</span> size
+        self<span style="color:#f92672">.</span>uboot_addr <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emmc_curr_addr
+        self<span style="color:#f92672">.</span>write_blk_emmc(size, <span style="color:#e6db74">&#39;u-boot-hi3559av100.bin&#39;</span>,writecmd <span style="color:#f92672">=</span> WRITE_SYSTEM)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">write_kernel</span>(self,size):
+        self<span style="color:#f92672">.</span>kernel_size <span style="color:#f92672">=</span> size     
+        self<span style="color:#f92672">.</span>kernel_addr <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emmc_curr_addr
+        <span style="color:#66d9ef">if</span>(IS_Biglittle):
+            self<span style="color:#f92672">.</span>write_blk_emmc(size, <span style="color:#e6db74">&#39;uImage_hi3559av100_big-little&#39;</span>,writecmd <span style="color:#f92672">=</span> WRITE_SYSTEM)
+        <span style="color:#66d9ef">else</span>:
+            self<span style="color:#f92672">.</span>write_blk_emmc(size, <span style="color:#e6db74">&#39;uImage_hi3559av100_multi-core&#39;</span>,writecmd <span style="color:#f92672">=</span> WRITE_SYSTEM)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">write_rootfs</span>(self,size):
+        self<span style="color:#f92672">.</span>rootfs_size <span style="color:#f92672">=</span> size
+        self<span style="color:#f92672">.</span>rootfs_addr <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emmc_curr_addr
+        self<span style="color:#f92672">.</span>write_blk_emmc(size, <span style="color:#e6db74">&#39;rootfs_hi3559av100_96M.ext4&#39;</span>, isext4 <span style="color:#f92672">=</span> True, writecmd <span style="color:#f92672">=</span> WRITE_SYSTEM)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">write_a53up</span>(self,size):
+        self<span style="color:#f92672">.</span>a53up_size <span style="color:#f92672">=</span> size
+        self<span style="color:#f92672">.</span>a53up_addr <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emmc_curr_addr
+        self<span style="color:#f92672">.</span>write_blk_emmc(size, <span style="color:#e6db74">&#39;sample_a53&#39;</span>,writecmd <span style="color:#f92672">=</span> WRITE_A53UP_FG)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">write_m7</span>(self,size):
+        self<span style="color:#f92672">.</span>m7_size <span style="color:#f92672">=</span> size
+        self<span style="color:#f92672">.</span>m7_addr <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emmc_curr_addr
+        self<span style="color:#f92672">.</span>write_blk_emmc(size, <span style="color:#e6db74">&#39;sample_m7&#39;</span>,writecmd <span style="color:#f92672">=</span> WRITE_M7_FG)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">write_cmd</span>(self):
+        m7_str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+        a53_str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+        <span style="color:#66d9ef">if</span>(self<span style="color:#f92672">.</span>a53up_size <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>):
+            a53_str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;mmc read 0 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74">; go_a53up 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74">;&#39;</span> <span style="color:#f92672">%</span> (DDR_A53_START, self<span style="color:#f92672">.</span>a53up_addr, self<span style="color:#f92672">.</span>a53up_size <span style="color:#f92672">*</span> MMC_BLK_SIZE, DDR_A53_START)
+        <span style="color:#66d9ef">if</span>(self<span style="color:#f92672">.</span>m7_size <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>):
+            m7_str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;config_m7; mmc read 0 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74">;cp.b 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x19000000 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74">; go_m7;&#39;</span> <span style="color:#f92672">%</span> (DDR_AMP_START, self<span style="color:#f92672">.</span>m7_addr, self<span style="color:#f92672">.</span>m7_size <span style="color:#f92672">*</span> MMC_BLK_SIZE, DDR_AMP_START, self<span style="color:#f92672">.</span>m7_size <span style="color:#f92672">*</span> DDR_BLK_SIZE)
+        boot_str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;mmc read 0 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74"> 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74">; bootm 0x</span><span style="color:#e6db74">%x</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (DDR_AMP_START, self<span style="color:#f92672">.</span>kernel_addr, self<span style="color:#f92672">.</span>kernel_size <span style="color:#f92672">*</span> MMC_BLK_SIZE, DDR_AMP_START)
+        
+        <span style="color:#66d9ef">if</span>(IS_Biglittle):
+            self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;setenv bootargs </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">mem=512M console=ttyAMA0,115200 clk_ignore_unused rw init=/linuxrc rootwait ip=192.168.4.100:::::eth0 root=/dev/mmcblk0p3 rootfstype=ext4 blkdevparts=mmcblk0:</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">M(uboot),</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">M(kernel),</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">M(rootfs),</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">M(a53up),10M(M7),-(user)</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;</span>\
+                <span style="color:#f92672">%</span> (self<span style="color:#f92672">.</span>uboot_size, self<span style="color:#f92672">.</span>kernel_size, self<span style="color:#f92672">.</span>rootfs_size, self<span style="color:#f92672">.</span>a53up_size))
+        <span style="color:#66d9ef">else</span>:
+            self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;setenv bootargs </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">mem=512M console=ttyAMA0,115200 clk_ignore_unused rw rootwait ip=192.168.4.100:::::eth0 root=/dev/mmcblk0p3 rootfstype=ext4 blkdevparts=mmcblk0:</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">M(uboot),</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">M(kernel),</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">M(rootfs),</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">M(a53up),10M(M7),-(user)</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;</span>\
+                <span style="color:#f92672">%</span> (self<span style="color:#f92672">.</span>uboot_size, self<span style="color:#f92672">.</span>kernel_size, self<span style="color:#f92672">.</span>rootfs_size, self<span style="color:#f92672">.</span>a53up_size))   
+
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;setenv bootcmd </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">%s%s%s</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (m7_str, a53_str, boot_str))
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;sa&#39;</span>)
+
+    <span style="color:#75715e">####################################### other ################################################</span>
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">debug_a53</span>(self,size):
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;mw.b &#39;</span> <span style="color:#f92672">+</span> hex(self<span style="color:#f92672">.</span>a53up_addr) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; 0xff &#39;</span> <span style="color:#f92672">+</span> hex(size <span style="color:#f92672">*</span> self<span style="color:#f92672">.</span>ddr_size))
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;tftp &#39;</span> <span style="color:#f92672">+</span> hex(self<span style="color:#f92672">.</span>a53up_addr) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; sample.bin&#39;</span>)
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;go_a53up &#39;</span> <span style="color:#f92672">+</span> hex(self<span style="color:#f92672">.</span>a53up_addr))
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">reset</span>(self,ser):
+        self<span style="color:#f92672">.</span>wait_printf(<span style="color:#e6db74">&#39;reset&#39;</span>,ser,<span style="color:#e6db74">&#39;autoboot&#39;</span>)
+        self<span style="color:#f92672">.</span>wait_printf(<span style="color:#e6db74">&#39;&#39;</span>,ser,)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_cmd</span>(self):
+        self<span style="color:#f92672">.</span>cmd_text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">wait_printf</span>(self,cmd,ser,ret_cmd <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;hisilicon #&#39;</span>):
+        cmd <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>
+        result<span style="color:#f92672">=</span>ser<span style="color:#f92672">.</span>write(cmd<span style="color:#f92672">.</span>encode())
+        str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+        <span style="color:#66d9ef">while</span> True:
+            m <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>decode()
+            str <span style="color:#f92672">+=</span> m
+            <span style="color:#66d9ef">if</span> ret_cmd <span style="color:#f92672">in</span> str:
+                <span style="color:#66d9ef">print</span>(str)
+                <span style="color:#66d9ef">return</span>
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">write_list</span>(self,ser):
+        <span style="color:#66d9ef">for</span> cmd <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>cmd_list:
+            self<span style="color:#f92672">.</span>wait_printf(cmd,ser)
+            <span style="color:#75715e"># print(cmd)            </span>
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    emmc_test <span style="color:#f92672">=</span> class_downlinux_emmc(<span style="color:#ae81ff">512</span>)
+    emmc_test<span style="color:#f92672">.</span>write_uboot(<span style="color:#ae81ff">1</span>)
+    emmc_test<span style="color:#f92672">.</span>write_kernel(<span style="color:#ae81ff">9</span>)
+    emmc_test<span style="color:#f92672">.</span>write_rootfs(<span style="color:#ae81ff">96</span>)
+    emmc_test<span style="color:#f92672">.</span>write_a53up(<span style="color:#ae81ff">10</span>)
+    emmc_test<span style="color:#f92672">.</span>write_m7(<span style="color:#ae81ff">1</span>)
+    emmc_test<span style="color:#f92672">.</span>write_cmd()
+
+    ser<span style="color:#f92672">=</span>serial<span style="color:#f92672">.</span>Serial(<span style="color:#e6db74">&#39;/dev/ttyUSB0&#39;</span>,<span style="color:#ae81ff">115200</span>,timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>)
+    emmc_test<span style="color:#f92672">.</span>write_list(ser)
+        
+    ser<span style="color:#f92672">.</span>close()
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+</code></pre></div><p>如上表所示：讲uboot、kernel、rootfs、a53的程序以及m7的程序防止tftpd服务器根目录下，用python运行该程序，便可以一键烧写系统程序。</p>
+<h1 id="三a53up烧写脚本">三、A53UP烧写脚本</h1>
+<p>在docker中运行应用程序的开发，因此需要主机跟docker容器共享tftpd根目录，在a53up的应用程序中添加如下代码，讲生成的bin复制到tftpd服务器下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 在docker容器的makefie中</span>
+cp sample.bin /home/shuixia/workspace/01hi3559a/01tftproot/sample_a53
+</code></pre></div><p>在主机中一直运行该部分代码，程序一直监控sample_a53是否有变化，一旦有变化，便启动烧录程序。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#-*- encoding=utf8 -*-</span>
+<span style="color:#f92672">import</span> time
+<span style="color:#f92672">import</span> serial
+<span style="color:#f92672">import</span> os<span style="color:#f92672">,</span>sys<span style="color:#f92672">,</span>shutil
+<span style="color:#f92672">from</span> create_download <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+
+mfile <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/home/shuixia/workspace/01hi3559a/01tftproot/sample_a53&#39;</span>
+if_first <span style="color:#f92672">=</span> True
+o_time <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_diff</span>(file):
+    <span style="color:#66d9ef">global</span> if_first
+    <span style="color:#66d9ef">global</span> o_time
+    <span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>isfile(file):
+        <span style="color:#66d9ef">if</span>(if_first <span style="color:#f92672">==</span> True):
+            o_time <span style="color:#f92672">=</span> c_time <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>ctime(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>getatime(file));  
+            if_first <span style="color:#f92672">=</span> False
+        c_time <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>ctime(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>getatime(file))
+        <span style="color:#66d9ef">if</span>(c_time <span style="color:#f92672">!=</span> o_time):
+            o_time <span style="color:#f92672">=</span> c_time
+            <span style="color:#66d9ef">return</span> True
+    <span style="color:#66d9ef">return</span> False
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">debug_a53up</span>():
+    <span style="color:#66d9ef">if</span>(get_diff(mfile)):
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;start download!&#34;</span>)
+        ser<span style="color:#f92672">=</span>serial<span style="color:#f92672">.</span>Serial(<span style="color:#e6db74">&#39;/dev/ttyUSB0&#39;</span>,<span style="color:#ae81ff">115200</span>,timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>)
+        emmc_test <span style="color:#f92672">=</span> class_downlinux_emmc(<span style="color:#ae81ff">512</span>)
+        emmc_test<span style="color:#f92672">.</span>reset(ser)
+        emmc_test<span style="color:#f92672">.</span>debug_a53(<span style="color:#ae81ff">20</span>)
+        emmc_test<span style="color:#f92672">.</span>write_list(ser)
+        ser<span style="color:#f92672">.</span>close()
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;end download!&#34;</span>)
+        
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#66d9ef">while</span> True:
+        time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+        debug_a53up()
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+
+</code></pre></div>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
