@@ -6,17 +6,26 @@
     <description>Recent content on 我的文档</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 17 Dec 2020 09:25:21 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 17 Dec 2020 10:48:39 +0800</lastBuildDate>
     
 	<atom:link href="https://shuishen-cang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>First</title>
+      <link>https://shuishen-cang.github.io/quote/first/</link>
+      <pubDate>Thu, 17 Dec 2020 10:48:39 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/quote/first/</guid>
+      <description>first </description>
+    </item>
+    
+    <item>
       <title>Hi3559a_系统烧写(二)</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</link>
+      <link>https://shuishen-cang.github.io/post/hi3559a/hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</link>
       <pubDate>Thu, 17 Dec 2020 09:25:21 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</guid>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</guid>
       <description>运行环境：
    类型 参数     CPU HI3559A   FLASH 64G   系统 big-little    一、地址划分    uboot kernel rootfs a53up m7 user     1M 9M 96M 10M 1M     目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。
 二、烧写脚本 可以采用脚本一键烧写，其脚本如下：
@@ -25,20 +34,20 @@ import sys,os,shutil import serial IS_Biglittle = True WRITE_SYSTEM = False WRIT
     
     <item>
       <title>Ubuntu开发环境搭建</title>
-      <link>https://shuishen-cang.github.io/post/ubuntu%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <link>https://shuishen-cang.github.io/post/ubuntu/ubuntu%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
       <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/ubuntu%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <guid>https://shuishen-cang.github.io/post/ubuntu/ubuntu%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
       <description>一、换源 二、安装软件 sudo apt install vim sudo apt install gcc sudo apt install openocd sudo apt install libusb sudo apt install git sudo apt install minicom git config --global user.email &amp;#34;335403241@qq.com&amp;#34; git config --global user.name &amp;#34;cang&amp;#34; 三、NFS 搭建NFS服务器环境，供ARM板挂载
 安装 &amp;amp; 配置 sudo apt install nfs-kernel-server sudo vim /etc/exports # 添加： /home/luocang/workspace *(rw,sync,no_subtree_check) #重启nfs服务 sudo service nfs-kernel-server restart 测试 sudo mount -t nfs -o nolock 127.0.0.1:/home/luocang/workspace /mnt 脚本 #!/bin/sh  sudo apt install nfs-kernel-server echo &amp;#39;/home/luocang/workspace *(rw,sync,no_subtree_check)&amp;#39; &amp;gt;&amp;gt; cang.</description>
     </item>
     
     <item>
       <title>树莓派环境搭建(一)</title>
-      <link>https://shuishen-cang.github.io/post/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%80/</link>
+      <link>https://shuishen-cang.github.io/post/raspberry/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%80/</link>
       <pubDate>Tue, 15 Dec 2020 22:15:18 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%80/</guid>
+      <guid>https://shuishen-cang.github.io/post/raspberry/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%80/</guid>
       <description>工作环境：ubuntu20.04
 一、搭建交叉编译器 git clone git://github.com/raspberrypi/tools.git cd tools cp -r arm-bcm2708 /home/installed/opt/ # 配置路径 sudo vim ~/.bashrc export PATH=$PATH:/home/installed/opt/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin #export PATH=$PATH:/home/installed/opt/arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi/bin export CFLAGS_RASP=&amp;#34;-O2 -pipe -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -w&amp;#34; # 安装32位兼容库 sudo apt install lib32ncurses6 lib32ncurses-dev # 测试 arm-linux-gnueabihf-gcc -v 二、交叉编译qt 编译(在宿主机) 不带tslib
 # 之前在安装qt软件的时候便已经安装了源码，因此不需要再额外下载源码 cd /home/installed/Qt5.9.9/5.9.9/Src/ # 建立编译脚本 subl mkrasp0.sh ## 脚本 #!/bin/sh ./configure -verbose \ -prefix /home/installed/opt/qt_rasp0 \ -device-option CROSS_COMPILE=bcm2708hardfp- \ -confirm-license \ -opensource \ -release \ -make libs \ -device linux-rasp-pi-g++ \ -optimized-qmake \ -pch \ -no-sql-sqlite \ -no-sqlite \ -qt-libjpeg \ -qt-libpng \ -qt-zlib \ -no-tslib \ -no-opengl \ -no-sse2 \ -no-openssl \ -no-cups \ -no-glib \ -no-dbus \ -no-xcb \ -no-iconv \ -no-separate-debug-info \ -no-qml-debug \ -skip qtdoc \ -skip qtquick1 \ -skip qtquickcontrols \ -skip qtscript \ -skip qtxmlpatterns \ -skip qtactiveqt \ -skip qtwebsockets \ -nomake examples \ -nomake tools \ -nomake tests #编译 chmod +x mkrasp0.</description>
