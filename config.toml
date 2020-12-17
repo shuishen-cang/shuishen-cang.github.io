@@ -1,6 +1,6 @@
 baseURL = "https://shuishen-cang.github.io/"
 languageCode = "en-us"
-title = "我的文档"
+title = "洛沧"
 theme = "m10c2"
 
 [[menu.main]]
@@ -14,7 +14,7 @@ theme = "m10c2"
 
 [[params.social]]
     name = "gitee"
-    url = "https://github.com/shuishen-cang"
+    url = "https://gitee.com/shuishen-cang/"
 
 [params.style]
     # darkestColor = "#d35050"

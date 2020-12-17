@@ -1,10 +1,10 @@
 
 all:
-	hugo server --baseURL="http://localhost/"
+	hugo server
 
 install:
-	hugo --baseURL="http://localhost/"
-	sudo cp -r public/* /var/www/html/	
+	hugo --baseURL="http://localhost/" -d docs
+	sudo cp -r docs/* /var/www/html/	
 	@echo http://localhost/
 
 remote:clean
@@ -16,4 +16,4 @@ remote:clean
 
 
 clean:
-	rm -rf public
+	rm -rf docs public
