@@ -1,64 +1,58 @@
-<!doctype html>
-<html lang="en-us">
-  <head>
-    <title>Ubuntu开发环境搭建 // 我的文档</title>
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.68.3" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="author" content="John Doe" />
-    <meta name="description" content="" />
-    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.68.3" />
 
-    
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Ubuntu开发环境搭建"/>
-<meta name="twitter:description" content="一、换源 二、安装软件 sudo apt install vim sudo apt install gcc sudo apt install openocd sudo apt install libusb sudo apt install git sudo apt install minicom git config --global user.email &#34;335403241@qq.com&#34; git config --global user.name &#34;cang&#34; 三、NFS 搭建NFS服务器环境，供ARM板挂载
-安装 &amp; 配置 sudo apt install nfs-kernel-server sudo vim /etc/exports # 添加： /home/luocang/workspace *(rw,sync,no_subtree_check) #重启nfs服务 sudo service nfs-kernel-server restart 测试 sudo mount -t nfs -o nolock 127.0.0.1:/home/luocang/workspace /mnt 脚本 #!/bin/sh  sudo apt install nfs-kernel-server echo &#39;/home/luocang/workspace *(rw,sync,no_subtree_check)&#39; &gt;&gt; cang."/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta property="og:title" content="Ubuntu开发环境搭建" />
-<meta property="og:description" content="一、换源 二、安装软件 sudo apt install vim sudo apt install gcc sudo apt install openocd sudo apt install libusb sudo apt install git sudo apt install minicom git config --global user.email &#34;335403241@qq.com&#34; git config --global user.name &#34;cang&#34; 三、NFS 搭建NFS服务器环境，供ARM板挂载
-安装 &amp; 配置 sudo apt install nfs-kernel-server sudo vim /etc/exports # 添加： /home/luocang/workspace *(rw,sync,no_subtree_check) #重启nfs服务 sudo service nfs-kernel-server restart 测试 sudo mount -t nfs -o nolock 127.0.0.1:/home/luocang/workspace /mnt 脚本 #!/bin/sh  sudo apt install nfs-kernel-server echo &#39;/home/luocang/workspace *(rw,sync,no_subtree_check)&#39; &gt;&gt; cang." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://shuishen-cang.github.io/post/ubuntu%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" />
-<meta property="article:published_time" content="2020-12-15T22:21:25+08:00" />
-<meta property="article:modified_time" content="2020-12-15T22:21:25+08:00" />
+  <title>Ubuntu开发环境搭建 &middot; 我的文档</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://shuishen-cang.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://shuishen-cang.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://shuishen-cang.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://shuishen-cang.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
 
 
-  </head>
-  <body>
-    <header class="app-header">
-      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
-      <h1>我的文档</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
-      <div class="app-header-social">
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://shuishen-cang.github.io/"><h1>我的文档</h1></a>
+      <p class="lead">
+      An elegant open source and mobile first theme for <a href="http://hugo.spf13.com">hugo</a> made by <a href="http://twitter.com/mdo">@mdo</a>. Originally made for Jekyll.
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://shuishen-cang.github.io/">Home</a> </li>
         
-      </div>
-    </header>
-    <main class="app-container">
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class ="post-title">Ubuntu开发环境搭建</h1>
-      <div class="post-meta">
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
-  <title>calendar</title>
-  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
-</svg>
-          Dec 15, 2020
-        </div>
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
-  <title>clock</title>
-  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
-</svg>
-          2 min read
-        </div>
-      </div>
-    </header>
-    <div class="post-content">
-      <h1 id="一换源">一、换源</h1>
+      </ul>
+    </nav>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Ubuntu开发环境搭建</h1>
+  <time datetime=2020-12-15T22:21:25&#43;0800 class="post-date">Tue, Dec 15, 2020</time>
+  <h1 id="一换源">一、换源</h1>
 <h1 id="二安装软件">二、安装软件</h1>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install vim
 sudo apt install gcc
@@ -161,12 +155,13 @@ docker run -it --name<span style="color:#f92672">=</span>hisys -v /home/luocang/
 
 
 </code></pre></div>
-    </div>
-    <div class="post-footer">
-      
-    </div>
-  </article>
+</div>
+
 
     </main>
+
+    
+      
+    
   </body>
 </html>
