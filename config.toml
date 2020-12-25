@@ -4,9 +4,14 @@ title = "洛沧"
 theme = "m10c2"
 
 [[menu.main]]
-    identifier = "blog"
-    name       = "Blogs"
-    url        = "/post"
+    identifier = "ubuntu"
+    name       = "ubuntu系统搭建\n"
+    url        = "/tags/ubuntu"
+
+[[menu.main]]
+    identifier = "Hi3559a"
+    name       = "Hi3559a开发\n"
+    url        = "/tags/Hi3559a"
 
 [[params.social]]
     name = "github"

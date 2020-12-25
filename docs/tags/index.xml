@@ -6,9 +6,28 @@
     <description>Recent content in Tags on 洛沧</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Fri, 25 Dec 2020 16:57:05 +0800</lastBuildDate>
     
 	<atom:link href="https://shuishen-cang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Hi3559a</title>
+      <link>https://shuishen-cang.github.io/tags/hi3559a/</link>
+      <pubDate>Fri, 25 Dec 2020 16:57:05 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/tags/hi3559a/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ubuntu</title>
+      <link>https://shuishen-cang.github.io/tags/ubuntu/</link>
+      <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/tags/ubuntu/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

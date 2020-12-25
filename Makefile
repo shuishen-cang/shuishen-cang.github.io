@@ -1,9 +1,9 @@
 
 all:
-	hugo server
+	hugo server --buildDrafts
 
 install:
-	hugo --baseURL="http://localhost/" -d docs
+	hugo --baseURL="http://localhost/" -d docs --buildDrafts
 	sudo cp -r docs/* /var/www/html/	
 	@echo http://localhost/
 

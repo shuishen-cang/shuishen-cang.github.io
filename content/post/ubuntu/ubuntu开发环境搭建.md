@@ -2,6 +2,7 @@
 title: "Ubuntu开发环境搭建"
 date: 2020-12-15T22:21:25+08:00
 draft: false
+tags: ["ubuntu"]
 ---
 
 # 一、换源
@@ -137,7 +138,5 @@ newgrp docker                       #更新docker用户组
 ```bash
 # 挂载共享卷
 docker run -it --name=hisys -v /home/luocang/workspace/04work:/work -v /home/srv/tftp:/tftp hiubuntu14 /bin/sh
-
-
 
 ```

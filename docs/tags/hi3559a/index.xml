@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hi3559a on 洛沧</title>
+    <link>https://shuishen-cang.github.io/tags/hi3559a/</link>
+    <description>Recent content in Hi3559a on 洛沧</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 25 Dec 2020 16:57:05 +0800</lastBuildDate>
+    
+	<atom:link href="https://shuishen-cang.github.io/tags/hi3559a/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>03Hi3559a_a53up调试</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%95/</link>
+      <pubDate>Fri, 25 Dec 2020 16:57:05 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%95/</guid>
+      <description>一、修改makefile 因为程序默认将图像处理相关的程序运行在linux系统中，
+一、A53UP烧写脚本 在docker中运行应用程序的开发，因此需要主机跟docker容器共享tftpd根目录，在a53up的应用程序中添加如下代码，将生成的bin复制到tftpd服务器下：
+# 在docker容器a53up的makefie中 cp sample.bin /home/shuixia/workspace/01hi3559a/01tftproot/sample_a53 在主机中一直运行该部分代码，程序一直监控sample_a53是否有变化，一旦有变化，便启动烧录程序。
+#-*- encoding=utf8 -*- import time import serial import os,sys,shutil from create_download import * # 这里是我的路径 mfile = &amp;#39;/home/shuixia/workspace/01hi3559a/01tftproot/sample_a53&amp;#39; if_first = True o_time = 0 def get_diff(file): global if_first global o_time if os.path.isfile(file): if(if_first == True): o_time = c_time = time.ctime(os.path.getatime(file)); if_first = False c_time = time.ctime(os.path.getatime(file)) if(c_time != o_time): o_time = c_time return True return False def debug_a53up(): if(get_diff(mfile)): print(&amp;#34;start download!</description>
+    </item>
+    
+    <item>
+      <title>Hi3559a_IPCM调试(三)</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_ipcm%E8%B0%83%E8%AF%95/</link>
+      <pubDate>Fri, 25 Dec 2020 16:49:14 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_ipcm%E8%B0%83%E8%AF%95/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hi3559a_系统烧写(二)</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/02hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</link>
+      <pubDate>Thu, 17 Dec 2020 09:25:21 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/hi3559a/02hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</guid>
+      <description>运行环境：
+   类型 参数     CPU HI3559A   FLASH 64G   系统 big-little    一、地址划分    uboot kernel rootfs a53up m7 user     1M 9M 96M 10M 1M     目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。
+板卡默认的ip地址是192.168.4.100，主机的ip地址是192.168.4.1
+sudo ifconfig enp4s0 192.168.4.1 二、烧写脚本 采用python脚本来进行程序烧写，需要先安装python3
+sudo apt install python3 sudo apt install python3-pip pip3 install pyserial 烧写脚本： class_downlinux_emmc.py
+import sys,os,shutil import serial IS_Biglittle = False WRITE_SYSTEM = True WRITE_M7_FG = False WRITE_A53UP_FG = False MMC_BLK_SIZE = 0x800 DDR_BLK_SIZE = 0x100000 DDR_AMP_START = 0x52000000 DDR_A53_START = 0x45000000 TFTP_DDR_ADDR = DDR_A53_START ############################## big-little ##############################3333 # A53UP 0x44000000 # SMP Ox52000000 class class_downlinux_emmc(object): def __init__(self,blk_size): self.</description>
+    </item>
+    
+  </channel>
+</rss>

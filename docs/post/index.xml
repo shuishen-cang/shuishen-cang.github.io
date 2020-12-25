@@ -6,31 +6,55 @@
     <description>Recent content in Posts on 洛沧</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 17 Dec 2020 09:25:21 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 25 Dec 2020 16:57:05 +0800</lastBuildDate>
     
 	<atom:link href="https://shuishen-cang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Hi3559a_系统烧写(二)</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a/hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</link>
-      <pubDate>Thu, 17 Dec 2020 09:25:21 +0800</pubDate>
+      <title>03Hi3559a_a53up调试</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%95/</link>
+      <pubDate>Fri, 25 Dec 2020 16:57:05 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a/hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</guid>
-      <description>运行环境：
-   类型 参数     CPU HI3559A   FLASH 64G   系统 big-little    一、地址划分    uboot kernel rootfs a53up m7 user     1M 9M 96M 10M 1M     目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。
-二、烧写脚本 可以采用脚本一键烧写，其脚本如下：
-import sys,os,shutil import serial IS_Biglittle = True WRITE_SYSTEM = False WRITE_M7_FG = False WRITE_A53UP_FG = True MMC_BLK_SIZE = 0x800 DDR_BLK_SIZE = 0x100000 DDR_AMP_START = 0x52000000 DDR_A53_START = 0x45000000 TFTP_DDR_ADDR = DDR_A53_START ############################## big-little ##############################3333 # A53UP 0x44000000 # SMP Ox52000000 class class_downlinux_emmc(object): def __init__(self,blk_size): self.</description>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%95/</guid>
+      <description>一、修改makefile 因为程序默认将图像处理相关的程序运行在linux系统中，
+一、A53UP烧写脚本 在docker中运行应用程序的开发，因此需要主机跟docker容器共享tftpd根目录，在a53up的应用程序中添加如下代码，将生成的bin复制到tftpd服务器下：
+# 在docker容器a53up的makefie中 cp sample.bin /home/shuixia/workspace/01hi3559a/01tftproot/sample_a53 在主机中一直运行该部分代码，程序一直监控sample_a53是否有变化，一旦有变化，便启动烧录程序。
+#-*- encoding=utf8 -*- import time import serial import os,sys,shutil from create_download import * # 这里是我的路径 mfile = &amp;#39;/home/shuixia/workspace/01hi3559a/01tftproot/sample_a53&amp;#39; if_first = True o_time = 0 def get_diff(file): global if_first global o_time if os.path.isfile(file): if(if_first == True): o_time = c_time = time.ctime(os.path.getatime(file)); if_first = False c_time = time.ctime(os.path.getatime(file)) if(c_time != o_time): o_time = c_time return True return False def debug_a53up(): if(get_diff(mfile)): print(&amp;#34;start download!</description>
     </item>
     
     <item>
-      <title>树莓派环境搭建(二)</title>
-      <link>https://shuishen-cang.github.io/post/raspberry/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%BA%8C/</link>
-      <pubDate>Tue, 15 Dec 2020 23:19:50 +0800</pubDate>
+      <title>Hi3559a_IPCM调试(三)</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_ipcm%E8%B0%83%E8%AF%95/</link>
+      <pubDate>Fri, 25 Dec 2020 16:49:14 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/raspberry/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%BA%8C/</guid>
-      <description>[toc]
-一、测试串口 二、测试I2C 三、TVOUT </description>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_ipcm%E8%B0%83%E8%AF%95/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>opencm3使用教程(一)</title>
+      <link>https://shuishen-cang.github.io/post/stm32/opencm3_1/</link>
+      <pubDate>Sat, 19 Dec 2020 11:14:37 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/stm32/opencm3_1/</guid>
+      <description>一、下载opencm3 我的opencm3库的路径放在/home/luocang/workspace/01library/02STM32/路径下，在该目录下安装opencm3的库
+cd /home/luocang/workspace/01library/02STM32/ git clone --recursive git@github.com:libopencm3/libopencm3-examples.git mv libopencm3-examples/ 01libopencm3-examples/ cd 01libopencm3-examples/libopencm3/ git reset --hard v0.8.0 cd ../ make -j12 编译完毕后可以在路径下看到编译的链接库，在examples可以看到例程编译后的可执行文件。
+二、设置路径 三、编写Makefile </description>
+    </item>
+    
+    <item>
+      <title>Hi3559a_系统烧写(二)</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/02hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</link>
+      <pubDate>Thu, 17 Dec 2020 09:25:21 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/hi3559a/02hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</guid>
+      <description>运行环境：
+   类型 参数     CPU HI3559A   FLASH 64G   系统 big-little    一、地址划分    uboot kernel rootfs a53up m7 user     1M 9M 96M 10M 1M     目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。
+板卡默认的ip地址是192.168.4.100，主机的ip地址是192.168.4.1
+sudo ifconfig enp4s0 192.168.4.1 二、烧写脚本 采用python脚本来进行程序烧写，需要先安装python3
+sudo apt install python3 sudo apt install python3-pip pip3 install pyserial 烧写脚本： class_downlinux_emmc.py
+import sys,os,shutil import serial IS_Biglittle = False WRITE_SYSTEM = True WRITE_M7_FG = False WRITE_A53UP_FG = False MMC_BLK_SIZE = 0x800 DDR_BLK_SIZE = 0x100000 DDR_AMP_START = 0x52000000 DDR_A53_START = 0x45000000 TFTP_DDR_ADDR = DDR_A53_START ############################## big-little ##############################3333 # A53UP 0x44000000 # SMP Ox52000000 class class_downlinux_emmc(object): def __init__(self,blk_size): self.</description>
     </item>
     
     <item>
@@ -49,10 +73,21 @@ import sys,os,shutil import serial IS_Biglittle = True WRITE_SYSTEM = False WRIT
       <pubDate>Tue, 15 Dec 2020 22:15:18 +0800</pubDate>
       
       <guid>https://shuishen-cang.github.io/post/raspberry/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%80/</guid>
-      <description>工作环境：ubuntu20.04
+      <description>NFS 工作环境：ubuntu20.04
 一、搭建交叉编译器 git clone git://github.com/raspberrypi/tools.git cd tools cp -r arm-bcm2708 /home/installed/opt/ # 配置路径 sudo vim ~/.bashrc export PATH=$PATH:/home/installed/opt/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin #export PATH=$PATH:/home/installed/opt/arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi/bin export CFLAGS_RASP=&amp;#34;-O2 -pipe -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -w&amp;#34; # 安装32位兼容库 sudo apt install lib32ncurses6 lib32ncurses-dev # 测试 arm-linux-gnueabihf-gcc -v 二、安装系统 在win下面使用Win32DiskImager软件，将网上下载的镜像的镜像烧写到SD卡中。 1. 开机启动配置 树莓派的图形界面需要账户密码登录之后才能进去，这样不方便QT程序的运行，因此需要开启开机自动运行。
 修改sudo nano /etc/systemd/system/getty.target.wants/getty@tty1.service # 修改 # ExecStart=-/sbin/agetty -o &amp;#39;-p -- \\u&amp;#39; --noclear %I $TERM ExecStart=-/sbin/agetty --autologin pi --noclear %I $TERM 2. 网络配置 传统的树莓派都是采用有线网络和无线网络进行宿主机和目标机之间的通信，树莓派最新的系统中自带了usbnet，可以进行宿主机与目标机通信，并且通过宿主机(ubuntu)的路由转发可以访问外网，进行软件更新，但是usbnet没有默认开启，需要在配置文件中开启。 开机自启后使用串口登录，进入系统。
-cd /boot nano cmdline.</description>
+cd /boot sudo nano cmdline.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://shuishen-cang.github.io/post/raspberry/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%BA%8C/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/raspberry/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%BA%8C/</guid>
+      <description> title: &amp;ldquo;树莓派环境搭建(二)&amp;rdquo; date: 2020-12-15T23:19:50+08:00 draft: false [toc]
+一、关闭开机画面 关闭彩虹屏 sudo nano /boot/config.txt #添加 disable_splash=1 屏蔽开机滚动代码 sudo nano /boot/cmdline.txt #修改 #console=tty1 -&amp;gt; console=tty3 #添加 logo.nologo loglevel=3 console=serial0,115200 console=tty3 root=PARTUUID=e230fc76-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait modules-load=dwc2,g_ether logo.nologo loglevel=3 二、打开串口 树莓派对外只提供了一个串口serial0，但是该串口默认作为了控制台串口，在开机启动项中删除串口控制台
+sudo vim /boot/cmdline.txt #删除 console=serial0，115200 console=tty3 root=PARTUUID=e230fc76-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait modules-load=dwc2,g_ether logo.nologo loglevel=3 </description>
     </item>
     
   </channel>
