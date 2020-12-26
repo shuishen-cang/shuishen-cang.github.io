@@ -24,12 +24,18 @@
     </item>
     
     <item>
-      <title>Hi3559a_IPCM调试(三)</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_ipcm%E8%B0%83%E8%AF%95/</link>
-      <pubDate>Fri, 25 Dec 2020 16:49:14 +0800</pubDate>
+      <title>Hi3559a_系统编译(一)</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/01hi3559a_%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91/</link>
+      <pubDate>Thu, 17 Dec 2020 10:23:59 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_ipcm%E8%B0%83%E8%AF%95/</guid>
-      <description></description>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/01hi3559a_%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91/</guid>
+      <description>一、安装docker镜像 1. 导入docker镜像 由于之前已经搭建好了docker的运行环境，之前已经设置好了海思3559a的docker镜像，因此需要开启一个新的docker容器。 我的海思sdk、用户程序以及tftp服务器都放在/home/luocang/workspace/04work/02hi3559a/路径下面，因此需要将该目录共享到docker容器上面。
+# 该docker镜像以ubuntu14.04为基础，安装了海思的必要的开发工具 docker run -it --name=cang -v /home/luocang/workspace/04work/02hi3559a:/workspace hisys /bin/bash # 已经进入了docker系统，退出 exit 2. 安装tftp服务器，以及nfs服务器 参考Ubuntu开发环境搭建
+在安装好了tftp服务器后，需要配置tftp服务器的根目录路径
+sudo vim /etc/default/tftpd-hpa # 修改为 TFTP_USERNAME=&amp;#34;tftp&amp;#34; TFTP_DIRECTORY=&amp;#34;/home/luocang/workspace/04work/02hi3559a/05tftpboot&amp;#34; TFTP_ADDRESS=&amp;#34;:69&amp;#34; TFTP_OPTIONS=&amp;#34;-l -c -s&amp;#34; # end sudo service tftpd-hpa restart 在安装好了nfs服务器后，需要配置nfs服务器的共享路径权限
+sudo vim /etc/exports # 添加 /home/luocang/workspace/04work/02hi3559a *(rw,sync,no_subtree_check) # end sudo service nfs-server restart 二、系统编译 海思提供一键编译，编译好的文件包括uboot、内核、根文件系等，编译好的文件通过tftp下载到板卡中，因此需要讲输出文件拷贝到tftp根目录下面。
+1. 解压 先进入sdk，并且对sdk进行解压。
+docker start cang docker attach cang # 进入docker容器内部 cd /workspace/......./Hi3559AV100_SDK_V2.0.2.0/ ./sdk.cleanup ./sdk.unpack 文件已经解压到了sdk目录中，但是编译之前需要下载内核文件，我下载的内核放在sdk平行的目录中，因此在编译前需要将内核文件拷贝到kernel路径下。</description>
     </item>
     
     <item>
