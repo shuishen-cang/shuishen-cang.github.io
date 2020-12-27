@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Hi3559a_A53UP调试(一)：helloworld // 洛沧</title>
+    <title>Hi3559a_开发(三)-A53调试：helloworld // 洛沧</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.68.3" />
@@ -12,13 +12,13 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Hi3559a_A53UP调试(一)：helloworld"/>
+<meta name="twitter:title" content="Hi3559a_开发(三)-A53调试：helloworld"/>
 <meta name="twitter:description" content="一、修改makefile 因为程序默认将图像处理相关的程序运行在linux系统中，
 一、A53UP烧写脚本 在docker中运行应用程序的开发，因此需要主机跟docker容器共享tftpd根目录，在a53up的应用程序中添加如下代码，将生成的bin复制到tftpd服务器下：
 # 在docker容器a53up的makefie中 cp sample.bin /home/shuixia/workspace/01hi3559a/01tftproot/sample_a53 在主机中一直运行该部分代码，程序一直监控sample_a53是否有变化，一旦有变化，便启动烧录程序。
 #-*- encoding=utf8 -*- import time import serial import os,sys,shutil from create_download import * # 这里是我的路径 mfile = &#39;/home/shuixia/workspace/01hi3559a/01tftproot/sample_a53&#39; if_first = True o_time = 0 def get_diff(file): global if_first global o_time if os.path.isfile(file): if(if_first == True): o_time = c_time = time.ctime(os.path.getatime(file)); if_first = False c_time = time.ctime(os.path.getatime(file)) if(c_time != o_time): o_time = c_time return True return False def debug_a53up(): if(get_diff(mfile)): print(&#34;start download!"/>
 
-    <meta property="og:title" content="Hi3559a_A53UP调试(一)：helloworld" />
+    <meta property="og:title" content="Hi3559a_开发(三)-A53调试：helloworld" />
 <meta property="og:description" content="一、修改makefile 因为程序默认将图像处理相关的程序运行在linux系统中，
 一、A53UP烧写脚本 在docker中运行应用程序的开发，因此需要主机跟docker容器共享tftpd根目录，在a53up的应用程序中添加如下代码，将生成的bin复制到tftpd服务器下：
 # 在docker容器a53up的makefie中 cp sample.bin /home/shuixia/workspace/01hi3559a/01tftproot/sample_a53 在主机中一直运行该部分代码，程序一直监控sample_a53是否有变化，一旦有变化，便启动烧录程序。
@@ -36,6 +36,10 @@
       <h1>洛沧</h1>
       <nav class="app-header-menu">
           <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发
+</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习
 </a>
              - 
           
@@ -61,7 +65,7 @@
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">Hi3559a_A53UP调试(一)：helloworld</h1>
+      <h1 class ="post-title">Hi3559a_开发(三)-A53调试：helloworld</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">

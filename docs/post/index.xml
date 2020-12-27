@@ -6,13 +6,37 @@
     <description>Recent content in Posts on 洛沧</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 25 Dec 2020 16:57:05 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 27 Dec 2020 21:31:22 +0800</lastBuildDate>
     
 	<atom:link href="https://shuishen-cang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Hi3559a_A53UP调试(一)：helloworld</title>
+      <title>Lichee_01开发环境</title>
+      <link>https://shuishen-cang.github.io/post/lichee/lichee_01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</link>
+      <pubDate>Sun, 27 Dec 2020 21:31:22 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/lichee/lichee_01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</guid>
+      <description>一、开发环境搭建 1. 建立docker容器 手上有一块lichee板子很久了，lichee的资料相对较全，最近又在学习linux，因此拿这个平台验证一下也不错，要开发芯片，必须先搭建交叉编译环境，考虑到电脑上已经安装了一个树莓派的交叉编译环境了，那么就在docker里面安装交叉编译器吧。
+先搭建一个最基本的docker开发环境吧，采用ubuntu18为基础
+docker pull ubuntu:18.04 docker images 可以看到已经存在ubuntu镜像了，然后在workspace下面建立一个目录用来作为lichee的开发目录，其目录为~/workspace/02prj/01lichee_zero下面，因此采用以下命令创建一个容器。
+docker run -it --name=lichee -v ~/workspace/02prj/01lichee_zero:/workspace ubuntu:18.04 /bin/bash # 进入docker容器后 apt update apt install nano nano /etc/apt/sources.list # 修改为 deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb-src http://mirrors.</description>
+    </item>
+    
+    <item>
+      <title>Lichee_02系统编译</title>
+      <link>https://shuishen-cang.github.io/post/lichee/lichee_02%E7%B3%BB%E7%BB%9F%E7%BC%96%E8%AF%91/</link>
+      <pubDate>Sun, 27 Dec 2020 21:31:22 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/lichee/lichee_02%E7%B3%BB%E7%BB%9F%E7%BC%96%E8%AF%91/</guid>
+      <description>一、编译uboot 1. 下载uboot 主机和容器之间存在共享文件夹，在主机里下载最新的uboot。
+cd ~/workspace/02prj/01lichee_zero/01system/ git clone https://github.com/Lichee-Pi/u-boot.git -b v3s-current 等待下载完毕后，进入u-boot路径，由于买的板子没有spiflash，因此需要编译支持SD卡启动，修改uboot，
+# 修改 include/configs/sun8i.h, 使u-boot可以直接从tf卡启动： vim include/configs/sun8i.h # 添加 #define CONFIG_BOOTCOMMAND &amp;#34;setenv bootm_boot_mode sec; load mmc 0:1 0x41000000 zImage; load mmc 0:1 0x41800000 sun8i-v3s-licheepi-zero-dock.dtb; bootz 0x41000000 - 0x41800000;&amp;#34; #define CONFIG_BOOTARGS &amp;#34;console=ttyS0,115200 panic=5 mtdparts=tf:1M(uboot),64k(dtb),4M(kernel),-(rootfs) rootwait root=/dev/mmcblk0p2 earlyprintk rw vt.global_cursor_default=0&amp;#34; 2. 编译 先安装必须的依赖库。
+apt-get install libncurses5-dev apt-get install device-tree-compiler apt-get install python apt-get install bc docker start lichee docker attach lichee cd /workspace/01system/u-boot/ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LicheePi_Zero_800x480LCD_defconfig make ARCH=arm menuconfig time make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- 2&amp;gt;&amp;amp;1 | tee build.</description>
+    </item>
+    
+    <item>
+      <title>Hi3559a_开发(三)-A53调试：helloworld</title>
       <link>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%951/</link>
       <pubDate>Fri, 25 Dec 2020 16:57:05 +0800</pubDate>
       
@@ -24,11 +48,11 @@
     </item>
     
     <item>
-      <title>Hi3559a_A53UP调试(二)：中断分析</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%952/</link>
+      <title>Hi3559a_开发(四)-A53调试：中断分析</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/04hi3559a_a53up%E8%B0%83%E8%AF%952/</link>
       <pubDate>Fri, 25 Dec 2020 16:57:05 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%952/</guid>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/04hi3559a_a53up%E8%B0%83%E8%AF%952/</guid>
       <description>一、 中断分析-linux部分 hi3559a的核心部署方式为multicore和big-little，在multicore方式中，所有跟媒体相关的代码都在linux系统，在big-little方式中，部分媒体相关的代码在liteos中，媒体代码与liteos存在较大的耦合。
 在milticore方式中，所有的中断都指向了linux系统，在big-little方式中，部分中断指向了linux系统，另一部分中断指向了liteos。那么能不能在multicore方式中使中断指向liteos呢？
 在linux系统中，通过对linux系统打海思官方提供的补丁得到海思的定制系统，其中中断部分的代码位于drivers/irqchip/路径，其中初始化位于irq-gic.c中，中断向量表位于irq-map-hi3559av100.h中。
@@ -48,7 +72,7 @@ cd /home/luocang/workspace/01library/02STM32/ git clone --recursive git@github.c
     </item>
     
     <item>
-      <title>Hi3559a_系统编译(一)</title>
+      <title>Hi3559a_开发(一)-系统编译</title>
       <link>https://shuishen-cang.github.io/post/hi3559a/01hi3559a_%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91/</link>
       <pubDate>Thu, 17 Dec 2020 10:23:59 +0800</pubDate>
       
@@ -63,7 +87,7 @@ docker start cang docker attach cang # 进入docker容器内部 cd /workspace/..
     </item>
     
     <item>
-      <title>Hi3559a_系统烧写(二)</title>
+      <title>Hi3559a_开发(二)-系统烧写</title>
       <link>https://shuishen-cang.github.io/post/hi3559a/02hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</link>
       <pubDate>Thu, 17 Dec 2020 09:25:21 +0800</pubDate>
       

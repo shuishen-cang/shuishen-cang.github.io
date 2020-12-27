@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Hi3559a_系统烧写(二) // 洛沧</title>
+    <title>Hi3559a_开发(二)-系统烧写 // 洛沧</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.68.3" />
@@ -12,7 +12,7 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Hi3559a_系统烧写(二)"/>
+<meta name="twitter:title" content="Hi3559a_开发(二)-系统烧写"/>
 <meta name="twitter:description" content="运行环境：
    类型 参数     CPU HI3559A   FLASH 64G   系统 big-little    一、地址划分    uboot kernel rootfs a53up m7 user     1M 9M 96M 10M 1M     目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。
 板卡默认的ip地址是192.168.4.100，主机的ip地址是192.168.4.1
@@ -20,7 +20,7 @@ sudo ifconfig enp4s0 192.168.4.1 二、烧写脚本 采用python脚本来进行�
 sudo apt install python3 sudo apt install python3-pip pip3 install pyserial 烧写脚本： class_downlinux_emmc.py
 import sys,os,shutil import serial IS_Biglittle = False WRITE_SYSTEM = True WRITE_M7_FG = False WRITE_A53UP_FG = False MMC_BLK_SIZE = 0x800 DDR_BLK_SIZE = 0x100000 DDR_AMP_START = 0x52000000 DDR_A53_START = 0x45000000 TFTP_DDR_ADDR = DDR_A53_START ############################## big-little ##############################3333 # A53UP 0x44000000 # SMP Ox52000000 class class_downlinux_emmc(object): def __init__(self,blk_size): self."/>
 
-    <meta property="og:title" content="Hi3559a_系统烧写(二)" />
+    <meta property="og:title" content="Hi3559a_开发(二)-系统烧写" />
 <meta property="og:description" content="运行环境：
    类型 参数     CPU HI3559A   FLASH 64G   系统 big-little    一、地址划分    uboot kernel rootfs a53up m7 user     1M 9M 96M 10M 1M     目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。
 板卡默认的ip地址是192.168.4.100，主机的ip地址是192.168.4.1
@@ -40,6 +40,10 @@ import sys,os,shutil import serial IS_Biglittle = False WRITE_SYSTEM = True WRIT
       <h1>洛沧</h1>
       <nav class="app-header-menu">
           <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发
+</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习
 </a>
              - 
           
@@ -65,7 +69,7 @@ import sys,os,shutil import serial IS_Biglittle = False WRITE_SYSTEM = True WRIT
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">Hi3559a_系统烧写(二)</h1>
+      <h1 class ="post-title">Hi3559a_开发(二)-系统烧写</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">

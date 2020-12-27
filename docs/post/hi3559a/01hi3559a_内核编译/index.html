@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Hi3559a_系统编译(一) // 洛沧</title>
+    <title>Hi3559a_开发(一)-系统编译 // 洛沧</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.68.3" />
@@ -12,7 +12,7 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Hi3559a_系统编译(一)"/>
+<meta name="twitter:title" content="Hi3559a_开发(一)-系统编译"/>
 <meta name="twitter:description" content="一、安装docker镜像 1. 导入docker镜像 由于之前已经搭建好了docker的运行环境，之前已经设置好了海思3559a的docker镜像，因此需要开启一个新的docker容器。 我的海思sdk、用户程序以及tftp服务器都放在/home/luocang/workspace/04work/02hi3559a/路径下面，因此需要将该目录共享到docker容器上面。
 # 该docker镜像以ubuntu14.04为基础，安装了海思的必要的开发工具 docker run -it --name=cang -v /home/luocang/workspace/04work/02hi3559a:/workspace hisys /bin/bash # 已经进入了docker系统，退出 exit 2. 安装tftp服务器，以及nfs服务器 参考Ubuntu开发环境搭建
 在安装好了tftp服务器后，需要配置tftp服务器的根目录路径
@@ -21,7 +21,7 @@ sudo vim /etc/exports # 添加 /home/luocang/workspace/04work/02hi3559a *(rw,syn
 1. 解压 先进入sdk，并且对sdk进行解压。
 docker start cang docker attach cang # 进入docker容器内部 cd /workspace/......./Hi3559AV100_SDK_V2.0.2.0/ ./sdk.cleanup ./sdk.unpack 文件已经解压到了sdk目录中，但是编译之前需要下载内核文件，我下载的内核放在sdk平行的目录中，因此在编译前需要将内核文件拷贝到kernel路径下。"/>
 
-    <meta property="og:title" content="Hi3559a_系统编译(一)" />
+    <meta property="og:title" content="Hi3559a_开发(一)-系统编译" />
 <meta property="og:description" content="一、安装docker镜像 1. 导入docker镜像 由于之前已经搭建好了docker的运行环境，之前已经设置好了海思3559a的docker镜像，因此需要开启一个新的docker容器。 我的海思sdk、用户程序以及tftp服务器都放在/home/luocang/workspace/04work/02hi3559a/路径下面，因此需要将该目录共享到docker容器上面。
 # 该docker镜像以ubuntu14.04为基础，安装了海思的必要的开发工具 docker run -it --name=cang -v /home/luocang/workspace/04work/02hi3559a:/workspace hisys /bin/bash # 已经进入了docker系统，退出 exit 2. 安装tftp服务器，以及nfs服务器 参考Ubuntu开发环境搭建
 在安装好了tftp服务器后，需要配置tftp服务器的根目录路径
@@ -42,6 +42,10 @@ docker start cang docker attach cang # 进入docker容器内部 cd /workspace/..
       <h1>洛沧</h1>
       <nav class="app-header-menu">
           <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发
+</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习
 </a>
              - 
           
@@ -67,7 +71,7 @@ docker start cang docker attach cang # 进入docker容器内部 cd /workspace/..
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">Hi3559a_系统编译(一)</h1>
+      <h1 class ="post-title">Hi3559a_开发(一)-系统编译</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">

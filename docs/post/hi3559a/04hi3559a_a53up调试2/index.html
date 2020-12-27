@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Hi3559a_A53UP调试(二)：中断分析 // 洛沧</title>
+    <title>Hi3559a_开发(四)-A53调试：中断分析 // 洛沧</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.68.3" />
@@ -12,21 +12,21 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Hi3559a_A53UP调试(二)：中断分析"/>
+<meta name="twitter:title" content="Hi3559a_开发(四)-A53调试：中断分析"/>
 <meta name="twitter:description" content="一、 中断分析-linux部分 hi3559a的核心部署方式为multicore和big-little，在multicore方式中，所有跟媒体相关的代码都在linux系统，在big-little方式中，部分媒体相关的代码在liteos中，媒体代码与liteos存在较大的耦合。
 在milticore方式中，所有的中断都指向了linux系统，在big-little方式中，部分中断指向了linux系统，另一部分中断指向了liteos。那么能不能在multicore方式中使中断指向liteos呢？
 在linux系统中，通过对linux系统打海思官方提供的补丁得到海思的定制系统，其中中断部分的代码位于drivers/irqchip/路径，其中初始化位于irq-gic.c中，中断向量表位于irq-map-hi3559av100.h中。
 其中初始化函数如下，该函数主要是将linux补丁中的中断向量表写入芯片配置：
 static void gic_dist_init_amp(struct gic_chip_data *gic) { unsigned int i; u32 cpumask; unsigned int *irq_map_int = (unsigned int *)irq_map;	//这是中断向量表的位置 	unsigned int gic_irqs = gic-&gt;gic_irqs; void __iomem *base = gic_data_dist_base(gic); writel_relaxed(GICD_DISABLE, base &#43; GIC_DIST_CTRL); /* * Set all global interrupts to this CPU only. */ for (i = 32; i &lt; gic_irqs; i &#43;= 4) { cpumask = irq_map_int[i / 4]; writel_relaxed(cpumask, base &#43; GIC_DIST_TARGET &#43; i * 4 / 4);	//设置中断向量表 	} gic_dist_config(base, gic_irqs, NULL); writel_relaxed(GICD_ENABLE, base &#43; GIC_DIST_CTRL); } 其中big-little和multicore都存在该部分代码，但是在不同的方式下，有不同的效果，说明执行条件不一样，因此需要看该部分代码的执行条件。"/>
 
-    <meta property="og:title" content="Hi3559a_A53UP调试(二)：中断分析" />
+    <meta property="og:title" content="Hi3559a_开发(四)-A53调试：中断分析" />
 <meta property="og:description" content="一、 中断分析-linux部分 hi3559a的核心部署方式为multicore和big-little，在multicore方式中，所有跟媒体相关的代码都在linux系统，在big-little方式中，部分媒体相关的代码在liteos中，媒体代码与liteos存在较大的耦合。
 在milticore方式中，所有的中断都指向了linux系统，在big-little方式中，部分中断指向了linux系统，另一部分中断指向了liteos。那么能不能在multicore方式中使中断指向liteos呢？
 在linux系统中，通过对linux系统打海思官方提供的补丁得到海思的定制系统，其中中断部分的代码位于drivers/irqchip/路径，其中初始化位于irq-gic.c中，中断向量表位于irq-map-hi3559av100.h中。
 其中初始化函数如下，该函数主要是将linux补丁中的中断向量表写入芯片配置：
 static void gic_dist_init_amp(struct gic_chip_data *gic) { unsigned int i; u32 cpumask; unsigned int *irq_map_int = (unsigned int *)irq_map;	//这是中断向量表的位置 	unsigned int gic_irqs = gic-&gt;gic_irqs; void __iomem *base = gic_data_dist_base(gic); writel_relaxed(GICD_DISABLE, base &#43; GIC_DIST_CTRL); /* * Set all global interrupts to this CPU only. */ for (i = 32; i &lt; gic_irqs; i &#43;= 4) { cpumask = irq_map_int[i / 4]; writel_relaxed(cpumask, base &#43; GIC_DIST_TARGET &#43; i * 4 / 4);	//设置中断向量表 	} gic_dist_config(base, gic_irqs, NULL); writel_relaxed(GICD_ENABLE, base &#43; GIC_DIST_CTRL); } 其中big-little和multicore都存在该部分代码，但是在不同的方式下，有不同的效果，说明执行条件不一样，因此需要看该部分代码的执行条件。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%952/" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/hi3559a/04hi3559a_a53up%E8%B0%83%E8%AF%952/" />
 <meta property="article:published_time" content="2020-12-25T16:57:05+08:00" />
 <meta property="article:modified_time" content="2020-12-25T16:57:05+08:00" />
 
@@ -38,6 +38,10 @@ static void gic_dist_init_amp(struct gic_chip_data *gic) { unsigned int i; u32 c
       <h1>洛沧</h1>
       <nav class="app-header-menu">
           <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发
+</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习
 </a>
              - 
           
@@ -63,7 +67,7 @@ static void gic_dist_init_amp(struct gic_chip_data *gic) { unsigned int i; u32 c
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">Hi3559a_A53UP调试(二)：中断分析</h1>
+      <h1 class ="post-title">Hi3559a_开发(四)-A53调试：中断分析</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">

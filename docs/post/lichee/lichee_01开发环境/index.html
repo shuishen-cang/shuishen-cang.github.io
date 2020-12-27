@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Lichee_01开发环境 // 洛沧</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.98d725446055c7d6e9d648a0493139d9b9363294627276b951f06d5d19331003.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lichee_01开发环境"/>
+<meta name="twitter:description" content="一、开发环境搭建 1. 建立docker容器 手上有一块lichee板子很久了，lichee的资料相对较全，最近又在学习linux，因此拿这个平台验证一下也不错，要开发芯片，必须先搭建交叉编译环境，考虑到电脑上已经安装了一个树莓派的交叉编译环境了，那么就在docker里面安装交叉编译器吧。
+先搭建一个最基本的docker开发环境吧，采用ubuntu18为基础
+docker pull ubuntu:18.04 docker images 可以看到已经存在ubuntu镜像了，然后在workspace下面建立一个目录用来作为lichee的开发目录，其目录为~/workspace/02prj/01lichee_zero下面，因此采用以下命令创建一个容器。
+docker run -it --name=lichee -v ~/workspace/02prj/01lichee_zero:/workspace ubuntu:18.04 /bin/bash # 进入docker容器后 apt update apt install nano nano /etc/apt/sources.list # 修改为 deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb-src http://mirrors."/>
+
+    <meta property="og:title" content="Lichee_01开发环境" />
+<meta property="og:description" content="一、开发环境搭建 1. 建立docker容器 手上有一块lichee板子很久了，lichee的资料相对较全，最近又在学习linux，因此拿这个平台验证一下也不错，要开发芯片，必须先搭建交叉编译环境，考虑到电脑上已经安装了一个树莓派的交叉编译环境了，那么就在docker里面安装交叉编译器吧。
+先搭建一个最基本的docker开发环境吧，采用ubuntu18为基础
+docker pull ubuntu:18.04 docker images 可以看到已经存在ubuntu镜像了，然后在workspace下面建立一个目录用来作为lichee的开发目录，其目录为~/workspace/02prj/01lichee_zero下面，因此采用以下命令创建一个容器。
+docker run -it --name=lichee -v ~/workspace/02prj/01lichee_zero:/workspace ubuntu:18.04 /bin/bash # 进入docker容器后 apt update apt install nano nano /etc/apt/sources.list # 修改为 deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb-src http://mirrors." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/lichee/lichee_01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" />
+<meta property="article:published_time" content="2020-12-27T21:31:22+08:00" />
+<meta property="article:modified_time" content="2020-12-27T21:31:22+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>洛沧</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发
+</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习
+</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/ubuntu">ubuntu系统搭建
+</a>
+      </nav>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/shuishen-cang" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitee.com/shuishen-cang/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Lichee_01开发环境</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Dec 27, 2020
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          1 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="一开发环境搭建">一、开发环境搭建</h1>
+<h2 id="1-建立docker容器">1. 建立docker容器</h2>
+<p>手上有一块lichee板子很久了，lichee的资料相对较全，最近又在学习linux，因此拿这个平台验证一下也不错，要开发芯片，必须先搭建交叉编译环境，考虑到电脑上已经安装了一个树莓派的交叉编译环境了，那么就在docker里面安装交叉编译器吧。</p>
+<p>先搭建一个最基本的docker开发环境吧，采用ubuntu18为基础</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker pull ubuntu:18.04
+docker images
+</code></pre></div><p>可以看到已经存在ubuntu镜像了，然后在workspace下面建立一个目录用来作为lichee的开发目录，其目录为<code>~/workspace/02prj/01lichee_zero</code>下面，因此采用以下命令创建一个容器。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker run -it --name<span style="color:#f92672">=</span>lichee -v ~/workspace/02prj/01lichee_zero:/workspace ubuntu:18.04 /bin/bash
+
+
+<span style="color:#75715e"># 进入docker容器后</span>
+apt update
+apt install nano
+
+nano /etc/apt/sources.list
+<span style="color:#75715e"># 修改为</span>
+deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+<span style="color:#75715e">#end</span>
+
+apt update
+apt upgrade
+apt install vim
+apt install make
+apt install gcc
+exit
+</code></pre></div><p>由此便完成了ubuntu的系统的基本搭建，将该镜像备份一下，以便于以后搭建别的开发环境。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker commit lichee ubuntu:18.04
+docker images
+</code></pre></div><h2 id="2-安装交叉编译器">2. 安装交叉编译器</h2>
+<p>在百度网盘上可以下载到交叉编译器<code>gcc-linaro-6.3.1-2017.02-x86_64_arm-linux-gnueabihf.tar.xz</code>，在GUI下对该文件解压，将解压后的文件拷贝到docker容器下，并且设置环境变量。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp -r gcc-linaro-6.3.1-2017.02-x86_64_arm-linux-gnueabihf/ ~/workspace/02prj/01lichee_zero/
+
+docker start lichee 
+docker attach lichee
+
+<span style="color:#75715e"># 进入docker容器中</span>
+mv /workspace/gcc-linaro-6.3.1-2017.02-x86_64_arm-linux-gnueabihf/ /opt/
+
+vim ~/.bashrc
+<span style="color:#75715e"># 添加</span>
+export PATH<span style="color:#f92672">=</span>$PATH:/opt/gcc-linaro-6.3.1-2017.02-x86_64_arm-linux-gnueabihf/bin
+</code></pre></div><p>至此交叉编译器搭建完毕。</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

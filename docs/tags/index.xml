@@ -6,10 +6,19 @@
     <description>Recent content in Tags on 洛沧</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 25 Dec 2020 16:57:05 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 27 Dec 2020 21:31:22 +0800</lastBuildDate>
     
 	<atom:link href="https://shuishen-cang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>lichee zero</title>
+      <link>https://shuishen-cang.github.io/tags/lichee-zero/</link>
+      <pubDate>Sun, 27 Dec 2020 21:31:22 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/tags/lichee-zero/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Hi3559a</title>

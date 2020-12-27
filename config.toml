@@ -13,6 +13,11 @@ theme = "m10c2"
     name       = "Hi3559a开发\n"
     url        = "/tags/Hi3559a"
 
+[[menu.main]]
+    identifier = "lichee"
+    name       = "lichee学习\n"
+    url        = "/tags/lichee"
+
 [[params.social]]
     name = "github"
     url = "https://github.com/shuishen-cang"
