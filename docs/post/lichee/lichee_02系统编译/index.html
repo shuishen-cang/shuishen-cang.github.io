@@ -119,7 +119,7 @@ make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color
 make ARCH<span style="color:#f92672">=</span>arm menuconfig
 time make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-linux-gnueabihf- 2&gt;&amp;<span style="color:#ae81ff">1</span> | tee build.log
 </code></pre></div><h1 id="二烧录uboot">二、烧录uboot</h1>
-<p>sudo dd if=u-boot-sunxi-with-spl.bin of=/dev/sdX bs=1024 seek=8</p>
+<p>sudo dd if=u-boot-sunxi-with-spl.bin of=/dev/sdb bs=1024 seek=8</p>
 
     </div>
     <div class="post-footer">
