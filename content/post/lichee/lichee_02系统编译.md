@@ -2,7 +2,7 @@
 title: "Lichee_02系统编译"
 date: 2020-12-27T21:31:22+08:00
 draft: false
-tags: ["lichee zero"]
+tags: ["lichee"]
 ---
 
 # 一、编译uboot

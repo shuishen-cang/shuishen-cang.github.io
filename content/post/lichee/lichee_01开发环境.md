@@ -2,7 +2,7 @@
 title: "Lichee_01开发环境"
 date: 2020-12-27T21:31:22+08:00
 draft: false
-tags: ["lichee zero"]
+tags: ["lichee"]
 ---
 
 # 一、开发环境搭建
