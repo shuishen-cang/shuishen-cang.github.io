@@ -17,10 +17,13 @@
       <pubDate>Fri, 25 Dec 2020 16:57:05 +0800</pubDate>
       
       <guid>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%951/</guid>
-      <description>一、修改makefile 因为程序默认将图像处理相关的程序运行在linux系统中，
-一、A53UP烧写脚本 在docker中运行应用程序的开发，因此需要主机跟docker容器共享tftpd根目录，在a53up的应用程序中添加如下代码，将生成的bin复制到tftpd服务器下：
-# 在docker容器a53up的makefie中 cp sample.bin /home/shuixia/workspace/01hi3559a/01tftproot/sample_a53 在主机中一直运行该部分代码，程序一直监控sample_a53是否有变化，一旦有变化，便启动烧录程序。
-#-*- encoding=utf8 -*- import time import serial import os,sys,shutil from create_download import * # 这里是我的路径 mfile = &amp;#39;/home/shuixia/workspace/01hi3559a/01tftproot/sample_a53&amp;#39; if_first = True o_time = 0 def get_diff(file): global if_first global o_time if os.path.isfile(file): if(if_first == True): o_time = c_time = time.ctime(os.path.getatime(file)); if_first = False c_time = time.ctime(os.path.getatime(file)) if(c_time != o_time): o_time = c_time return True return False def debug_a53up(): if(get_diff(mfile)): print(&amp;#34;start download!</description>
+      <description>芯片的大核心采用linux系统，其异构方式为multicore。multicore默认是不启动liteos的，考虑到后期的具体应用，在multicore的前提上启动liteos，其中a53up的工程位于osdrv/platform/liteos_a53/liteos中(osdrv/platform/liteos_a53/liteos_user有问题)。
+一、加载驱动 linux与liteos之间采用ipcm进行核间通信，测试通linux与liteos之间的核间通信便知道liteos已经正常启动。需要先设置网卡的ip地址。
+# 在主机 sudo ifconfig enp4s0 192.168.4.1 插入串口线，插入网线，启动板卡进入linux系统，网卡灯正常闪烁，表示网络初始化正常。串口登录进linux系统，搭建nfs平台。
+mkdir /home/00shell cd /home/00shell vi nfs.sh #添加 #!/bin/sh mount -t nfs -o nolock 192.168.4.1:/home/luocang/workspace /mnt # 根据个人目录设置 #end chmod +x nfs.sh ./nfs.sh 插入ipcm的驱动。
+mkdir /home/01ko cd /home/01ko cp /mnt/04work/02hi3559a/02sdk/Hi3559AV100R001C02SPC020/01.software/board/Hi3559AV100_SDK_V2.0.2.0/osdrv/components/ipcm/ipcm/out/node_0/* ./ vi /etc/profile # 添加 insmod /home/01ko/hi_ipcm.ko insmod /home/01ko/hi_virt-tty.ko # end reboot lsmod 二、A53UP烧写程序 在docker中运行应用程序的开发，因此需要主机跟docker容器共享tftpd根目录，在a53up的应用程序中添加如下代码，将生成的bin复制到tftpd服务器下：
+# 在docker容器a53up的makefie中 cp sample.bin /workspace/05tftpboot/sample_a53 编译成功后便会在在tftp根目录下生成一个sample_a53的文件 烧写程序可以采用之前提供的脚本进行程序烧写，但是此时仅需要更新用户程序，不烧写系统，因此需要稍做配置
+IS_Biglittle = False WRITE_SYSTEM = False WRITE_M7_FG = False WRITE_A53UP_FG = True 然后串口控制台进入uboot，然后退出minicom，运行该脚本。</description>
     </item>
     
     <item>

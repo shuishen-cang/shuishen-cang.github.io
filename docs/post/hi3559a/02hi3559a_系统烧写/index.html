@@ -246,9 +246,9 @@ TFTP_DDR_ADDR <span style="color:#f92672">=</span> DDR_A53_START
     <span style="color:#75715e">####################################### other ################################################</span>
 
     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">debug_a53</span>(self,size):
-        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;mw.b &#39;</span> <span style="color:#f92672">+</span> hex(self<span style="color:#f92672">.</span>a53up_addr) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; 0xff &#39;</span> <span style="color:#f92672">+</span> hex(size <span style="color:#f92672">*</span> self<span style="color:#f92672">.</span>ddr_size))
-        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;tftp &#39;</span> <span style="color:#f92672">+</span> hex(self<span style="color:#f92672">.</span>a53up_addr) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; sample.bin&#39;</span>)
-        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;go_a53up &#39;</span> <span style="color:#f92672">+</span> hex(self<span style="color:#f92672">.</span>a53up_addr))
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;mw.b 0x45000000 0xff &#39;</span> <span style="color:#f92672">+</span> hex(size <span style="color:#f92672">*</span> DDR_BLK_SIZE))
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;tftp 0x45000000 sample_a53&#39;</span>)
+        self<span style="color:#f92672">.</span>cmd_list<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;go_a53up 0x45000000&#39;</span>)
 
     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">reset</span>(self,ser):
         self<span style="color:#f92672">.</span>wait_printf(<span style="color:#e6db74">&#39;reset&#39;</span>,ser,<span style="color:#e6db74">&#39;autoboot&#39;</span>)
