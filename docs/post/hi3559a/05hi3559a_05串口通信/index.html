@@ -20,7 +20,7 @@ LITEOSTOPDIR ?= ../.. SAMPLE_OUT = ./build include $(LITEOSTOPDIR)/config.mk RM 
 <meta property="og:description" content="一、修改makefile 海思官方提供的makefile不能支持多个文件的编译以及多文件夹的编译，因此需要对makefile稍作修改以便支持多文件的编译，其修改后的文件如下：
 LITEOSTOPDIR ?= ../.. SAMPLE_OUT = ./build include $(LITEOSTOPDIR)/config.mk RM = -rm -rf #LITEOS_BASELIB &#43;= -lipcmsg_single_liteos LITEOS_LIBDEPS := --start-group $(LITEOS_LIBDEP) --end-group LITEOS_CFLAGS &#43;= $(SINC) include user/user.mk SRCS &#43;= $(wildcard sample.c) OBJS := $(SRCS:.c=.o) all: chkbindir $(OBJS) ifneq ($(LITEOS_CPU_TYPE), arm926) ifneq ($(OUT)/lib/libipcm.a, $(wildcard $(OUT)/lib/libipcm.a)) echo &#34;$(OUT)&#34; cp -rf $(LITEOS_CPU_TYPE)/*.a $(OUT)/lib endif endif @$(LD) $(LITEOS_LDFLAGS) --gc-sections -Map=$(SAMPLE_OUT)/sample.map -o $(SAMPLE_OUT)/sample $(addprefix $(SAMPLE_OUT)/,$(notdir $(OBJS))) $(LITEOS_LIBDEPS) $(LITEOS_TABLES_LDFLAGS) @$(OBJCOPY) -O binary $(SAMPLE_OUT)/sample $(SAMPLE_OUT)/sample.bin cp $(SAMPLE_OUT)/sample.bin /workspace/05tftpboot/sample_a53 clean: @if test -d $(SAMPLE_OUT) ; \ 	then \ 	rm -rf $(SAMPLE_OUT) ; \ 	fi @rm /workspace/05tftpboot/sample_a53 test:chkbindir $(OBJS) @echo $(OBJS) $(OBJS): %." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://shuishen-cang.github.io/post/hi3559a/05hi3559a_%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/hi3559a/05hi3559a_05%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/" />
 <meta property="article:published_time" content="2020-12-25T16:49:14+08:00" />
 <meta property="article:modified_time" content="2020-12-25T16:49:14+08:00" />
 
@@ -275,6 +275,12 @@ SINC <span style="color:#f92672">+=</span> -Iuser
 </code></pre></div><p>编写代码后，使用make命令重新编译该部分代码后，生成的可执行文件输出到tftp根目录下，通过烧录观察串口的打印输出。
 将uart2的物理引脚的TXRX连接在一起，发现串口已经能够收发数据，说明串口通信正常。
 <img src="../images/pic6.png" alt="img"></p>
+<h1 id="三代码使用">三、代码使用</h1>
+<p>上述的demo已经保存为了一个独立的分支，可以直接编译运行，其具体运行如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd osdrv/platform/liteos_a53/liteos/sample/sample_osdrv
+git checkout test_uart
+make
+</code></pre></div><p>经过上述步骤既可以生成可执行文件。</p>
 
     </div>
     <div class="post-footer">

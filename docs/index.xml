@@ -36,11 +36,23 @@ apt-get install libncurses5-dev apt-get install device-tree-compiler apt-get ins
     </item>
     
     <item>
+      <title>Hi3559a_开发(六)-A53调试：定时器测试</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/06hi3559a_06%E5%AE%9A%E6%97%B6%E5%99%A8%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Fri, 25 Dec 2020 16:57:14 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/hi3559a/06hi3559a_06%E5%AE%9A%E6%97%B6%E5%99%A8%E6%B5%8B%E8%AF%95/</guid>
+      <description>一、建立工程 HI3559A总共存在16个定时器，主要实现定时计数功能，可以供操作系统用作系统时钟，也可以供应用程序用作定时和计数，其中主SOC存在12个定时器，M7部分存在4个定时器。 其具体配置参考《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》。
+为了方便程序的管理，在git下新建一个分支用来做定时器测试。
+git checkout -b test_timer 其测试部分代码如下： user_timer.c
+#include &amp;#34;user_timer.h&amp;#34; #if TIM10IR_EN irqreturn_t timer10_isr(int a, void *arg){ static uint16_t counter = 0; if(++counter == 20){ counter = 0; dprintf(&amp;#34;timer 2s!\n&amp;#34;); } writel(1,TIM_INTCLR(Mytimer)); //清除中断向量  return IRQ_HANDLED; } #endif  void timer10_initial(void){ dprintf(&amp;#34;start initial timer10\n&amp;#34;); writel(300000,TIM_LOAD(Mytimer)); //10ms  // writel(0,SC_CTRL); //默认3M的计数器  writel((1 &amp;lt;&amp;lt; 7) | (1 &amp;lt;&amp;lt; 6) | (1 &amp;lt;&amp;lt; 5) | (1 &amp;lt;&amp;lt; 1),TIM_CN(Mytimer)); //周期计数，不分频 #if TIM10IR_EN  request_irq(NUM_HAL_INTERRUPT_TIMER10, timer10_isr, 0,&amp;#34;timer10_isr&amp;#34;,NULL); #endif } void timer_test(void){ timer10_initial(); } user_timer.</description>
+    </item>
+    
+    <item>
       <title>Hi3559a_开发(三)-A53调试：helloworld</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%951/</link>
+      <link>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_03a53up%E8%B0%83%E8%AF%951/</link>
       <pubDate>Fri, 25 Dec 2020 16:57:05 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_a53up%E8%B0%83%E8%AF%951/</guid>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/03hi3559a_03a53up%E8%B0%83%E8%AF%951/</guid>
       <description>芯片的大核心采用linux系统，其异构方式为multicore。multicore默认是不启动liteos的，考虑到后期的具体应用，在multicore的前提上启动liteos，其中a53up的工程位于osdrv/platform/liteos_a53/liteos中(osdrv/platform/liteos_a53/liteos_user有问题)。
 一、加载驱动 linux与liteos之间采用ipcm进行核间通信，测试通linux与liteos之间的核间通信便知道liteos已经正常启动。需要先设置网卡的ip地址。
 # 在主机 sudo ifconfig enp4s0 192.168.4.1 插入串口线，插入网线，启动板卡进入linux系统，网卡灯正常闪烁，表示网络初始化正常。串口登录进linux系统，搭建nfs平台。
@@ -52,10 +64,10 @@ IS_Biglittle = False WRITE_SYSTEM = False WRITE_M7_FG = False WRITE_A53UP_FG = T
     
     <item>
       <title>Hi3559a_开发(四)-A53调试：中断分析</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a/04hi3559a_a53up%E8%B0%83%E8%AF%952/</link>
+      <link>https://shuishen-cang.github.io/post/hi3559a/04hi3559a_04a53up%E8%B0%83%E8%AF%952/</link>
       <pubDate>Fri, 25 Dec 2020 16:57:05 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a/04hi3559a_a53up%E8%B0%83%E8%AF%952/</guid>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/04hi3559a_04a53up%E8%B0%83%E8%AF%952/</guid>
       <description>一、 中断分析-linux部分 hi3559a的核心部署方式为multicore和big-little，在multicore方式中，所有跟媒体相关的代码都在linux系统，在big-little方式中，部分媒体相关的代码在liteos中，媒体代码与liteos存在较大的耦合。
 在milticore方式中，所有的中断都指向了linux系统，在big-little方式中，部分中断指向了linux系统，另一部分中断指向了liteos。那么能不能在multicore方式中使中断指向liteos呢？
 在linux系统中，通过对linux系统打海思官方提供的补丁得到海思的定制系统，其中中断部分的代码位于drivers/irqchip/路径，其中初始化位于irq-gic.c中，中断向量表位于irq-map-hi3559av100.h中。
@@ -65,10 +77,10 @@ static void gic_dist_init_amp(struct gic_chip_data *gic) { unsigned int i; u32 c
     
     <item>
       <title>Hi3559a_开发(五)-A53调试：串口通信</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</link>
+      <link>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_05%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</link>
       <pubDate>Fri, 25 Dec 2020 16:49:14 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</guid>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_05%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</guid>
       <description>一、修改makefile 海思官方提供的makefile不能支持多个文件的编译以及多文件夹的编译，因此需要对makefile稍作修改以便支持多文件的编译，其修改后的文件如下：
 LITEOSTOPDIR ?= ../.. SAMPLE_OUT = ./build include $(LITEOSTOPDIR)/config.mk RM = -rm -rf #LITEOS_BASELIB += -lipcmsg_single_liteos LITEOS_LIBDEPS := --start-group $(LITEOS_LIBDEP) --end-group LITEOS_CFLAGS += $(SINC) include user/user.mk SRCS += $(wildcard sample.c) OBJS := $(SRCS:.c=.o) all: chkbindir $(OBJS) ifneq ($(LITEOS_CPU_TYPE), arm926) ifneq ($(OUT)/lib/libipcm.a, $(wildcard $(OUT)/lib/libipcm.a)) echo &amp;#34;$(OUT)&amp;#34; cp -rf $(LITEOS_CPU_TYPE)/*.a $(OUT)/lib endif endif @$(LD) $(LITEOS_LDFLAGS) --gc-sections -Map=$(SAMPLE_OUT)/sample.map -o $(SAMPLE_OUT)/sample $(addprefix $(SAMPLE_OUT)/,$(notdir $(OBJS))) $(LITEOS_LIBDEPS) $(LITEOS_TABLES_LDFLAGS) @$(OBJCOPY) -O binary $(SAMPLE_OUT)/sample $(SAMPLE_OUT)/sample.bin cp $(SAMPLE_OUT)/sample.bin /workspace/05tftpboot/sample_a53 clean: @if test -d $(SAMPLE_OUT) ; \ 	then \ 	rm -rf $(SAMPLE_OUT) ; \ 	fi @rm /workspace/05tftpboot/sample_a53 test:chkbindir $(OBJS) @echo $(OBJS) $(OBJS): %.</description>
     </item>
@@ -86,10 +98,10 @@ cd /home/luocang/workspace/01library/02STM32/ git clone --recursive git@github.c
     
     <item>
       <title>Hi3559a_开发(一)-系统编译</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a/01hi3559a_%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91/</link>
+      <link>https://shuishen-cang.github.io/post/hi3559a/01hi3559a_01%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91/</link>
       <pubDate>Thu, 17 Dec 2020 10:23:59 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a/01hi3559a_%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91/</guid>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/01hi3559a_01%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91/</guid>
       <description>一、安装docker镜像 1. 导入docker镜像 由于之前已经搭建好了docker的运行环境，之前已经设置好了海思3559a的docker镜像，因此需要开启一个新的docker容器。 我的海思sdk、用户程序以及tftp服务器都放在/home/luocang/workspace/04work/02hi3559a/路径下面，因此需要将该目录共享到docker容器上面。
 # 该docker镜像以ubuntu14.04为基础，安装了海思的必要的开发工具 docker run -it --name=cang -v /home/luocang/workspace/04work/02hi3559a:/workspace hisys /bin/bash # 已经进入了docker系统，退出 exit 2. 安装tftp服务器，以及nfs服务器 参考Ubuntu开发环境搭建
 在安装好了tftp服务器后，需要配置tftp服务器的根目录路径
@@ -101,10 +113,10 @@ docker start cang docker attach cang # 进入docker容器内部 cd /workspace/..
     
     <item>
       <title>Hi3559a_开发(二)-系统烧写</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a/02hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</link>
+      <link>https://shuishen-cang.github.io/post/hi3559a/02hi3559a_02%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</link>
       <pubDate>Thu, 17 Dec 2020 09:25:21 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a/02hi3559a_%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</guid>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/02hi3559a_02%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%86%99/</guid>
       <description>运行环境：
    类型 参数     CPU HI3559A   FLASH 64G   系统 big-little    一、地址划分    uboot kernel rootfs a53up m7 user     1M 9M 96M 10M 1M     目前的办卡采用EMMCFLASH作为存储器，其中主要存储的块如上表：uboot、kernel、rootfs、a53up、m7，其余的空间可以作为一个硬盘挂载在linux系统中，以便系统访问。
 板卡默认的ip地址是192.168.4.100，主机的ip地址是192.168.4.1
