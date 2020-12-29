@@ -64,6 +64,16 @@ static void gic_dist_init_amp(struct gic_chip_data *gic) { unsigned int i; u32 c
     </item>
     
     <item>
+      <title>Hi3559a_开发(五)-A53调试：串口通信</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</link>
+      <pubDate>Fri, 25 Dec 2020 16:49:14 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</guid>
+      <description>一、修改makefile 海思官方提供的makefile不能支持多个文件的编译以及多文件夹的编译，因此需要对makefile稍作修改以便支持多文件的编译，其修改后的文件如下：
+LITEOSTOPDIR ?= ../.. SAMPLE_OUT = ./build include $(LITEOSTOPDIR)/config.mk RM = -rm -rf #LITEOS_BASELIB += -lipcmsg_single_liteos LITEOS_LIBDEPS := --start-group $(LITEOS_LIBDEP) --end-group LITEOS_CFLAGS += $(SINC) include user/user.mk SRCS += $(wildcard sample.c) OBJS := $(SRCS:.c=.o) all: chkbindir $(OBJS) ifneq ($(LITEOS_CPU_TYPE), arm926) ifneq ($(OUT)/lib/libipcm.a, $(wildcard $(OUT)/lib/libipcm.a)) echo &amp;#34;$(OUT)&amp;#34; cp -rf $(LITEOS_CPU_TYPE)/*.a $(OUT)/lib endif endif @$(LD) $(LITEOS_LDFLAGS) --gc-sections -Map=$(SAMPLE_OUT)/sample.map -o $(SAMPLE_OUT)/sample $(addprefix $(SAMPLE_OUT)/,$(notdir $(OBJS))) $(LITEOS_LIBDEPS) $(LITEOS_TABLES_LDFLAGS) @$(OBJCOPY) -O binary $(SAMPLE_OUT)/sample $(SAMPLE_OUT)/sample.bin cp $(SAMPLE_OUT)/sample.bin /workspace/05tftpboot/sample_a53 clean: @if test -d $(SAMPLE_OUT) ; \ 	then \ 	rm -rf $(SAMPLE_OUT) ; \ 	fi @rm /workspace/05tftpboot/sample_a53 test:chkbindir $(OBJS) @echo $(OBJS) $(OBJS): %.</description>
+    </item>
+    
+    <item>
       <title>opencm3使用教程(一)</title>
       <link>https://shuishen-cang.github.io/post/stm32/opencm3_1/</link>
       <pubDate>Sat, 19 Dec 2020 11:14:37 +0800</pubDate>
