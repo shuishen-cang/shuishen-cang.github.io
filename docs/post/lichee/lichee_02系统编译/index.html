@@ -79,7 +79,7 @@ apt-get install libncurses5-dev apt-get install device-tree-compiler apt-get ins
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          1 min read
+          2 min read
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
@@ -119,9 +119,100 @@ cd /workspace/01system/u-boot/
 make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-linux-gnueabihf- LicheePi_Zero_800x480LCD_defconfig
 make ARCH<span style="color:#f92672">=</span>arm menuconfig
 time make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-linux-gnueabihf- 2&gt;&amp;<span style="color:#ae81ff">1</span> | tee build.log
-</code></pre></div><h1 id="二烧录uboot">二、烧录uboot</h1>
-<p>sudo dd if=u-boot-sunxi-with-spl.bin of=/dev/sdb bs=1024 seek=8</p>
+</code></pre></div><p>编译后的文件为u-boot-sunxi-with-spl.bin，将该文件拷贝到images目录下。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd ../
+mkdir -p images
+cd u-boot/
+cp u-boot-sunxi-with-spl.bin ../images/
+cd 
+</code></pre></div><h1 id="二编译linux内核">二、编译linux内核</h1>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/Lichee-Pi/linux.git
+cd linux
+make ARCH<span style="color:#f92672">=</span>arm licheepi_zero_defconfig
+make ARCH<span style="color:#f92672">=</span>arm menuconfig   <span style="color:#75715e">#add bluethooth, etc.</span>
+make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-linux-gnueabihf- -j16
+make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-linux-gnueabihf- -j16 INSTALL_MOD_PATH<span style="color:#f92672">=</span>out modules
+make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-linux-gnueabihf- -j16 INSTALL_MOD_PATH<span style="color:#f92672">=</span>out modules_install
+</code></pre></div><p>编译完成的zImage放置在/arch/arm/boot/路径下，将该文件拷贝到images路径下。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp arch/arm/boot/dts/sun8i-v3s ../images/
+cp arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dtb ../images/
+</code></pre></div><h1 id="三编译rootfs">三、编译rootfs</h1>
+<p>buildroot可以编译uboot，kernel以及rootfs，uboot上面已经编译成功，在这里进行rootfs编译。
+先下载buildroot.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone git@github.com:buildroot/buildroot.git
+cd buildroot
+cp configs/licheepi_zero_defconfig .config
+make menuconfig
+</code></pre></div><p>默认使用的是国外的下载源，这里可以设置国内的镜像源。
+<img src="../images/pic1.png" alt="img"></p>
+<p>在Target packages-&gt;etworking applications勾选openssh以及rpcbind。</p>
+<p>在Bootloaders下面取消U-Boot。
+在Kernel下面取消kernel。</p>
+<p>make后生成的根文件系统放置在output/images/路径下面。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp output/images/rootfs.tar ../images/
+</code></pre></div><h1 id="四烧录uboot">四、烧录uboot</h1>
+<h2 id="1-分区">1. 分区</h2>
+<p>采用ubuntu自带的disks就可以对sd卡进行分区，分区分为两个区，根据上面的参数，uboot、内核、设备树都在第一个分区，文件系统为fat文件系统，命名为boot，根文件系统为第二个分区，文件系统为ext4文件系统，命名为rootfs。</p>
+<h2 id="2-烧写">2. 烧写</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd ../images
+<span style="color:#75715e"># 我的sd卡在电脑的盘符为sdb</span>
+sudo dd <span style="color:#66d9ef">if</span><span style="color:#f92672">=</span>u-boot-sunxi-with-spl.bin of<span style="color:#f92672">=</span>/dev/sdb bs<span style="color:#f92672">=</span><span style="color:#ae81ff">1024</span> seek<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>
 
+cp zImage sun8i-v3s-licheepi-zero-dock.dtb /media/luocang/boot/
+tar -xvf rootfs.tar -C /media/luocang/rootfs/
+</code></pre></div><h1 id="五配置">五、配置</h1>
+<p>将SD插入板卡，连接串口便可以开机进入系统了，为了后期的开发，必须配置好ssh，最好能够配置好nfs。</p>
+<h2 id="1-开机配置">1. 开机配置</h2>
+<p>修改开机免登陆</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vi /etc/inittab
+
+<span style="color:#75715e"># ttyS0::respawn:/sbin/getty -L  ttyS0 115200 vt100 # GENERIC_SERIAL</span>
+ttyS0::respawn:-/bin/sh 
+</code></pre></div><p>修改IP地址</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vi /etc/network/interfaces 
+
+<span style="color:#75715e"># 添加</span>
+auto usb0
+iface usb0 inet static   
+    address 192.168.4.200
+    gateway 192.168.4.1
+    netmask 255.255.255.0
+</code></pre></div><p>重启，ping主机。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ping 192.168.4.1
+</code></pre></div><h2 id="2-ssh">2. ssh</h2>
+<p>使用ps指令查看ssh的相关状态，发现sshd并没有启动。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ps -ef | grep ssh
+</code></pre></div><p>用于根文件系统的文件夹都不是rootfs的目录，因此需要修改文件夹的用户组。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd /
+chown -R root:root *
+</code></pre></div><p>修改ssd相关配置。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ssh-keygen 
+cd root/.ssh/
+cp id_rsa.pub authorized_keys
+
+vi /etc/ssh/sshd_config
+<span style="color:#75715e">#修改</span>
+<span style="color:#75715e">#PermitRootLogin prohibit-password</span>
+PermitRootLogin yes
+</code></pre></div><p>重启后，查看sshd已经启动了，在主机登录。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ssh root@192.168.4.200
+</code></pre></div><h2 id="3-nfs">3. nfs</h2>
+<p>为了后期开发时候的便捷，尝试一下nfs。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mount -t nfs -o nolock 192.168.4.1:/home/luocang/workspace /mnt
+cd mnt
+ls
+</code></pre></div><p>发现nfs已经能够成功使用，说明nfs功能正常，至此环境搭建完毕，可以脱离串口进行开发了。建立脚本，以便后期nfs挂载。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p /home/00shell
+cd /home/00shell/
+
+vi nfs.sh
+<span style="color:#75715e"># 添加</span>
+<span style="color:#75715e">#!/bin/sh</span>
+
+mount -t nfs -o nolock 192.168.4.1:/home/luocang/workspace /mnt
+
+chmod +x nfs.sh 
+</code></pre></div>
     </div>
     <div class="post-footer">
       

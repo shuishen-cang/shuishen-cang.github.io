@@ -45,10 +45,152 @@ make ARCH=arm menuconfig
 time make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- 2>&1 | tee build.log
 ```
 
+编译后的文件为u-boot-sunxi-with-spl.bin，将该文件拷贝到images目录下。
+```bash
+cd ../
+mkdir -p images
+cd u-boot/
+cp u-boot-sunxi-with-spl.bin ../images/
+cd 
+```
 
-# 二、烧录uboot
+# 二、编译linux内核
+```bash
+git clone https://github.com/Lichee-Pi/linux.git
+cd linux
+make ARCH=arm licheepi_zero_defconfig
+make ARCH=arm menuconfig   #add bluethooth, etc.
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j16
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j16 INSTALL_MOD_PATH=out modules
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j16 INSTALL_MOD_PATH=out modules_install
+```
+编译完成的zImage放置在/arch/arm/boot/路径下，将该文件拷贝到images路径下。
 
+```bash
+cp arch/arm/boot/dts/sun8i-v3s ../images/
+cp arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dtb ../images/
+```
+
+# 三、编译rootfs
+buildroot可以编译uboot，kernel以及rootfs，uboot上面已经编译成功，在这里进行rootfs编译。
+先下载buildroot.
+
+```bash
+git clone git@github.com:buildroot/buildroot.git
+cd buildroot
+cp configs/licheepi_zero_defconfig .config
+make menuconfig
+```
+
+默认使用的是国外的下载源，这里可以设置国内的镜像源。
+![img](../images/pic1.png)
+
+在Target packages->etworking applications勾选openssh以及rpcbind。
+
+在Bootloaders下面取消U-Boot。
+在Kernel下面取消kernel。
+
+make后生成的根文件系统放置在output/images/路径下面。
+```bash
+cp output/images/rootfs.tar ../images/
+```
+
+# 四、烧录uboot
+
+## 1. 分区
+
+采用ubuntu自带的disks就可以对sd卡进行分区，分区分为两个区，根据上面的参数，uboot、内核、设备树都在第一个分区，文件系统为fat文件系统，命名为boot，根文件系统为第二个分区，文件系统为ext4文件系统，命名为rootfs。
+
+
+## 2. 烧写
+```bash
+cd ../images
+# 我的sd卡在电脑的盘符为sdb
 sudo dd if=u-boot-sunxi-with-spl.bin of=/dev/sdb bs=1024 seek=8
+
+cp zImage sun8i-v3s-licheepi-zero-dock.dtb /media/luocang/boot/
+tar -xvf rootfs.tar -C /media/luocang/rootfs/
+```
+
+# 五、配置
+将SD插入板卡，连接串口便可以开机进入系统了，为了后期的开发，必须配置好ssh，最好能够配置好nfs。
+
+## 1. 开机配置
+修改开机免登陆
+```bash
+vi /etc/inittab
+
+# ttyS0::respawn:/sbin/getty -L  ttyS0 115200 vt100 # GENERIC_SERIAL
+ttyS0::respawn:-/bin/sh 
+```
+
+修改IP地址
+```bash
+vi /etc/network/interfaces 
+
+# 添加
+auto usb0
+iface usb0 inet static   
+    address 192.168.4.200
+    gateway 192.168.4.1
+    netmask 255.255.255.0
+```
+重启，ping主机。
+```bash
+ping 192.168.4.1
+```
+
+## 2. ssh
+使用ps指令查看ssh的相关状态，发现sshd并没有启动。
+```bash
+ps -ef | grep ssh
+```
+
+用于根文件系统的文件夹都不是rootfs的目录，因此需要修改文件夹的用户组。
+```bash
+cd /
+chown -R root:root *
+```
+
+修改ssd相关配置。
+```bash
+ssh-keygen 
+cd root/.ssh/
+cp id_rsa.pub authorized_keys
+
+vi /etc/ssh/sshd_config
+#修改
+#PermitRootLogin prohibit-password
+PermitRootLogin yes
+```
+重启后，查看sshd已经启动了，在主机登录。
+```bash
+ssh root@192.168.4.200
+```
+
+## 3. nfs
+为了后期开发时候的便捷，尝试一下nfs。
+```bash
+mount -t nfs -o nolock 192.168.4.1:/home/luocang/workspace /mnt
+cd mnt
+ls
+```
+发现nfs已经能够成功使用，说明nfs功能正常，至此环境搭建完毕，可以脱离串口进行开发了。建立脚本，以便后期nfs挂载。
+```bash
+mkdir -p /home/00shell
+cd /home/00shell/
+
+vi nfs.sh
+# 添加
+#!/bin/sh
+
+mount -t nfs -o nolock 192.168.4.1:/home/luocang/workspace /mnt
+
+chmod +x nfs.sh 
+```
+
+
+
 
 
 
