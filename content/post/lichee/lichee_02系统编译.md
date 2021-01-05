@@ -83,7 +83,7 @@ make menuconfig
 ```
 
 默认使用的是国外的下载源，这里可以设置国内的镜像源。
-![img](../images/pic1.png)
+![img](../images/pic01.png)
 
 在Target packages->etworking applications勾选openssh以及rpcbind。
 
