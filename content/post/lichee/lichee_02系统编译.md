@@ -85,12 +85,50 @@ make menuconfig
 默认使用的是国外的下载源，这里可以设置国内的镜像源。
 ![img](../images/pic01.png)
 
+![img](./images/pic01.png)
+
 在Target packages->etworking applications勾选openssh以及rpcbind。
 
 在Bootloaders下面取消U-Boot。
 在Kernel下面取消kernel。
 
+## 1. 使用buildroot的交叉编译器make
+
+buildroot内部默认配置了交叉编译器，可以直接用于make。
+
+```bash
+make
+```
+
+## 2.使用交叉编译器make
+
+使用内部自带的交叉编译器，在后期更换交叉编译器可能会出现缺少库的情况，因此最好是用外部设置的交叉编译器，便于后期编写程序的方便。
+
+```bash
+make menuconfig
+make
+```
+
+配置参数如下：
+
+```bash
+/ Toolchain  --->    
+Toolchain type: 		External toolchain
+Toolchain     :			Custom toolchain   
+Toolchain origin :		Pre-installed toolchain
+Toolchain path:   		/opt/gcc-linaro-6.3.1-2017.02-x86_64_arm-linux-gnueabihf
+Toolchain prefix:		arm-linux-gnueabihf
+External toolchain gcc version: 6.x					 # 和交叉编译器保持一致
+External toolchain kernel headers series： 4.6.x		# 和交叉编译器保持一致
+External toolchain C library：glibc/eglibc，			# 这里必须选glibc
+Toolchain has SSP support： y						 # 必须选择，或者莫名其妙的错误
+Toolchain has RPC support? y						 # 必须选择，或者莫名其妙的错误
+```
+
+## 3. 拷贝根文件系统
+
 make后生成的根文件系统放置在output/images/路径下面。
+
 ```bash
 cp output/images/rootfs.tar ../images/
 ```

@@ -145,9 +145,30 @@ cp configs/licheepi_zero_defconfig .config
 make menuconfig
 </code></pre></div><p>默认使用的是国外的下载源，这里可以设置国内的镜像源。
 <img src="../images/pic01.png" alt="img"></p>
+<p><img src="./images/pic01.png" alt="img"></p>
 <p>在Target packages-&gt;etworking applications勾选openssh以及rpcbind。</p>
 <p>在Bootloaders下面取消U-Boot。
 在Kernel下面取消kernel。</p>
+<h2 id="1-使用buildroot的交叉编译器make">1. 使用buildroot的交叉编译器make</h2>
+<p>buildroot内部默认配置了交叉编译器，可以直接用于make。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make
+</code></pre></div><h2 id="2使用交叉编译器make">2.使用交叉编译器make</h2>
+<p>使用内部自带的交叉编译器，在后期更换交叉编译器可能会出现缺少库的情况，因此最好是用外部设置的交叉编译器，便于后期编写程序的方便。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make menuconfig
+make
+</code></pre></div><p>配置参数如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">/ Toolchain  ---&gt;    
+Toolchain type: 		External toolchain
+Toolchain     :			Custom toolchain   
+Toolchain origin :		Pre-installed toolchain
+Toolchain path:   		/opt/gcc-linaro-6.3.1-2017.02-x86_64_arm-linux-gnueabihf
+Toolchain prefix:		arm-linux-gnueabihf
+External toolchain gcc version: 6.x					 <span style="color:#75715e"># 和交叉编译器保持一致</span>
+External toolchain kernel headers series： 4.6.x		<span style="color:#75715e"># 和交叉编译器保持一致</span>
+External toolchain C library：glibc/eglibc，			<span style="color:#75715e"># 这里必须选glibc</span>
+Toolchain has SSP support： y						 <span style="color:#75715e"># 必须选择，或者莫名其妙的错误</span>
+Toolchain has RPC support? y						 <span style="color:#75715e"># 必须选择，或者莫名其妙的错误</span>
+</code></pre></div><h2 id="3-拷贝根文件系统">3. 拷贝根文件系统</h2>
 <p>make后生成的根文件系统放置在output/images/路径下面。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp output/images/rootfs.tar ../images/
 </code></pre></div><h1 id="四烧录uboot">四、烧录uboot</h1>
