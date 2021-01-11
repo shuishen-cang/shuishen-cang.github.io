@@ -1,5 +1,5 @@
 ---
-title: "Ubuntu开发环境搭建"
+title: "Ubuntu_01开发环境搭建"
 date: 2020-12-15T22:21:25+08:00
 draft: false
 tags: ["ubuntu"]

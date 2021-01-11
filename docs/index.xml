@@ -156,13 +156,28 @@ import sys,os,shutil import serial IS_Biglittle = False WRITE_SYSTEM = True WRIT
     </item>
     
     <item>
-      <title>Ubuntu开发环境搭建</title>
-      <link>https://shuishen-cang.github.io/post/ubuntu/ubuntu%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <title>Ubuntu_01开发环境搭建</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu/ubuntu_01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
       <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/ubuntu/ubuntu%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <guid>https://shuishen-cang.github.io/post/ubuntu/ubuntu_01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
       <description>一、换源 二、安装软件 sudo apt install vim sudo apt install gcc sudo apt install openocd sudo apt install libusb sudo apt install git sudo apt install minicom git config --global user.email &amp;#34;335403241@qq.com&amp;#34; git config --global user.name &amp;#34;cang&amp;#34; 三、NFS 搭建NFS服务器环境，供ARM板挂载
 安装 &amp;amp; 配置 sudo apt install nfs-kernel-server sudo vim /etc/exports # 添加： /home/luocang/workspace *(rw,sync,no_subtree_check) #重启nfs服务 sudo service nfs-kernel-server restart 测试 sudo mount -t nfs -o nolock 127.0.0.1:/home/luocang/workspace /mnt 脚本 #!/bin/sh  sudo apt install nfs-kernel-server echo &amp;#39;/home/luocang/workspace *(rw,sync,no_subtree_check)&amp;#39; &amp;gt;&amp;gt; cang.</description>
+    </item>
+    
+    <item>
+      <title>Ubuntu_02qt开发环境搭建</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu/ubuntu_02qt%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu/ubuntu_02qt%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>一、安装qt ​	考虑到后期在docker中安装交叉编译器，并且在docker镜像中编译qt，docker镜像暂不考虑带图形界面，因此需要在主机安装qtcreator，但是qtcreator必须支持命令编译，这样便可以在主机中设置编译docker镜像上的程序。
+安装QT 下载一个稳定版本的qt软件，其格式为.run，直接运行该程序即可。安装的时候带源码安装，以便后期的交叉编译。
+二、新建项目 ​	新建一个qt控制台项目，一切采用默认配置，其项目名称为qtest。修改其main.cpp。
+#include &amp;lt;QCoreApplication&amp;gt;#include &amp;lt;QDebug&amp;gt; int main(int argc, char *argv[]) { QCoreApplication a(argc, argv); qDebug() &amp;lt;&amp;lt; &amp;#34;hello!&amp;#34;; return a.exec(); } 编译，运行，在控制台上打印了hello。
+三、命令编译 ​	先clean工程，查看qmake的目录，我的qmake路径为：/home/installed/Qt5.9.9/5.9.9/gcc_64/bin/qmake
+​	控制台进入qtest工程下面。
+cd ~/Desktop/qtest/ /home/installed/Qt5.9.9/5.9.9/gcc_64/bin/qmake &amp;#34;OBJECTS_DIR=build&amp;#34; qtest.pro make ls ./qtest ​	程序已经能够正常运行，说明具备基本的docker镜像下开发条件。</description>
     </item>
     
     <item>
