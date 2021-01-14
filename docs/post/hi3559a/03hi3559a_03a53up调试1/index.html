@@ -134,7 +134,8 @@ lsmod
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 在docker容器a53up的makefie中</span>
 cp sample.bin /workspace/05tftpboot/sample_a53
 </code></pre></div><p>编译成功后便会在在tftp根目录下生成一个sample_a53的文件
-<img src="../images/pic1.png" alt="img"></p>
+<img src="./images/pic1.png" alt="img"></p>
+<p><img src="../images/pic1.png" alt="img"></p>
 <p>烧写程序可以采用之前提供的脚本进行程序烧写，但是此时仅需要更新用户程序，不烧写系统，因此需要稍做配置</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">IS_Biglittle    <span style="color:#f92672">=</span> False
 WRITE_SYSTEM    <span style="color:#f92672">=</span> False
@@ -147,7 +148,8 @@ cd ~/workspace/04work/02hi3559a/04shell/download_python/
 
 python3 class_downlinux_emmc.py
 </code></pre></div><p>运行后的结果如下所示：
-<img src="../images/pic2.png" alt="img"></p>
+<img src="./images/pic2.png" alt="img"></p>
+<p><img src="../images/pic2.png" alt="img"></p>
 <p>然后登录minicom进入系统，reset重启系统登录linux，如果能够成功用virt-tty登录a53，说明A53UP已经成功启动并且与linux成功进行核间通信。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">reset
 
@@ -200,8 +202,10 @@ o_time <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 </code></pre></div><p>在主机里运行该程序，当docker中执行make生成bin的时候，该程序会将bin自动烧写到DDR中，并运行A53UP。</p>
 <h1 id="四调试串口">四、调试串口</h1>
 <p>系统默认提供virt-tty用来调试，但是该部分串口调试不太方便，可以设置串口1用于调试。
-<img src="../images/pic3.png" alt="img"></p>
+<img src="./images/pic3.png" alt="img"></p>
+<p><img src="../images/pic3.png" alt="img"></p>
 <p>经过调试后，发现已经能够通过串口1打印输出了。</p>
+<p><img src="./images/pic4.png" alt="img"></p>
 <p><img src="../images/pic4.png" alt="img"></p>
 
     </div>

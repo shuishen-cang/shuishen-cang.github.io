@@ -290,7 +290,33 @@ TFTP_DDR_ADDR <span style="color:#f92672">=</span> DDR_A53_START
 <span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
     main()
 </code></pre></div><p>如上表所示：讲uboot、kernel、rootfs、a53的程序以及m7的程序防止tftpd服务器根目录下，用python运行该程序，便可以一键烧写系统程序。</p>
+<h1 id="三系统配置">三、系统配置</h1>
+<h2 id="1-配置flash">1. 配置flash</h2>
+<p>主机使用的flash被分成了多个区域，其中user部分可以用作用户硬盘挂载在系统中，用作用户数据存储，在使用前需要先初始化flash。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkfs.ext4 /dev/mmcblk0p6
+~ <span style="color:#75715e"># df -h</span>
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root                90.5M     20.3M     68.3M  23% /
+tmpfs                   242.3M      4.0K    242.3M   0% /dev
+</code></pre></div><p>可以看到空间里没有挂载硬盘，空间较小，在<code>/etc/profile</code>下面加入下面代码。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mount -t ext4 /dev/mmcblk0p6 /home/
+reboot
+-------------------------------------------------
+/ <span style="color:#75715e"># df -h</span>
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root                90.5M     10.5M     78.1M  12% /
+tmpfs                   242.3M      4.0K    242.3M   0% /dev
+/dev/mmcblk0p6           57.1G     61.6M     54.1G   0% /home
+</code></pre></div><h2 id="2-配置nfs">2. 配置nfs</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p /home/00shell
+cd /home/00shell
+vi nfs.sh
 
+<span style="color:#75715e">#添加</span>
+<span style="color:#75715e">#!/bin/sh</span>
+
+mount -t nfs -o nolock 192.168.4.1:/home/luocang/workspace /mnt
+</code></pre></div>
     </div>
     <div class="post-footer">
       

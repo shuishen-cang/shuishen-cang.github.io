@@ -18,7 +18,9 @@
       
       <guid>https://shuishen-cang.github.io/post/lichee/lichee_04%E9%A9%B1%E5%8A%A8%E5%88%86%E6%9E%90/</guid>
       <description>一、字符驱动 linux的驱动主要分为字符驱动、块驱动和网络驱动，字符驱动比较简单，容易上手。linux系统中一切皆是文件，驱动也不例外，用户程序在用户空间使用驱动主要是通过读写设备文件，并且对设备文件进行读写操作，因此实现驱动程序应该实现以下功能：
- 在文件系统中创建一个可以访问的文件 建立起读写打开等函数的实现 将读写打开等函数与创建的文件联系起来  二、初始例程 </description>
+ 在文件系统中创建一个可以访问的文件 建立起读写打开等函数的实现 将读写打开等函数与创建的文件联系起来  graph TD d4--&amp;gt;d5(class_create) d5--&amp;gt;d6(device_create) d5--&amp;gt;d7(device_create) subgraph register_chrdev d1(alloc_chrdev)--&amp;gt;d2(cdev_alloc)--&amp;gt;d3(cdev_init)--&amp;gt;d4(cdev_add) end 如上图所示：驱动程序的注册的流程如上图所示：由上述一系列函数组成，其中函数说明如下：
+   函数 说明     alloc_chrdev 申请一组可用的主从设备号，当主设备号为零的时候表明是动态分配   cdev_alloc 申请一个可用的dev对象，用于存储操作函数相关的结构体   cdev_init 将操作函数结构体赋值   cdev_add 将cdev与主从设备号关联起来   class_create 在/sys/class/路径下面创建一个类用于存储驱动相关信息   device_create 在class_create创建的类下面创建一个device，分配唯一的主从设备号，并且uevent给udev在/dev下面创建软连接    tops.c
+#include &amp;lt;linux/init.h&amp;gt;#include &amp;lt;linux/kernel.h&amp;gt;#include &amp;lt;linux/module.h&amp;gt;#include &amp;lt;linux/fs.h&amp;gt;#include &amp;lt;linux/cdev.h&amp;gt;#include &amp;lt;linux/slab.h&amp;gt;#include &amp;lt;linux/uaccess.h&amp;gt;#include &amp;lt;linux/semaphore.h&amp;gt;#include &amp;lt;linux/miscdevice.h&amp;gt;#include &amp;lt;linux/vmalloc.h&amp;gt;#include &amp;lt;linux/wait.h&amp;gt;#include &amp;lt;linux/poll.h&amp;gt;#include &amp;lt;linux/sched.h&amp;gt;#include &amp;lt;linux/proc_fs.h&amp;gt;#include &amp;lt;linux/seq_file.h&amp;gt;#include &amp;lt;linux/mutex.h&amp;gt;#include &amp;lt;linux/spinlock.h&amp;gt;#include &amp;lt;linux/timer.</description>
     </item>
     
     <item>
@@ -66,11 +68,11 @@ apt-get install libncurses5-dev apt-get install device-tree-compiler apt-get ins
     </item>
     
     <item>
-      <title>Hi3559a_开发(六)-A53调试：定时器测试</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a/06hi3559a_06%E5%AE%9A%E6%97%B6%E5%99%A8%E6%B5%8B%E8%AF%95/</link>
+      <title>Hi3559a_开发(七)-A53调试：定时器测试</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/06hi3559a_07%E5%AE%9A%E6%97%B6%E5%99%A8%E6%B5%8B%E8%AF%95/</link>
       <pubDate>Fri, 25 Dec 2020 16:57:14 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a/06hi3559a_06%E5%AE%9A%E6%97%B6%E5%99%A8%E6%B5%8B%E8%AF%95/</guid>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/06hi3559a_07%E5%AE%9A%E6%97%B6%E5%99%A8%E6%B5%8B%E8%AF%95/</guid>
       <description>一、建立工程 HI3559A总共存在16个定时器，主要实现定时计数功能，可以供操作系统用作系统时钟，也可以供应用程序用作定时和计数，其中主SOC存在12个定时器，M7部分存在4个定时器。 其具体配置参考《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》。
 为了方便程序的管理，在git下新建一个分支用来做定时器测试。
 git checkout -b test_timer 其测试部分代码如下： user_timer.c
@@ -106,11 +108,11 @@ static void gic_dist_init_amp(struct gic_chip_data *gic) { unsigned int i; u32 c
     </item>
     
     <item>
-      <title>Hi3559a_开发(五)-A53调试：串口通信</title>
-      <link>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_05%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</link>
+      <title>Hi3559a_开发(六)-A53调试：串口通信</title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_06%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</link>
       <pubDate>Fri, 25 Dec 2020 16:49:14 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_05%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</guid>
+      <guid>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_06%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</guid>
       <description>一、修改makefile 海思官方提供的makefile不能支持多个文件的编译以及多文件夹的编译，因此需要对makefile稍作修改以便支持多文件的编译，其修改后的文件如下：
 LITEOSTOPDIR ?= ../.. SAMPLE_OUT = ./build include $(LITEOSTOPDIR)/config.mk RM = -rm -rf #LITEOS_BASELIB += -lipcmsg_single_liteos LITEOS_LIBDEPS := --start-group $(LITEOS_LIBDEP) --end-group LITEOS_CFLAGS += $(SINC) include user/user.mk SRCS += $(wildcard sample.c) OBJS := $(SRCS:.c=.o) all: chkbindir $(OBJS) ifneq ($(LITEOS_CPU_TYPE), arm926) ifneq ($(OUT)/lib/libipcm.a, $(wildcard $(OUT)/lib/libipcm.a)) echo &amp;#34;$(OUT)&amp;#34; cp -rf $(LITEOS_CPU_TYPE)/*.a $(OUT)/lib endif endif @$(LD) $(LITEOS_LDFLAGS) --gc-sections -Map=$(SAMPLE_OUT)/sample.map -o $(SAMPLE_OUT)/sample $(addprefix $(SAMPLE_OUT)/,$(notdir $(OBJS))) $(LITEOS_LIBDEPS) $(LITEOS_TABLES_LDFLAGS) @$(OBJCOPY) -O binary $(SAMPLE_OUT)/sample $(SAMPLE_OUT)/sample.bin cp $(SAMPLE_OUT)/sample.bin /workspace/05tftpboot/sample_a53 clean: @if test -d $(SAMPLE_OUT) ; \ 	then \ 	rm -rf $(SAMPLE_OUT) ; \ 	fi @rm /workspace/05tftpboot/sample_a53 test:chkbindir $(OBJS) @echo $(OBJS) $(OBJS): %.</description>
     </item>
@@ -181,6 +183,18 @@ cd ~/Desktop/qtest/ /home/installed/Qt5.9.9/5.9.9/gcc_64/bin/qmake &amp;#34;OBJE
     </item>
     
     <item>
+      <title>Ubuntu_03交叉编译器</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu/ubuntu_03%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%99%A8/</link>
+      <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu/ubuntu_03%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%99%A8/</guid>
+      <description>一、安装交叉编译器 1. 安装 在linux下面安装交叉编译器用来编译ARM的程序，其中M系统采用arm-none-eabi-gcc，其中linux程序采用arm-linux-gnueabihf-gcc，可以采用apt的方式安装。
+sudo apt install gcc-arm-none-eabi sudo apt install gcc-arm-linux-gnueabi arm-linux-gnueabihf-gcc -v arm-none-eabi-gcc -v 2. 配置 其中安装的交叉编译器并不能用来编译所有的芯片程序，大部分时候会受到库的影响和配置的影响。因此需要做出一定的修改，其关键参数如下：
+--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard --with-mode=thumb --disable-sjlj-exceptions --disable-werror --enable-multilib --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=arm-linux-gnueabihf --disable-werror : 设置警告不报错 --enable-multilib : 可以支持多芯片 这些都是默认的配置，可以做一些芯片来适应不同的芯片，如下：
+arm-linux-gnueabihf-gcc -v -mfpu=vfpv4 -mfloat-abi=soft -march=armv7 -mtune=cortex-a7 -mcpu=cortex-a7 二、测试代码 ​</description>
+    </item>
+    
+    <item>
       <title>树莓派环境搭建(一)</title>
       <link>https://shuishen-cang.github.io/post/raspberry/%E6%A0%91%E8%8E%93%E6%B4%BE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%80/</link>
       <pubDate>Tue, 15 Dec 2020 22:15:18 +0800</pubDate>
@@ -190,6 +204,21 @@ cd ~/Desktop/qtest/ /home/installed/Qt5.9.9/5.9.9/gcc_64/bin/qmake &amp;#34;OBJE
 一、搭建交叉编译器 git clone git://github.com/raspberrypi/tools.git cd tools cp -r arm-bcm2708 /home/installed/opt/ # 配置路径 sudo vim ~/.bashrc export PATH=$PATH:/home/installed/opt/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin #export PATH=$PATH:/home/installed/opt/arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi/bin export CFLAGS_RASP=&amp;#34;-O2 -pipe -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -w&amp;#34; # 安装32位兼容库 sudo apt install lib32ncurses6 lib32ncurses-dev # 测试 arm-linux-gnueabihf-gcc -v 二、安装系统 在win下面使用Win32DiskImager软件，将网上下载的镜像的镜像烧写到SD卡中。 1. 开机启动配置 树莓派的图形界面需要账户密码登录之后才能进去，这样不方便QT程序的运行，因此需要开启开机自动运行。
 修改sudo nano /etc/systemd/system/getty.target.wants/getty@tty1.service # 修改 # ExecStart=-/sbin/agetty -o &amp;#39;-p -- \\u&amp;#39; --noclear %I $TERM ExecStart=-/sbin/agetty --autologin pi --noclear %I $TERM 2. 网络配置 传统的树莓派都是采用有线网络和无线网络进行宿主机和目标机之间的通信，树莓派最新的系统中自带了usbnet，可以进行宿主机与目标机通信，并且通过宿主机(ubuntu)的路由转发可以访问外网，进行软件更新，但是usbnet没有默认开启，需要在配置文件中开启。 开机自启后使用串口登录，进入系统。
 cd /boot sudo nano cmdline.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_05gpio%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/hi3559a/05hi3559a_05gpio%E6%B5%8B%E8%AF%95/</guid>
+      <description>title: &amp;ldquo;Hi3559a_开发(五)-GPIO&amp;rdquo; date: 2020-12-25T16:49:14+08:00 draft: false tags: [&amp;ldquo;Hi3559a&amp;rdquo;]
+一、概述 HI3559a拥有较多的GPIO，其中大部分GPIO都存在复用功能，当使用其他功能的时候需要设置复用功能，否则外设不能实现复用外设的功能，其中GPIO可以在linux和liteos中设置，其中linux中使用pinctrl统一管理，在liteos中使用寄存器设置，其设置寄存器的文件为《Hi3559AV100_PINOUT_CN.xlsx》。
+如上退所示，通过设置一些寄存器便可以实现对GPIO引脚的第二功能进行配置，以及配置其GPIO输入输出方向。
+二、 liteos操作 1. 基本操作 在liteos下提供基本的GPIO操作，但是不能提供复用功能设置，应该其只实现了基本的io操作。其驱动实现在osdrv/platform/liteos_a53/liteos/drivers/gpio下面实现。
+static struct gpio_ops pl061_ops = { .setdir = pl061_setdir, .getdir = pl061_getdir, .readbit = pl061_readbit, .writebit = pl061_writebit }; 在lite下面新建分支test_gpio.
+git checkout -b test_gpio 新建user_gpio.c
+#include &amp;#34;user_gpio.h&amp;#34; static int gpio_fd; void user_gpio_initial(void){ gpio_fd = open(&amp;#34;/dev/gpio&amp;#34;, O_RDWR); if(gpio_fd &amp;lt; 0){ printf(&amp;#34;can&amp;#39;t open gpiochip\n&amp;#34;); } } void user_gpio_setdir(uint8_t group, uint8_t pin, uint8_t Pdir){ gpio_groupbit_info pin_str; pin_str.groupnumber = group; pin_str.</description>
     </item>
     
     <item>

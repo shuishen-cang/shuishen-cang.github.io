@@ -18,7 +18,9 @@
       
       <guid>https://shuishen-cang.github.io/post/lichee/lichee_04%E9%A9%B1%E5%8A%A8%E5%88%86%E6%9E%90/</guid>
       <description>一、字符驱动 linux的驱动主要分为字符驱动、块驱动和网络驱动，字符驱动比较简单，容易上手。linux系统中一切皆是文件，驱动也不例外，用户程序在用户空间使用驱动主要是通过读写设备文件，并且对设备文件进行读写操作，因此实现驱动程序应该实现以下功能：
- 在文件系统中创建一个可以访问的文件 建立起读写打开等函数的实现 将读写打开等函数与创建的文件联系起来  二、初始例程 </description>
+ 在文件系统中创建一个可以访问的文件 建立起读写打开等函数的实现 将读写打开等函数与创建的文件联系起来  graph TD d4--&amp;gt;d5(class_create) d5--&amp;gt;d6(device_create) d5--&amp;gt;d7(device_create) subgraph register_chrdev d1(alloc_chrdev)--&amp;gt;d2(cdev_alloc)--&amp;gt;d3(cdev_init)--&amp;gt;d4(cdev_add) end 如上图所示：驱动程序的注册的流程如上图所示：由上述一系列函数组成，其中函数说明如下：
+   函数 说明     alloc_chrdev 申请一组可用的主从设备号，当主设备号为零的时候表明是动态分配   cdev_alloc 申请一个可用的dev对象，用于存储操作函数相关的结构体   cdev_init 将操作函数结构体赋值   cdev_add 将cdev与主从设备号关联起来   class_create 在/sys/class/路径下面创建一个类用于存储驱动相关信息   device_create 在class_create创建的类下面创建一个device，分配唯一的主从设备号，并且uevent给udev在/dev下面创建软连接    tops.c
+#include &amp;lt;linux/init.h&amp;gt;#include &amp;lt;linux/kernel.h&amp;gt;#include &amp;lt;linux/module.h&amp;gt;#include &amp;lt;linux/fs.h&amp;gt;#include &amp;lt;linux/cdev.h&amp;gt;#include &amp;lt;linux/slab.h&amp;gt;#include &amp;lt;linux/uaccess.h&amp;gt;#include &amp;lt;linux/semaphore.h&amp;gt;#include &amp;lt;linux/miscdevice.h&amp;gt;#include &amp;lt;linux/vmalloc.h&amp;gt;#include &amp;lt;linux/wait.h&amp;gt;#include &amp;lt;linux/poll.h&amp;gt;#include &amp;lt;linux/sched.h&amp;gt;#include &amp;lt;linux/proc_fs.h&amp;gt;#include &amp;lt;linux/seq_file.h&amp;gt;#include &amp;lt;linux/mutex.h&amp;gt;#include &amp;lt;linux/spinlock.h&amp;gt;#include &amp;lt;linux/timer.</description>
     </item>
     
     <item>

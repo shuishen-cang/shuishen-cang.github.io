@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Hi3559a_开发(五)-A53调试：串口通信 // 洛沧</title>
+    <title>Hi3559a_开发(六)-A53调试：串口通信 // 洛沧</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.68.3" />
@@ -12,15 +12,15 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Hi3559a_开发(五)-A53调试：串口通信"/>
+<meta name="twitter:title" content="Hi3559a_开发(六)-A53调试：串口通信"/>
 <meta name="twitter:description" content="一、修改makefile 海思官方提供的makefile不能支持多个文件的编译以及多文件夹的编译，因此需要对makefile稍作修改以便支持多文件的编译，其修改后的文件如下：
 LITEOSTOPDIR ?= ../.. SAMPLE_OUT = ./build include $(LITEOSTOPDIR)/config.mk RM = -rm -rf #LITEOS_BASELIB &#43;= -lipcmsg_single_liteos LITEOS_LIBDEPS := --start-group $(LITEOS_LIBDEP) --end-group LITEOS_CFLAGS &#43;= $(SINC) include user/user.mk SRCS &#43;= $(wildcard sample.c) OBJS := $(SRCS:.c=.o) all: chkbindir $(OBJS) ifneq ($(LITEOS_CPU_TYPE), arm926) ifneq ($(OUT)/lib/libipcm.a, $(wildcard $(OUT)/lib/libipcm.a)) echo &#34;$(OUT)&#34; cp -rf $(LITEOS_CPU_TYPE)/*.a $(OUT)/lib endif endif @$(LD) $(LITEOS_LDFLAGS) --gc-sections -Map=$(SAMPLE_OUT)/sample.map -o $(SAMPLE_OUT)/sample $(addprefix $(SAMPLE_OUT)/,$(notdir $(OBJS))) $(LITEOS_LIBDEPS) $(LITEOS_TABLES_LDFLAGS) @$(OBJCOPY) -O binary $(SAMPLE_OUT)/sample $(SAMPLE_OUT)/sample.bin cp $(SAMPLE_OUT)/sample.bin /workspace/05tftpboot/sample_a53 clean: @if test -d $(SAMPLE_OUT) ; \ 	then \ 	rm -rf $(SAMPLE_OUT) ; \ 	fi @rm /workspace/05tftpboot/sample_a53 test:chkbindir $(OBJS) @echo $(OBJS) $(OBJS): %."/>
 
-    <meta property="og:title" content="Hi3559a_开发(五)-A53调试：串口通信" />
+    <meta property="og:title" content="Hi3559a_开发(六)-A53调试：串口通信" />
 <meta property="og:description" content="一、修改makefile 海思官方提供的makefile不能支持多个文件的编译以及多文件夹的编译，因此需要对makefile稍作修改以便支持多文件的编译，其修改后的文件如下：
 LITEOSTOPDIR ?= ../.. SAMPLE_OUT = ./build include $(LITEOSTOPDIR)/config.mk RM = -rm -rf #LITEOS_BASELIB &#43;= -lipcmsg_single_liteos LITEOS_LIBDEPS := --start-group $(LITEOS_LIBDEP) --end-group LITEOS_CFLAGS &#43;= $(SINC) include user/user.mk SRCS &#43;= $(wildcard sample.c) OBJS := $(SRCS:.c=.o) all: chkbindir $(OBJS) ifneq ($(LITEOS_CPU_TYPE), arm926) ifneq ($(OUT)/lib/libipcm.a, $(wildcard $(OUT)/lib/libipcm.a)) echo &#34;$(OUT)&#34; cp -rf $(LITEOS_CPU_TYPE)/*.a $(OUT)/lib endif endif @$(LD) $(LITEOS_LDFLAGS) --gc-sections -Map=$(SAMPLE_OUT)/sample.map -o $(SAMPLE_OUT)/sample $(addprefix $(SAMPLE_OUT)/,$(notdir $(OBJS))) $(LITEOS_LIBDEPS) $(LITEOS_TABLES_LDFLAGS) @$(OBJCOPY) -O binary $(SAMPLE_OUT)/sample $(SAMPLE_OUT)/sample.bin cp $(SAMPLE_OUT)/sample.bin /workspace/05tftpboot/sample_a53 clean: @if test -d $(SAMPLE_OUT) ; \ 	then \ 	rm -rf $(SAMPLE_OUT) ; \ 	fi @rm /workspace/05tftpboot/sample_a53 test:chkbindir $(OBJS) @echo $(OBJS) $(OBJS): %." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://shuishen-cang.github.io/post/hi3559a/05hi3559a_05%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/hi3559a/05hi3559a_06%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/" />
 <meta property="article:published_time" content="2020-12-25T16:49:14+08:00" />
 <meta property="article:modified_time" content="2020-12-25T16:49:14+08:00" />
 
@@ -61,7 +61,7 @@ LITEOSTOPDIR ?= ../.. SAMPLE_OUT = ./build include $(LITEOSTOPDIR)/config.mk RM 
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">Hi3559a_开发(五)-A53调试：串口通信</h1>
+      <h1 class ="post-title">Hi3559a_开发(六)-A53调试：串口通信</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
