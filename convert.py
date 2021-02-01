@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2021-02-01 16:52:13
-LastEditTime: 2021-02-01 23:32:25
+LastEditTime: 2021-02-01 23:39:05
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: /mydoc/python/convert.py
@@ -34,7 +34,10 @@ def process_picture(file_path):
         print(pic_filepath)
         print(pic_filename)
         txt = txt.replace(pic_filepath, '../images')
-        shutil.copyfile(pic[1],os.path.join(image_path,pic_filename))
+        try:
+            shutil.copyfile(pic[1],os.path.join(image_path,pic_filename))
+        except:
+            pass
     return txt
 
 def process_mermaid(txt):
