@@ -1,18 +1,31 @@
 baseURL = "https://example.com"
-title = "Your title"
+title = "luocang-blog"
 theme = "m10c"
 paginate = 5
 
 [menu]
 [[menu.main]]
-    identifier = "home"
-    name = "Home"
-    url = "/"
+    identifier = "ubuntu"
+    name       = "ubuntu系统搭建"
+    url        = "/tags/ubuntu"
 
 [[menu.main]]
-    identifier = "ubuntu"
-    name = "ubuntu"
-    url = "/ubuntu/"
+    identifier = "Hi3559a"
+    name       = "Hi3559a开发"
+    url        = "/tags/Hi3559a"
+
+[[menu.main]]
+    identifier = "lichee"
+    name       = "lichee学习"
+    url        = "/tags/lichee"
+
+[[params.social]]
+    name = "github"
+    url = "https://github.com/shuishen-cang"
+
+[[params.social]]
+    name = "gitee"
+    url = "https://gitee.com/shuishen-cang/"
 
 [params]
   author = "John Doe"

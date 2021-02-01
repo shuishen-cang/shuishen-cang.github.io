@@ -1,5 +1,5 @@
 ---
-title: "Test"
+title: "ubuntu01-hugo"
 date: 2021-02-01T16:06:09+08:00
 draft: false
 tags: ["ubuntu"]
@@ -237,7 +237,7 @@ def process_picture(file_path):
         txt = f.read()
         f.close()
 
-    pic_paths = re.findall( r'\[image(.*?)\((.*?)\)', txt)
+    pic_paths = re.findall( r'\[image(.*?)\]\((.*?)\)', txt)
     for pic in pic_paths:
         pic_filepath = os.path.split(pic[1])[0]
         pic_filename = os.path.split(pic[1])[1]
@@ -270,10 +270,58 @@ main()
 
 ## 4.Makefile
 
+```makefile
+
+all: pyset
+	hugo server --buildDrafts -d docs
+
+install: pyset
+	hugo --baseURL="http://localhost/" -d docs --buildDrafts
+	sudo cp -r docs/* /var/www/html/	
+	@echo http://localhost/
+
+remote:clean pyset
+	hugo --baseURL="https://shuishen-cang.github.io/" -d docs
+	git add .
+	git commit -m "updates $(date)"
+	git push origin main
+	@echo https://shuishen-cang.github.io/
+
+pyset:
+	python3 convert.py
+
+clean:
+	rm -rf docs public resources
+```
+
+## 5.mermaid测试
+
+<div class="mermaid">
+graph TD
+A-->B
+</div>
+
+默认的m10c皮肤使用的背景颜色是深色的，这样使得图形看的不是很清晰，因此需要修改css文件，m10c的css文件路劲如下：
+
+```themes/m10c/assets/css/_extra.scss```
+
+添加如下代码：
+
+```css
+.mermaid {
+	background:rgb(247, 245, 245);
+}
+```
 
 
 
 
+
+
+
+   
+
+   
 
 
 
