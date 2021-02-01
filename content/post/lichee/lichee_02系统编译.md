@@ -5,7 +5,10 @@ draft: false
 tags: ["lichee"]
 ---
 
+[TOC]
+
 # 一、编译uboot
+
 ## 1. 下载uboot
 主机和容器之间存在共享文件夹，在主机里下载最新的uboot。
 ```bash
@@ -231,4 +234,11 @@ chmod +x nfs.sh
 
 
 
-
+```html
+<div class="mermaid">
+  graph LR
+      A --- B
+      B-->C[fa:fa-ban forbidden]
+      B-->D(fa:fa-spinner);
+</div>
+```

@@ -49,7 +49,8 @@ hal_gpio.c
       <pubDate>Sun, 27 Dec 2020 21:31:22 +0800</pubDate>
       
       <guid>https://shuishen-cang.github.io/post/lichee/lichee_01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</guid>
-      <description>一、开发环境搭建 1. 建立docker容器 手上有一块lichee板子很久了，lichee的资料相对较全，最近又在学习linux，因此拿这个平台验证一下也不错，要开发芯片，必须先搭建交叉编译环境，考虑到电脑上已经安装了一个树莓派的交叉编译环境了，那么就在docker里面安装交叉编译器吧。
+      <description>[toc]
+一、开发环境搭建 1. 建立docker容器 手上有一块lichee板子很久了，lichee的资料相对较全，最近又在学习linux，因此拿这个平台验证一下也不错，要开发芯片，必须先搭建交叉编译环境，考虑到电脑上已经安装了一个树莓派的交叉编译环境了，那么就在docker里面安装交叉编译器吧。
 先搭建一个最基本的docker开发环境吧，采用ubuntu18为基础
 docker pull ubuntu:18.04 docker images 可以看到已经存在ubuntu镜像了，然后在workspace下面建立一个目录用来作为lichee的开发目录，其目录为~/workspace/02prj/01lichee_zero下面，因此采用以下命令创建一个容器。
 docker run -it --name=lichee -v ~/workspace/02prj/01lichee_zero:/workspace ubuntu:18.04 /bin/bash # 进入docker容器后 apt update apt install nano nano /etc/apt/sources.list # 修改为 deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb-src http://mirrors.</description>
@@ -61,7 +62,8 @@ docker run -it --name=lichee -v ~/workspace/02prj/01lichee_zero:/workspace ubunt
       <pubDate>Sun, 27 Dec 2020 21:31:22 +0800</pubDate>
       
       <guid>https://shuishen-cang.github.io/post/lichee/lichee_02%E7%B3%BB%E7%BB%9F%E7%BC%96%E8%AF%91/</guid>
-      <description>一、编译uboot 1. 下载uboot 主机和容器之间存在共享文件夹，在主机里下载最新的uboot。
+      <description>[TOC]
+一、编译uboot 1. 下载uboot 主机和容器之间存在共享文件夹，在主机里下载最新的uboot。
 cd ~/workspace/02prj/01lichee_zero/01system/ git clone https://github.com/Lichee-Pi/u-boot.git -b v3s-current 等待下载完毕后，进入u-boot路径，由于买的板子没有spiflash，因此需要编译支持SD卡启动，修改uboot，
 # 修改 include/configs/sun8i.h, 使u-boot可以直接从tf卡启动： vim include/configs/sun8i.h # 添加 #define CONFIG_BOOTCOMMAND &amp;#34;setenv bootm_boot_mode sec; load mmc 0:1 0x41000000 zImage; load mmc 0:1 0x41800000 sun8i-v3s-licheepi-zero-dock.dtb; bootz 0x41000000 - 0x41800000;&amp;#34; #define CONFIG_BOOTARGS &amp;#34;console=ttyS0,115200 panic=5 mtdparts=tf:1M(uboot),64k(dtb),4M(kernel),-(rootfs) rootwait root=/dev/mmcblk0p2 earlyprintk rw vt.global_cursor_default=0&amp;#34; 2. 编译 先安装必须的依赖库。
 apt-get install libncurses5-dev apt-get install device-tree-compiler apt-get install python apt-get install bc docker start lichee docker attach lichee cd /workspace/01system/u-boot/ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LicheePi_Zero_800x480LCD_defconfig make ARCH=arm menuconfig time make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- 2&amp;gt;&amp;amp;1 | tee build.</description>
@@ -219,6 +221,23 @@ cd /boot sudo nano cmdline.</description>
 static struct gpio_ops pl061_ops = { .setdir = pl061_setdir, .getdir = pl061_getdir, .readbit = pl061_readbit, .writebit = pl061_writebit }; 在lite下面新建分支test_gpio.
 git checkout -b test_gpio 新建user_gpio.c
 #include &amp;#34;user_gpio.h&amp;#34; static int gpio_fd; void user_gpio_initial(void){ gpio_fd = open(&amp;#34;/dev/gpio&amp;#34;, O_RDWR); if(gpio_fd &amp;lt; 0){ printf(&amp;#34;can&amp;#39;t open gpiochip\n&amp;#34;); } } void user_gpio_setdir(uint8_t group, uint8_t pin, uint8_t Pdir){ gpio_groupbit_info pin_str; pin_str.groupnumber = group; pin_str.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://shuishen-cang.github.io/post/hi3559a/06hi3559a_08nnie%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/hi3559a/06hi3559a_08nnie%E6%B5%8B%E8%AF%95/</guid>
+      <description>[TOC]
+一、 NNIE概述 二、 测试 NNIE在sdk中存在测试例程，其中可以直接运行，板卡开机启动挂载相关驱动，然后编译测试NNIE功能，其中NNIE部分单独测试，并不做任何图像处理，如果有需要，后期可以做图像处理。
+1.开机启动 我的开机启动命令如下：开机挂载硬盘空间，以及加载驱动，我的驱动部分都存放在/home/01ko/ko路径下面，在/etc/profile下面添加如下代码：
+mount -t ext4 /dev/mmcblk0p6 /home insmod /home/01ko/hi_ipcm.ko insmod /home/01ko/hi_virt-tty.ko cd /home/01ko/ko ./load3559av100_multicore -i sensor0 imx334 cd - 重新启动。
+2.编译例程 测试例程在sdk中，在我的电脑路径下编译，便能够成功生成可执行文件。
+docker start cang docker attach \ cd /workspace/sdk/02sdk/Hi3559AV100R001C02SPC020/01.software/board/Hi3559AV100_SDK_V2.0.2.0/mpp/sample/svp/multi-core make -j12 cd nnie make -j12 执行上述指令后并可以生成可执行文件sample_nnie_main，在目标机运行该程序。
+/home/00shell/nfs.sh cd /mnt/04work/02hi3559a/02sdk/Hi3559AV100R001C02SPC020/01.software/board/Hi3559AV100_SDK_V2.0.2.0/mpp/sample/svp/multi-core/nnie ./sample_nnie_main 8 可以看到已经成功识别了目标。
+3.修改例程 很多时候我们会训练自己的模型，这里选择使用自己训练的模型，分别生成了模型文件ship_inst.wk和测试文件1.bgr，该模型的输出分类为5类，其具体修改如下：
+ 将模型拷贝到对应的目标文件夹 修改例程中对应的参数 编译成功可执行文件，测试可执行文件  1) 拷贝文件 cp ship_inst.wk data/nnie_model/detection/ mkdir -p data/nnie_image/rgb cp 1.bgr data/nnie_image/rgb 2) 修改参数 sample_nnie.c</description>
     </item>
     
     <item>
