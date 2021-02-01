@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>luocang-blog</title>
-    <link>https://shuishen-cang.github.io/</link>
-    <description>Recent content on luocang-blog</description>
+    <title>shuixia on luocang-blog</title>
+    <link>https://shuishen-cang.github.io/tags/shuixia/</link>
+    <description>Recent content in shuixia on luocang-blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Mon, 01 Feb 2021 16:06:09 +0800</lastBuildDate>
     
-	<atom:link href="https://shuishen-cang.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://shuishen-cang.github.io/tags/shuixia/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -28,18 +28,6 @@
   支持主动错误和被动错误的自我判定以及故障节点的隔离。
   支持错误的自我修复。
   支持自动重传模式。</description>
-    </item>
-    
-    <item>
-      <title>ubuntu01-hugo</title>
-      <link>https://shuishen-cang.github.io/post/01hugo/</link>
-      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
-      
-      <guid>https://shuishen-cang.github.io/post/01hugo/</guid>
-      <description>hugo使用HTML以及mermaid  一、安装hugo 1. 安装hugo sudo apt install hugo hugo new site myblog cd myblog luocang@luocang-SC:~/workspace/03doc/myblog$ ls archetypes config.toml content data layouts static themes 使用hugo生成了一系列的文件以及文件夹，其中content为需要的markdown文件存放路径，themes为存放皮肤的文件夹，config.toml为hugo的对应配置文件，可以设置标签等。
-2. 设置皮肤 皮肤可以在hugo的官网https://www.gohugo.org/theme/中获取，为了后期的兼容，在下载后需要去除.git文件夹。
-cd themes git clone git@github.com:TiTi/hurock.git cd hurock/ rm -rf .git/ 3. 配置皮肤 选择使用皮肤需要在config.toml里面设置。
-cd ../../ subl config.toml #修改为以下代码 baseURL = &amp;#34;https://shuishen-cang.github.io/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;洛沧-blog&amp;#34; theme = &amp;#34;hurock&amp;#34; 4. helloworld hugo new post/hello.md subl content/post/hello.md # 修改为以下代码 --- title: &amp;#34;Hello&amp;#34; date: 2021-02-01T20:06:38+08:00 draft: false --- helloworld 5.</description>
     </item>
     
   </channel>

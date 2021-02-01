@@ -19,10 +19,15 @@ paginate = 5
     name       = "lichee学习"
     url        = "/tags/lichee"
 
+[[menu.main]]
+    identifier = "shuixia"
+    name       = "shuixia工作"
+    url        = "/tags/shuixia"
+
 [params]
     author = "John Doe"
     description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium."
-    menu_item_separator = " \n\n "
+    menu_item_separator = "-------------(cang)"
 [[params.social]]
     name = "github"
     url = "https://github.com/shuishen-cang"

@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2021-02-01 16:52:13
-LastEditTime: 2021-02-01 22:43:08
+LastEditTime: 2021-02-01 23:32:25
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: /mydoc/python/convert.py
@@ -31,6 +31,8 @@ def process_picture(file_path):
     for pic in pic_paths:
         pic_filepath = os.path.split(pic[1])[0]
         pic_filename = os.path.split(pic[1])[1]
+        print(pic_filepath)
+        print(pic_filename)
         txt = txt.replace(pic_filepath, '../images')
         shutil.copyfile(pic[1],os.path.join(image_path,pic_filename))
     return txt

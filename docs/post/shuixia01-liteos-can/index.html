@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>shuixia01-liteos-can // luocang-blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.21b1686763bf47744aadffb53465246543024e9fa17a5d5bbf22723c71d1feca.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="shuixia01-liteos-can"/>
+<meta name="twitter:description" content="CAN设备驱动测试使用说明-liteos [TOC]
+一、概述 ​	控制器局域网络 CAN（Controller Area Network）最初是由德国 Bosch 公司设计并应用于汽车的监测和控制。由于其作为一种技术先进、可靠性高、功能完善、成本合理的远程网络通讯控制方式，因此 CAN 总线正逐步被广泛应用到各种控制领域,如中控车机等。 ​	芯片共支持 3 个 CAN 总线控制器，主 SOC 子系统有 2 个，Sensor Hub 子系统有 1个。
+​	芯片的3个CAN总线控制器的地址在经过地址转换后均可以访问，即SOC系统可以访问Sensor Hub 的CAN总线控制器，但是SOC上的CAN总线控制器其中断连接到GIC中断控制器上，Sensor Hub 上的CAN总线控制器其中断连接在M7的中断控制器上，因此SOC使用Sensor Hub 的CAN总线控制器只能使用查询模式，而不能使用中断模式。
+​	CAN总线控制器模块特性如下：
+  CAN 总线控制器的工作时钟为 50 MHz。
+  支持标准技术规范 CAN 2.0A 和 CAN 2.0B。
+  支持多设备时的总线仲裁，优先级高的 ID 可继续被发送。
+  支持传输速率可编程，最高可达 1Mbps。
+  最大支持 32 个报文对象，每个报文对象均可编程。
+  支持主动错误和被动错误的自我判定以及故障节点的隔离。
+  支持错误的自我修复。
+  支持自动重传模式。"/>
+
+    <meta property="og:title" content="shuixia01-liteos-can" />
+<meta property="og:description" content="CAN设备驱动测试使用说明-liteos [TOC]
+一、概述 ​	控制器局域网络 CAN（Controller Area Network）最初是由德国 Bosch 公司设计并应用于汽车的监测和控制。由于其作为一种技术先进、可靠性高、功能完善、成本合理的远程网络通讯控制方式，因此 CAN 总线正逐步被广泛应用到各种控制领域,如中控车机等。 ​	芯片共支持 3 个 CAN 总线控制器，主 SOC 子系统有 2 个，Sensor Hub 子系统有 1个。
+​	芯片的3个CAN总线控制器的地址在经过地址转换后均可以访问，即SOC系统可以访问Sensor Hub 的CAN总线控制器，但是SOC上的CAN总线控制器其中断连接到GIC中断控制器上，Sensor Hub 上的CAN总线控制器其中断连接在M7的中断控制器上，因此SOC使用Sensor Hub 的CAN总线控制器只能使用查询模式，而不能使用中断模式。
+​	CAN总线控制器模块特性如下：
+  CAN 总线控制器的工作时钟为 50 MHz。
+  支持标准技术规范 CAN 2.0A 和 CAN 2.0B。
+  支持多设备时的总线仲裁，优先级高的 ID 可继续被发送。
+  支持传输速率可编程，最高可达 1Mbps。
+  最大支持 32 个报文对象，每个报文对象均可编程。
+  支持主动错误和被动错误的自我判定以及故障节点的隔离。
+  支持错误的自我修复。
+  支持自动重传模式。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/shuixia01-liteos-can/" />
+<meta property="article:published_time" content="2021-02-01T16:06:09+08:00" />
+<meta property="article:modified_time" content="2021-02-01T16:06:09+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>luocang-blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/shuixia">shuixia工作</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/ubuntu">ubuntu系统搭建</a>
+      </nav>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/shuishen-cang" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitee.com/shuishen-cang/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">shuixia01-liteos-can</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 1, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          7 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://shuishen-cang.github.io/tags/shuixia/">shuixia</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <div align = "center" style="font-size:48px">CAN设备驱动测试使用说明-liteos</div>
+<p>[TOC]</p>
+<h1 id="一概述">一、概述</h1>
+<p>​		控制器局域网络 CAN（Controller Area Network）最初是由德国 Bosch 公司设计并应用于汽车的监测和控制。由于其作为一种技术先进、可靠性高、功能完善、成本合理的远程网络通讯控制方式，因此 CAN 总线正逐步被广泛应用到各种控制领域,如中控车机等。
+​		芯片共支持 3 个 CAN 总线控制器，主 SOC 子系统有 2 个，Sensor Hub 子系统有 1个。</p>
+<p>​		芯片的3个CAN总线控制器的地址在经过地址转换后均可以访问，即SOC系统可以访问Sensor Hub 的CAN总线控制器，但是SOC上的CAN总线控制器其中断连接到GIC中断控制器上，Sensor Hub 上的CAN总线控制器其中断连接在M7的中断控制器上，因此SOC使用Sensor Hub 的CAN总线控制器只能使用查询模式，而不能使用中断模式。</p>
+<p>​		CAN总线控制器模块特性如下：</p>
+<ul>
+<li>
+<p>CAN 总线控制器的工作时钟为 50 MHz。</p>
+</li>
+<li>
+<p>支持标准技术规范 CAN 2.0A 和 CAN 2.0B。</p>
+</li>
+<li>
+<p>支持多设备时的总线仲裁，优先级高的 ID 可继续被发送。</p>
+</li>
+<li>
+<p>支持传输速率可编程，最高可达 1Mbps。</p>
+</li>
+<li>
+<p>最大支持 32 个报文对象，每个报文对象均可编程。</p>
+</li>
+<li>
+<p>支持主动错误和被动错误的自我判定以及故障节点的隔离。</p>
+</li>
+<li>
+<p>支持错误的自我修复。</p>
+</li>
+<li>
+<p>支持自动重传模式。</p>
+</li>
+<li>
+<p>支持报文屏蔽。</p>
+</li>
+<li>
+<p>支持中断屏蔽。</p>
+</li>
+<li>
+<p>支持连续报文接收。</p>
+</li>
+<li>
+<p>支持 loop-back、silent、basic 三种测试模式，其中 loop-back 和 silent 可以组合使用。</p>
+</li>
+<li>
+<p>不支持软件配置错误帧和过载帧。</p>
+</li>
+</ul>
+<h1 id="二-参考文件">二、 参考文件</h1>
+<p>GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》</p>
+<p>驱动操作使用指南《外围设备驱动 操作指南.pdf》</p>
+<p>寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》</p>
+<h1 id="三-驱动编译">三、 驱动编译</h1>
+<p>​		CAN总线控制器在使用前需要先配置CAN设备的基本属性以及配置波特率相关、报文对象相关属性，其初始化以及收发相关过程如下：</p>
+<div class="mermaid">
+graph TD
+a0(配置GPIO)-->a(初始化报文对象)-->b(修改波特率相关寄存器)-->c(配置接收掩码)-->d(查询接收邮箱)-->f(读取数据)
+c-->e(等待中断)-->f
+</div>
+<p><strong>Makefile</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile">LITEOSTOPDIR <span style="color:#f92672">?=</span> ../..
+
+SAMPLE_OUT <span style="color:#f92672">=</span> ./build
+
+<span style="color:#960050;background-color:#1e0010">include</span> <span style="color:#66d9ef">$(</span>LITEOSTOPDIR<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/config.mk</span>
+RM <span style="color:#f92672">=</span> -rm -rf
+
+<span style="color:#960050;background-color:#1e0010">include</span> <span style="color:#960050;background-color:#1e0010">user/user.mk</span>
+<span style="color:#960050;background-color:#1e0010">include</span> <span style="color:#960050;background-color:#1e0010">hal/hal.mk</span>
+SRCS <span style="color:#f92672">+=</span> <span style="color:#66d9ef">$(</span>wildcard sample.c<span style="color:#66d9ef">)</span>
+OBJS <span style="color:#f92672">:=</span> <span style="color:#66d9ef">$(</span>SRCS:.c<span style="color:#f92672">=</span>.o<span style="color:#66d9ef">)</span>
+
+<span style="color:#75715e">#LITEOS_BASELIB += -lipcmsg_single_liteos
+</span><span style="color:#75715e"></span>LITEOS_LIBDEPS <span style="color:#f92672">:=</span> --start-group <span style="color:#66d9ef">$(</span>LITEOS_LIBDEP<span style="color:#66d9ef">)</span> --end-group
+LITEOS_CFLAGS  <span style="color:#f92672">+=</span> <span style="color:#66d9ef">$(</span>SINC<span style="color:#66d9ef">)</span>
+
+<span style="color:#a6e22e">all</span><span style="color:#f92672">:</span> chkbindir <span style="color:#66d9ef">$(</span>OBJS<span style="color:#66d9ef">)</span>
+<span style="color:#960050;background-color:#1e0010">ifneq</span> <span style="color:#960050;background-color:#1e0010">(</span><span style="color:#66d9ef">$(</span>LITEOS_CPU_TYPE<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#960050;background-color:#1e0010">arm926)</span>
+<span style="color:#960050;background-color:#1e0010">ifneq</span> <span style="color:#960050;background-color:#1e0010">(</span><span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/lib/libipcm.a,</span> <span style="color:#66d9ef">$(</span>wildcard <span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span>/lib/libipcm.a<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">)</span>
+	<span style="color:#960050;background-color:#1e0010">echo</span> <span style="color:#e6db74">&#34;$(OUT)&#34;</span>
+	<span style="color:#960050;background-color:#1e0010">cp</span> <span style="color:#960050;background-color:#1e0010">-rf</span> <span style="color:#66d9ef">$(</span>LITEOS_CPU_TYPE<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/*.a</span> <span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/lib</span>
+<span style="color:#960050;background-color:#1e0010">endif</span>
+<span style="color:#960050;background-color:#1e0010">endif</span>
+	<span style="color:#960050;background-color:#1e0010">@</span><span style="color:#66d9ef">$(</span>LD<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_LDFLAGS<span style="color:#66d9ef">)</span> <span style="color:#960050;background-color:#1e0010">--gc-sections</span> -Map<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.map -o <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample <span style="color:#66d9ef">$(</span>addprefix <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/,<span style="color:#66d9ef">$(</span>notdir <span style="color:#66d9ef">$(</span>OBJS<span style="color:#66d9ef">)))</span>  <span style="color:#66d9ef">$(</span>LITEOS_LIBDEPS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_TABLES_LDFLAGS<span style="color:#66d9ef">)</span>
+	@<span style="color:#66d9ef">$(</span>OBJCOPY<span style="color:#66d9ef">)</span> -O binary <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.bin
+	cp <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.bin /workspace/05tftpboot/sample_a53
+
+<span style="color:#a6e22e">clean</span><span style="color:#f92672">:</span>
+	@if test -d <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span> ; <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#66d9ef">then</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	rm -rf <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span> ; 		<span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#66d9ef">fi</span>
+	@rm /workspace/05tftpboot/sample_a53
+
+<span style="color:#a6e22e">test</span><span style="color:#f92672">:</span> all
+	@echo <span style="color:#66d9ef">$(</span>LITEOS_CXXOPTS<span style="color:#66d9ef">)</span>
+
+<span style="color:#a6e22e">debug</span><span style="color:#f92672">:</span> all
+	python3 /workspace/04shell/download_python/makedebug_a53.py
+
+<span style="color:#a6e22e">flash</span><span style="color:#f92672">:</span>
+	python3 /workspace/04shell/download_python/class_downlinux_emmc.py	
+
+<span style="color:#a6e22e">$(OBJS)</span><span style="color:#f92672">:</span> %.o: %.c 
+	@<span style="color:#66d9ef">$(</span>CC<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_CFLAGS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_CXXFLAGS<span style="color:#66d9ef">)</span> -o <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/<span style="color:#66d9ef">$(</span>notdir $@<span style="color:#66d9ef">)</span> -c $^
+
+<span style="color:#a6e22e">chkbindir</span><span style="color:#f92672">:</span>
+	@if test ! -d <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span> ; 	<span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#66d9ef">then</span> 							<span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	mkdir <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span> ; 			<span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#66d9ef">fi</span>
+
+</code></pre></div><p><strong>hal_can.h</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#ifndef __HAL_CAN_H__
+</span><span style="color:#75715e">#define __HAL_CAN_H__
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;hal.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define PORT_CAN    0x02
+</span><span style="color:#75715e">#define PORT_UART   0x01
+</span><span style="color:#75715e">#define PORT_GPIO   0x00 
+</span><span style="color:#75715e">#define IOCFG_REG53 0x1F0000D4      </span><span style="color:#75715e">//AA35,can0_rx
+</span><span style="color:#75715e"></span><span style="color:#75715e">#define IOCFG_REG54 0x1F0000D8      </span><span style="color:#75715e">//AB35,can0_tx
+</span><span style="color:#75715e"></span><span style="color:#75715e">#define IOCFG_REG55 0x1F0000DC      </span><span style="color:#75715e">//AD33,can1_rx
+</span><span style="color:#75715e"></span><span style="color:#75715e">#define IOCFG_REG56 0x1F0000E0      </span><span style="color:#75715e">//AD34,can1_tx
+</span><span style="color:#75715e"></span><span style="color:#75715e">#define APB_CLK     50000000      
+</span><span style="color:#75715e">#define TSEG1       (4 - 1)         </span><span style="color:#75715e">//prop + tseg1,这里后期需要调试
+</span><span style="color:#75715e"></span><span style="color:#75715e">#define TSEG2       (5 - 1)
+</span><span style="color:#75715e">#define TSJW        (4 - 1)  
+</span><span style="color:#75715e"></span>
+
+<span style="color:#66d9ef">enum</span> CAN_BASE{
+    CAN0_REG_BASE <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x12070000</span>,
+    CAN1_REG_BASE <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x12071000</span>
+};
+
+<span style="color:#75715e">#define CAN_CONTROL(group_reg_base)  				((group_reg_base) + 0X0000)
+</span><span style="color:#75715e">#define CAN_STATUS(group_reg_base)            		((group_reg_base) + 0x0004)
+</span><span style="color:#75715e">#define CAN_ERRCOUNT(group_reg_base)            	((group_reg_base) + 0x0008)
+</span><span style="color:#75715e">#define CAN_BITTIMING(group_reg_base)            	((group_reg_base) + 0x000C)
+</span><span style="color:#75715e">#define CAN_INTERRUPT(group_reg_base)            	((group_reg_base) + 0x0010)
+</span><span style="color:#75715e">#define CAN_TEST(group_reg_base)            		((group_reg_base) + 0x0014)
+</span><span style="color:#75715e">#define CAN_BRPEXT(group_reg_base)            		((group_reg_base) + 0x0018)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define CAN_IF1CMD_REQUE(group_reg_base)            ((group_reg_base) + 0x0020)
+</span><span style="color:#75715e">#define CAN_IF1CMD_MASK(group_reg_base)            	((group_reg_base) + 0x0024)
+</span><span style="color:#75715e">#define CAN_IF1_MASK1(group_reg_base)            	((group_reg_base) + 0x0028)
+</span><span style="color:#75715e">#define CAN_IF1_MASK2(group_reg_base)            	((group_reg_base) + 0x002C)
+</span><span style="color:#75715e">#define CAN_IF1_ARBIT1(group_reg_base)            	((group_reg_base) + 0x0030)
+</span><span style="color:#75715e">#define CAN_IF1_ARBIT2(group_reg_base)            	((group_reg_base) + 0x0034)
+</span><span style="color:#75715e">#define CAN_IF1_MSGCONT(group_reg_base)             ((group_reg_base) + 0x0038)
+</span><span style="color:#75715e">#define CAN_IF1_DATAA1(group_reg_base)            	((group_reg_base) + 0x003C)
+</span><span style="color:#75715e">#define CAN_IF1_DATAA2(group_reg_base)            	((group_reg_base) + 0x0040)
+</span><span style="color:#75715e">#define CAN_IF1_DATAB1(group_reg_base)            	((group_reg_base) + 0x0044)
+</span><span style="color:#75715e">#define CAN_IF1_DATAB2(group_reg_base)            	((group_reg_base) + 0x0048)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define CAN_IF2CMD_REQUE(group_reg_base)            ((group_reg_base) + 0x0080)
+</span><span style="color:#75715e">#define CAN_IF2CMD_MASK(group_reg_base)            	((group_reg_base) + 0x0084)
+</span><span style="color:#75715e">#define CAN_IF2_MASK1(group_reg_base)            	((group_reg_base) + 0x0088)
+</span><span style="color:#75715e">#define CAN_IF2_MASK2(group_reg_base)            	((group_reg_base) + 0x008C)
+</span><span style="color:#75715e">#define CAN_IF2_ARBIT1(group_reg_base)            	((group_reg_base) + 0x0090)
+</span><span style="color:#75715e">#define CAN_IF2_ARBIT2(group_reg_base)            	((group_reg_base) + 0x0094)
+</span><span style="color:#75715e">#define CAN_IF2_MSGCONT(group_reg_base)             ((group_reg_base) + 0x0098)
+</span><span style="color:#75715e">#define CAN_IF2_DATAA1(group_reg_base)            	((group_reg_base) + 0x009C)
+</span><span style="color:#75715e">#define CAN_IF2_DATAA2(group_reg_base)            	((group_reg_base) + 0x00A0)
+</span><span style="color:#75715e">#define CAN_IF2_DATAB1(group_reg_base)            	((group_reg_base) + 0x00A4)
+</span><span style="color:#75715e">#define CAN_IF2_DATAB2(group_reg_base)            	((group_reg_base) + 0x00A8)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define CAN_TRANS_REQUE1(group_reg_base)			((group_reg_base) + 0x0100)
+</span><span style="color:#75715e">#define CAN_TRANS_REQUE2(group_reg_base)			((group_reg_base) + 0x0104)
+</span><span style="color:#75715e">#define CAN_TRANS_NEWDATA1(group_reg_base)			((group_reg_base) + 0x0120)
+</span><span style="color:#75715e">#define CAN_TRANS_NEWDATA2(group_reg_base)			((group_reg_base) + 0x0124)
+</span><span style="color:#75715e">#define CAN_TRANS_INTERRUPT_PEND1(group_reg_base)	((group_reg_base) + 0x0140)
+</span><span style="color:#75715e">#define CAN_TRANS_INTERRUPT_PEND2(group_reg_base)	((group_reg_base) + 0x0144)
+</span><span style="color:#75715e">#define CAN_TRANS_MSG_VALID1(group_reg_base)		((group_reg_base) + 0x0160)
+</span><span style="color:#75715e">#define CAN_TRANS_MSG_VALID2(group_reg_base)		((group_reg_base) + 0x0164)
+</span><span style="color:#75715e">#define NUM_HAL_INTERRUPT_CAN0                      139
+</span><span style="color:#75715e">#define NUM_HAL_INTERRUPT_CAN1                      140
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define CANIR_EN    1
+</span><span style="color:#75715e">#define LOOPBACK    0
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// #define can_event_signal(event, bit)                LOS_EventWrite(event, bit)
+</span><span style="color:#75715e">// #define can_event_wait(event, bit, timeout)         LOS_EventRead(event, bit,\
+</span><span style="color:#75715e">//                                                     LOS_WAITMODE_AND + LOS_WAITMODE_CLR, timeout)
+</span><span style="color:#75715e"></span>
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_initial</span>(<span style="color:#66d9ef">int</span> canid, uint32_t bandrate);
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_recvmask</span>(<span style="color:#66d9ef">int</span> canid,uint8_t msgNum, uint32_t mask, uint32_t id, uint8_t len);
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_transmit</span>(<span style="color:#66d9ef">int</span> canid, uint32_t id, uint8_t <span style="color:#f92672">*</span>txbuff, uint8_t len);
+uint16_t <span style="color:#a6e22e">hal_can_receive</span>(<span style="color:#66d9ef">int</span> canid);
+uint8_t <span style="color:#a6e22e">hal_can_readmsg</span>(<span style="color:#66d9ef">int</span> canid, uint32_t <span style="color:#f92672">*</span>id, uint8_t <span style="color:#f92672">*</span>rxbuff, uint8_t msgNum);
+
+<span style="color:#75715e">#endif
+</span></code></pre></div><p><strong>hal_can.c</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;hal_can.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">can_gpio_initial</span>(<span style="color:#66d9ef">int</span> canid){
+    <span style="color:#66d9ef">if</span>(<span style="color:#ae81ff">0</span> <span style="color:#f92672">==</span> canid){
+        writel((<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">12</span>) <span style="color:#f92672">|</span> PORT_CAN,IOCFG_REG53);       <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>        writel(PORT_CAN,IOCFG_REG54);                   <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>
+        writel(<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">0x12151400</span>);                      <span style="color:#75715e">//GPIO17.5，sleeppin，must 0
+</span><span style="color:#75715e"></span>        writel(<span style="color:#ae81ff">0</span>,(<span style="color:#ae81ff">0x12151000</span> <span style="color:#f92672">+</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> ((<span style="color:#ae81ff">6</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>)))); 
+    }
+    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">==</span> canid){
+        writel(<span style="color:#ae81ff">0x1d00</span> <span style="color:#f92672">|</span> PORT_CAN,IOCFG_REG55);          <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>        writel(<span style="color:#ae81ff">0x400</span> <span style="color:#f92672">|</span> PORT_CAN,IOCFG_REG56);           <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>
+        writel(<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">0x12151400</span>);                      <span style="color:#75715e">//GPIO17.6 sleep引脚
+</span><span style="color:#75715e"></span>        writel(<span style="color:#ae81ff">0</span>,(<span style="color:#ae81ff">0x12151000</span> <span style="color:#f92672">+</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> ((<span style="color:#ae81ff">6</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>)))); 
+    }
+}
+
+irqreturn_t <span style="color:#a6e22e">can_isr</span>(<span style="color:#66d9ef">int</span> a, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg){
+    HWI_IRQ_PARAM_S <span style="color:#f92672">*</span>thirq <span style="color:#f92672">=</span> (HWI_IRQ_PARAM_S<span style="color:#f92672">*</span>)arg;
+    uint8_t canid <span style="color:#f92672">=</span> thirq<span style="color:#f92672">-&gt;</span>swIrq <span style="color:#f92672">==</span> NUM_HAL_INTERRUPT_CAN0 <span style="color:#f92672">?</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>;
+    uint32_t can_base <span style="color:#f92672">=</span> canid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> CAN0_REG_BASE : CAN1_REG_BASE;
+
+    uint32_t reg <span style="color:#f92672">=</span> readl(CAN_STATUS(can_base));         <span style="color:#75715e">//SR
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(reg <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x10</span>){    
+        writeand(<span style="color:#f92672">~</span><span style="color:#ae81ff">0x10</span>, CAN_STATUS(can_base));
+        writeor(<span style="color:#ae81ff">0x07</span>, CAN_STATUS(can_base));            <span style="color:#75715e">//rxok
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// can_event_signal(&amp;can_wait_event,canid == 0 ? 0x01 : 0x10);     
+</span><span style="color:#75715e"></span>    }
+    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(reg <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x08</span>){                                <span style="color:#75715e">//txok
+</span><span style="color:#75715e"></span>        writeand(<span style="color:#f92672">~</span><span style="color:#ae81ff">0x08</span>, CAN_STATUS(can_base));
+        writeor(<span style="color:#ae81ff">0x07</span>, CAN_STATUS(can_base));
+        <span style="color:#75715e">// can_event_signal(&amp;can_wait_event,(4 &lt;&lt; canid));    
+</span><span style="color:#75715e"></span>    }
+    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>((reg <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x07</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">&amp;&amp;</span> (reg <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x07</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">7</span>)){
+        writeor(<span style="color:#ae81ff">0x07</span>, CAN_STATUS(can_base));
+    }
+
+    <span style="color:#66d9ef">return</span> IRQ_HANDLED;
+}
+
+<span style="color:#75715e">/**************************************************
+</span><span style="color:#75715e"> * @func: 配置1~16号msg为发送，17~32为接收
+</span><span style="color:#75715e"> * ***********************************************/</span>
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_msg_config</span>(<span style="color:#66d9ef">int</span> canid){
+    uint8_t i;
+    <span style="color:#66d9ef">enum</span> CAN_BASE can_base <span style="color:#f92672">=</span> canid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> CAN0_REG_BASE : CAN1_REG_BASE;
+
+    writel(<span style="color:#ae81ff">0xB2</span> ,CAN_IF1CMD_MASK(can_base));                <span style="color:#75715e">// 
+</span><span style="color:#75715e"></span>    writel(<span style="color:#ae81ff">0</span>,CAN_IF1_ARBIT1(can_base));                     <span style="color:#75715e">// id, 低16位
+</span><span style="color:#75715e"></span>    writel(<span style="color:#ae81ff">0xA000</span>,CAN_IF1_ARBIT2(can_base));                <span style="color:#75715e">// id, 高13位
+</span><span style="color:#75715e"></span>    writel(<span style="color:#ae81ff">0x0088</span>, CAN_IF1_MSGCONT(can_base)); 
+
+    <span style="color:#66d9ef">for</span>(i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">16</span>;i <span style="color:#f92672">++</span>){
+        writel(i, CAN_IF1CMD_REQUE(can_base));              
+    }
+}
+
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">can_start</span>(<span style="color:#66d9ef">int</span> canid, uint32_t bandrate){
+    uint32_t reg <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+    uint16_t BRP;
+    <span style="color:#66d9ef">enum</span> CAN_BASE can_base;
+    <span style="color:#66d9ef">int</span> ret;
+    
+    can_base <span style="color:#f92672">=</span> canid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> CAN0_REG_BASE : CAN1_REG_BASE;
+    BRP <span style="color:#f92672">=</span> APB_CLK <span style="color:#f92672">/</span> bandrate <span style="color:#f92672">/</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+    writel(<span style="color:#ae81ff">0x81</span> ,CAN_CONTROL(can_base));         <span style="color:#75715e">//测试模式
+</span><span style="color:#75715e"></span>    writel(<span style="color:#ae81ff">0x1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">4</span>,CAN_TEST(can_base));         <span style="color:#75715e">//环回模式
+</span><span style="color:#75715e"></span>    writel(<span style="color:#ae81ff">0xF3</span> ,CAN_IF1CMD_MASK(can_base));
+
+    <span style="color:#66d9ef">for</span>(uint8_t i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">32</span>; i<span style="color:#f92672">++</span>){
+        writel(i ,CAN_IF1CMD_REQUE(can_base));   <span style="color:#75715e">//清除msg
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">do</span>{
+            reg <span style="color:#f92672">=</span> readl(CAN_IF1CMD_REQUE(can_base));
+        }<span style="color:#66d9ef">while</span>(reg <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x8000</span>);                   <span style="color:#75715e">//等待写完
+</span><span style="color:#75715e"></span>    }
+    writel(<span style="color:#ae81ff">0x41</span> ,CAN_CONTROL(can_base));
+    writel((TSEG2 <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">12</span>) <span style="color:#f92672">|</span> (TSEG1 <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">|</span> (TSJW <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">6</span>) <span style="color:#f92672">|</span> (BRP <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x3F</span>),CAN_BITTIMING(can_base)) ;  <span style="color:#75715e">//波特率
+</span><span style="color:#75715e"></span>    writel(((BRP <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">6</span>) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x0F</span>),CAN_BRPEXT(can_base)) ;
+
+<span style="color:#75715e">#if LOOPBACK
+</span><span style="color:#75715e"></span>    reg <span style="color:#f92672">|=</span> <span style="color:#ae81ff">0x80</span>; 
+<span style="color:#75715e">#endif
+</span><span style="color:#75715e">#if CANIR_EN
+</span><span style="color:#75715e"></span>    reg <span style="color:#f92672">|=</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">2</span>) <span style="color:#f92672">|</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span>);                 <span style="color:#75715e">//错误中断，状态中断，总中断
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(canid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+        ret <span style="color:#f92672">=</span> request_irq(NUM_HAL_INTERRUPT_CAN0, can_isr, <span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#34;CAN0_IRQ&#34;</span>,NULL);
+    <span style="color:#66d9ef">else</span>
+        ret <span style="color:#f92672">=</span> request_irq(NUM_HAL_INTERRUPT_CAN1, can_isr, <span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#34;CAN1_IRQ&#34;</span>,NULL);
+
+    <span style="color:#75715e">// LOS_EventInit(&amp;can_wait_event);             //中断唤醒
+</span><span style="color:#75715e"></span><span style="color:#75715e">#endif
+</span><span style="color:#75715e"></span>
+    writel(reg ,CAN_CONTROL(can_base));         <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>    reg <span style="color:#f92672">&amp;=</span> <span style="color:#ae81ff">0xFE</span>;
+    writel(reg ,CAN_CONTROL(can_base));         <span style="color:#75715e">//初始化完毕
+</span><span style="color:#75715e"></span>    hal_can_msg_config(canid);
+}
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_recvmask</span>(<span style="color:#66d9ef">int</span> canid,uint8_t msgNum, uint32_t mask, uint32_t id, uint8_t len){
+    uint8_t i;
+    <span style="color:#66d9ef">enum</span> CAN_BASE can_base <span style="color:#f92672">=</span> canid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> CAN0_REG_BASE : CAN1_REG_BASE;
+
+    writel(<span style="color:#ae81ff">0xF8</span> ,CAN_IF2CMD_MASK(can_base));                            <span style="color:#75715e">// mask, arb ctrl 清除IntPnd
+</span><span style="color:#75715e"></span>    writel(mask <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFFFF</span> ,CAN_IF2_MASK1(can_base));                     <span style="color:#75715e">// mask, 低16位
+</span><span style="color:#75715e"></span>    writel((mask <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">16</span>) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFFFF</span> ,CAN_IF2_MASK2(can_base));             <span style="color:#75715e">// mask, 高13位
+</span><span style="color:#75715e"></span>
+    writel(id <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFFFF</span> ,CAN_IF2_ARBIT1(can_base));                      <span style="color:#75715e">// id, 低16位
+</span><span style="color:#75715e"></span>    writel(((mask <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">16</span>) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFFFF</span> ) <span style="color:#f92672">|</span> <span style="color:#ae81ff">0xC000</span>,CAN_IF2_ARBIT2(can_base)); <span style="color:#75715e">// id, 高13位
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">for</span>(i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;i <span style="color:#f92672">&lt;</span> len;i <span style="color:#f92672">++</span>){
+        <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">==</span> (len <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>))  writel(<span style="color:#ae81ff">0x1088</span>, CAN_IF2_MSGCONT(can_base)); 
+        <span style="color:#66d9ef">else</span>                writel(<span style="color:#ae81ff">0x1008</span>, CAN_IF2_MSGCONT(can_base));   
+        writel(msgNum <span style="color:#f92672">++</span>, CAN_IF2CMD_REQUE(can_base));              
+    }
+}
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_initial</span>(<span style="color:#66d9ef">int</span> canid, uint32_t bandrate){
+    <span style="color:#66d9ef">enum</span> CAN_BASE can_base <span style="color:#f92672">=</span> canid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> CAN0_REG_BASE : CAN1_REG_BASE;
+
+    can_gpio_initial(canid);
+    can_start(canid, bandrate);
+    hal_can_recvmask(canid,<span style="color:#ae81ff">17</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">4</span>);        <span style="color:#75715e">//接收所有数据
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_transmit</span>(<span style="color:#66d9ef">int</span> canid, uint32_t id, uint8_t <span style="color:#f92672">*</span>txbuff, uint8_t len){
+    <span style="color:#66d9ef">static</span> uint8_t msgNum <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+    uint8_t i;
+    <span style="color:#66d9ef">enum</span> CAN_BASE can_base <span style="color:#f92672">=</span> canid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> CAN0_REG_BASE : CAN1_REG_BASE;
+
+    <span style="color:#66d9ef">if</span>(len <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">8</span>)len <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>; 
+
+    writel(<span style="color:#ae81ff">0xB3</span> ,CAN_IF1CMD_MASK(can_base));                            <span style="color:#75715e">// 
+</span><span style="color:#75715e"></span>    writel(id <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFFFF</span>,CAN_IF1_ARBIT1(can_base));                       <span style="color:#75715e">// id, 低16位
+</span><span style="color:#75715e"></span>    writel((id <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">16</span>) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x1FFF</span> <span style="color:#f92672">|</span> <span style="color:#ae81ff">0xE000</span>,CAN_IF1_ARBIT2(can_base));      <span style="color:#75715e">// id, 高13位
+</span><span style="color:#75715e"></span>    writel(<span style="color:#ae81ff">0x80</span> <span style="color:#f92672">|</span> len, CAN_IF1_MSGCONT(can_base)); 
+    writel(msgNum, CAN_IF1CMD_REQUE(can_base));                         <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>
+    writel(<span style="color:#ae81ff">0x87</span> ,CAN_IF1CMD_MASK(can_base));                            <span style="color:#75715e">// 
+</span><span style="color:#75715e"></span>    writel(txbuff[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">|</span> (txbuff[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>) ,CAN_IF1_DATAA1(can_base));     <span style="color:#75715e">// 
+</span><span style="color:#75715e"></span>    writel(txbuff[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">|</span> (txbuff[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>) ,CAN_IF1_DATAA2(can_base));     <span style="color:#75715e">// 
+</span><span style="color:#75715e"></span>    writel(txbuff[<span style="color:#ae81ff">4</span>] <span style="color:#f92672">|</span> (txbuff[<span style="color:#ae81ff">5</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>) ,CAN_IF1_DATAB1(can_base));     <span style="color:#75715e">// 
+</span><span style="color:#75715e"></span>    writel(txbuff[<span style="color:#ae81ff">6</span>] <span style="color:#f92672">|</span> (txbuff[<span style="color:#ae81ff">7</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>) ,CAN_IF1_DATAB2(can_base));     <span style="color:#75715e">// 
+</span><span style="color:#75715e"></span>    writel(msgNum, CAN_IF1CMD_REQUE(can_base));                         <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(<span style="color:#f92672">++</span> msgNum <span style="color:#f92672">==</span> <span style="color:#ae81ff">17</span>)msgNum <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+    <span style="color:#66d9ef">while</span>(readl(CAN_IF1CMD_REQUE(can_base)) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x8000</span>);
+}
+
+uint16_t <span style="color:#a6e22e">hal_can_receive</span>(<span style="color:#66d9ef">int</span> canid){
+    uint16_t temp;
+    <span style="color:#66d9ef">enum</span> CAN_BASE can_base <span style="color:#f92672">=</span> canid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> CAN0_REG_BASE : CAN1_REG_BASE;
+
+    <span style="color:#66d9ef">if</span>(readl(CAN_STATUS(can_base)) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x10</span>){
+        temp <span style="color:#f92672">=</span> readl(CAN_TRANS_NEWDATA2(can_base));
+        writel(<span style="color:#ae81ff">0</span>,CAN_TRANS_NEWDATA2(can_base));
+
+        <span style="color:#66d9ef">return</span> temp;
+    }
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+
+uint8_t <span style="color:#a6e22e">hal_can_readmsg</span>(<span style="color:#66d9ef">int</span> canid, uint32_t <span style="color:#f92672">*</span>id, uint8_t <span style="color:#f92672">*</span>rxbuff, uint8_t msgNum){
+    uint8_t ret <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">enum</span> CAN_BASE can_base <span style="color:#f92672">=</span> canid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> CAN0_REG_BASE : CAN1_REG_BASE;
+
+    writel(<span style="color:#ae81ff">0x3F</span> ,CAN_IF1CMD_MASK(can_base));                            <span style="color:#75715e">// 
+</span><span style="color:#75715e"></span>    writel(msgNum, CAN_IF1CMD_REQUE(can_base));                         
+
+    <span style="color:#f92672">*</span>id <span style="color:#f92672">=</span> readl(CAN_IF1_ARBIT1(can_base));                              <span style="color:#75715e">// id, 低16位    
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">*</span>id <span style="color:#f92672">|=</span> (readl(CAN_IF1_ARBIT2(can_base)) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x1FFF</span>) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">16</span>;            <span style="color:#75715e">// id, 高13位    
+</span><span style="color:#75715e"></span>    ret <span style="color:#f92672">=</span> readl(CAN_IF1_MSGCONT(can_base)) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x0F</span>;  
+
+    rxbuff[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> readl(CAN_IF1_DATAA1(can_base)) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>;
+    rxbuff[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> (readl(CAN_IF1_DATAA1(can_base)) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>;
+    rxbuff[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> readl(CAN_IF1_DATAA2(can_base)) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>;
+    rxbuff[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> (readl(CAN_IF1_DATAA2(can_base)) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>;
+    rxbuff[<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> readl(CAN_IF1_DATAB1(can_base)) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>;
+    rxbuff[<span style="color:#ae81ff">5</span>] <span style="color:#f92672">=</span> (readl(CAN_IF1_DATAB1(can_base)) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>;
+    rxbuff[<span style="color:#ae81ff">6</span>] <span style="color:#f92672">=</span> readl(CAN_IF1_DATAB2(can_base)) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>;
+    rxbuff[<span style="color:#ae81ff">7</span>] <span style="color:#f92672">=</span> (readl(CAN_IF1_DATAB2(can_base)) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>;
+
+    <span style="color:#66d9ef">return</span> ret;
+}
+</code></pre></div><h1 id="四-api描述">四、 API描述</h1>
+<p>​		驱动提供的可操作的API如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_initial</span>(<span style="color:#66d9ef">int</span> canid, uint32_t bandrate);
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_recvmask</span>(<span style="color:#66d9ef">int</span> canid,uint8_t msgNum, uint32_t mask, uint32_t id, uint8_t len);
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_transmit</span>(<span style="color:#66d9ef">int</span> canid, uint32_t id, uint8_t <span style="color:#f92672">*</span>txbuff, uint8_t len);
+uint16_t <span style="color:#a6e22e">hal_can_receive</span>(<span style="color:#66d9ef">int</span> canid);
+uint8_t <span style="color:#a6e22e">hal_can_readmsg</span>(<span style="color:#66d9ef">int</span> canid, uint32_t <span style="color:#f92672">*</span>id, uint8_t <span style="color:#f92672">*</span>rxbuff, uint8_t msgNum);
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：对can设备进行初始化，并且初始化can设备的发送msg。
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		canid： 选择的can设备，0：can0(soc部分)  1：can1（soc部分）
+</span><span style="color:#75715e">​		bandrate：can波特率，最高测试到500kbps
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		void
+</span><span style="color:#75715e">******************************************************************************/</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_initial</span>(<span style="color:#66d9ef">int</span> canid, uint32_t bandrate);
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：给接收的msg设置mask，选择接收数据。
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		canid： 选择的can设备，0：can0(soc部分)  1：can1（soc部分）
+</span><span style="color:#75715e">​		msgNum： 接收的msg标号，其中17~32号msg用来接收
+</span><span style="color:#75715e">​		mask： can设备id掩码
+</span><span style="color:#75715e">​		id： can设备id
+</span><span style="color:#75715e">​		len：can设备的消息队列msg的长度，构成一个fifo
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		void
+</span><span style="color:#75715e">******************************************************************************/</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_recvmask</span>(<span style="color:#66d9ef">int</span> canid,uint8_t msgNum, uint32_t mask, uint32_t id, uint8_t len);
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：发送一帧can数据
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		canid： 选择的can设备，0：can0(soc部分)  1：can1（soc部分）
+</span><span style="color:#75715e">​		id： 发送的消息的id号
+</span><span style="color:#75715e">​		txbuff： 发送的消息数据指针
+</span><span style="color:#75715e">​		len： 发送的数据长度，不大于8
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		void
+</span><span style="color:#75715e">******************************************************************************/</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_can_transmit</span>(<span style="color:#66d9ef">int</span> canid, uint32_t id, uint8_t <span style="color:#f92672">*</span>txbuff, uint8_t len);
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：查询接收buff里是否存在未读取的数据包
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		canid： 选择的can设备，0：can0(soc部分)  1：can1（soc部分）
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		返回当前接收buff里未读取的数据包 
+</span><span style="color:#75715e">|——————————————————————————————————————————————————————————————————
+</span><span style="color:#75715e">| bit |  0  |  1  |  2 | ... 15  
+</span><span style="color:#75715e">| msg |  17 |  18 | 19 | ... 32
+</span><span style="color:#75715e">******************************************************************************/</span>
+uint16_t <span style="color:#a6e22e">hal_can_receive</span>(<span style="color:#66d9ef">int</span> canid);
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：发送一帧can数据
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		canid： 选择的can设备，0：can0(soc部分)  1：can1（soc部分）
+</span><span style="color:#75715e">​		id： 接收的消息的id号指针
+</span><span style="color:#75715e">​		rxbuff： 接收的消息数据指针
+</span><span style="color:#75715e">​		msgNum： 接收的消息编号17~32
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		读取的数据长度
+</span><span style="color:#75715e">******************************************************************************/</span>
+uint8_t <span style="color:#a6e22e">hal_can_readmsg</span>(<span style="color:#66d9ef">int</span> canid, uint32_t <span style="color:#f92672">*</span>id, uint8_t <span style="color:#f92672">*</span>rxbuff, uint8_t msgNum);
+</code></pre></div><h1 id="五-应用示例">五、 应用示例</h1>
+<p><strong>user_can.h</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#ifndef __USER_CAN_H__
+</span><span style="color:#75715e">#define __USER_CAN_H__
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;hal_can.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">user_can_initial</span>(<span style="color:#66d9ef">void</span>);
+
+<span style="color:#75715e">#endif
+</span></code></pre></div><p>​</p>
+<p><strong>user_can.c</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;user_can.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+
+uint8_t tx_buff[<span style="color:#ae81ff">8</span>],rx_buff[<span style="color:#ae81ff">8</span>];
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">user_can_initial</span>(<span style="color:#66d9ef">void</span>){
+    uint16_t recv_flag,i,len;
+    uint32_t recv_id;
+    hal_can_initial(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">500000</span>);
+
+    <span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+        LOS_Msleep(<span style="color:#ae81ff">20</span>);
+
+        recv_flag <span style="color:#f92672">=</span> hal_can_receive(<span style="color:#ae81ff">1</span>);
+        <span style="color:#66d9ef">for</span>(i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">16</span>;i <span style="color:#f92672">++</span>){
+            <span style="color:#66d9ef">if</span>(recv_flag <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x01</span>){
+                len <span style="color:#f92672">=</span> hal_can_readmsg(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>recv_id, rx_buff, i <span style="color:#f92672">+</span> <span style="color:#ae81ff">17</span>);
+                hal_can_transmit(<span style="color:#ae81ff">1</span>,recv_id, rx_buff, len);
+            }
+            recv_flag <span style="color:#f92672">&gt;&gt;=</span> <span style="color:#ae81ff">1</span>;
+        }
+    }
+}
+</code></pre></div><p>​</p>
+<p><img src="../images/image-20210201151929006.png" alt="image-20210201151929006"></p>
+<p>​		将上述代码拷贝到SDK目录下，其具体路径为：<code>osdrv/platform/liteos_a53/liteos/sample/sample_osdrv</code>，对程序进行编译，make之后便可以得到可执行文件，将该文件烧写到板卡上便可以执行，其测试步骤如上图所示：电脑连接一个USB转CAN的设备，使用上位机给HI3559A发送CAN数据帧，HI3559A接收到CAN数据帧后便可以反馈其数据包，形成闭环。</p>
+<h1 id="六注意事项">六、注意事项</h1>
+<ul>
+<li>使用CAN设备之前必须先配置IO复用功能。</li>
+<li>CAN0与uart0复用功能，需要谨慎使用。</li>
+<li>官方的板卡上存在sleep引脚，需要配置该引脚。</li>
+<li>官方的板卡上有拨码开关，需要配置对应的拨码开关选择GPIO功能。</li>
+</ul>
+<script src="../js/mermaid.min.js"></script>
+<script src="../js/mermaid.min.js"></script>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
