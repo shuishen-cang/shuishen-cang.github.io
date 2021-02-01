@@ -582,8 +582,7 @@ uint8_t tx_buff[<span style="color:#ae81ff">8</span>],rx_buff[<span style="color
         }
     }
 }
-</code></pre></div><p>​</p>
-<p><img src="../images/image-20210201151929006.png" alt="image-20210201151929006"></p>
+</code></pre></div><p><img src="../images/image-20210201151929006.png" alt="image-20210201151929006"></p>
 <p>​		将上述代码拷贝到SDK目录下，其具体路径为：<code>osdrv/platform/liteos_a53/liteos/sample/sample_osdrv</code>，对程序进行编译，make之后便可以得到可执行文件，将该文件烧写到板卡上便可以执行，其测试步骤如上图所示：电脑连接一个USB转CAN的设备，使用上位机给HI3559A发送CAN数据帧，HI3559A接收到CAN数据帧后便可以反馈其数据包，形成闭环。</p>
 <h1 id="六注意事项">六、注意事项</h1>
 <ul>
