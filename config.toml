@@ -19,6 +19,10 @@ paginate = 5
     name       = "lichee学习"
     url        = "/tags/lichee"
 
+[params]
+    author = "John Doe"
+    description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium."
+    menu_item_separator = " \n\n "
 [[params.social]]
     name = "github"
     url = "https://github.com/shuishen-cang"
@@ -26,17 +30,6 @@ paginate = 5
 [[params.social]]
     name = "gitee"
     url = "https://gitee.com/shuishen-cang/"
-
-[params]
-  author = "John Doe"
-  description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium."
-  menu_item_separator = " - "
-  [[params.social]]
-    name = "github"
-    url = "https://github.com/gohugoio"
-  [[params.social]]
-    name = "twitter"
-    url = "https://twitter.com/gohugoio"
 
 [markup.goldmark.renderer]
     unsafe= true
