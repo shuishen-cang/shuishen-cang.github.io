@@ -1,0 +1,12 @@
+
+[ubuntu]
+    Name = "Ubuntu系统相关"
+    Title = "Show list of Ubuntu"
+    URL = "/tags/ubuntu"
+
+
+[hi3559a]
+    Name = "hi3559a开发相关"
+    Title = "Show list of hi3559a"
+    URL = "/tags/hi3559a"
+
