@@ -11,15 +11,53 @@
     
     
     <item>
-      <title>ubuntu01-hugo</title>
-      <link>https://shuishen-cang.github.io/post/01hugo/</link>
+      <title>ubuntu01-setup</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu01_setup/</link>
       <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/01hugo/</guid>
+      <guid>https://shuishen-cang.github.io/post/ubuntu01_setup/</guid>
+      <description>ubuntu开发环境搭建  [TOC]
+一、换源 二、安装软件 sudo apt install vim sudo apt install gcc sudo apt install openocd sudo apt install libusb sudo apt install git sudo apt install minicom git config --global user.email &amp;#34;335403241@qq.com&amp;#34; git config --global user.name &amp;#34;cang&amp;#34; 三、NFS 搭建NFS服务器环境，供ARM板挂载
+安装 &amp;amp; 配置 sudo apt install nfs-kernel-server sudo vim /etc/exports # 添加： /home/luocang/workspace *(rw,sync,no_subtree_check) #重启nfs服务 sudo service nfs-kernel-server restart 测试 sudo mount -t nfs -o nolock 127.0.0.1:/home/luocang/workspace /mnt 脚本 #!</description>
+    </item>
+    
+    <item>
+      <title>ubuntu04-hugo</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu04_hugo/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu04_hugo/</guid>
       <description>hugo使用HTML以及mermaid  一、安装hugo 1. 安装hugo sudo apt install hugo hugo new site myblog cd myblog luocang@luocang-SC:~/workspace/03doc/myblog$ ls archetypes config.toml content data layouts static themes 使用hugo生成了一系列的文件以及文件夹，其中content为需要的markdown文件存放路径，themes为存放皮肤的文件夹，config.toml为hugo的对应配置文件，可以设置标签等。
 2. 设置皮肤 皮肤可以在hugo的官网https://www.gohugo.org/theme/中获取，为了后期的兼容，在下载后需要去除.git文件夹。
 cd themes git clone git@github.com:TiTi/hurock.git cd hurock/ rm -rf .git/ 3. 配置皮肤 选择使用皮肤需要在config.toml里面设置。
 cd ../../ subl config.toml #修改为以下代码 baseURL = &amp;#34;https://shuishen-cang.github.io/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;洛沧-blog&amp;#34; theme = &amp;#34;hurock&amp;#34; 4. helloworld hugo new post/hello.md subl content/post/hello.md # 修改为以下代码 --- title: &amp;#34;Hello&amp;#34; date: 2021-02-01T20:06:38+08:00 draft: false --- helloworld 5.</description>
+    </item>
+    
+    <item>
+      <title>ubuntu02-qt开发环境搭建</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu02_qt%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu02_qt%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>ubuntu开发环境搭建  一、安装qt ​	考虑到后期在docker中安装交叉编译器，并且在docker镜像中编译qt，docker镜像暂不考虑带图形界面，因此需要在主机安装qtcreator，但是qtcreator必须支持命令编译，这样便可以在主机中设置编译docker镜像上的程序。
+安装QT 下载一个稳定版本的qt软件，其格式为.run，直接运行该程序即可。安装的时候带源码安装，以便后期的交叉编译。
+二、新建项目 ​	新建一个qt控制台项目，一切采用默认配置，其项目名称为qtest。修改其main.cpp。
+#include &amp;lt;QCoreApplication&amp;gt;#include &amp;lt;QDebug&amp;gt; int main(int argc, char *argv[]) { QCoreApplication a(argc, argv); qDebug() &amp;lt;&amp;lt; &amp;#34;hello!&amp;#34;; return a.exec(); } 编译，运行，在控制台上打印了hello。
+三、命令编译 ​	先clean工程，查看qmake的目录，我的qmake路径为：/home/installed/Qt5.9.9/5.9.9/gcc_64/bin/qmake
+​	控制台进入qtest工程下面。
+cd ~/Desktop/qtest/ /home/installed/Qt5.9.9/5.9.9/gcc_64/bin/qmake &amp;#34;OBJECTS_DIR=build&amp;#34; qtest.pro make ls ./qtest ​	程序已经能够正常运行，说明具备基本的docker镜像下开发条件。</description>
+    </item>
+    
+    <item>
+      <title>ubuntu03-交叉编译器</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu03_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%99%A8/</link>
+      <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu03_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%99%A8/</guid>
+      <description>ubuntu-交叉编译器  一、安装交叉编译器 1. 安装 在linux下面安装交叉编译器用来编译ARM的程序，其中M系统采用arm-none-eabi-gcc，其中linux程序采用arm-linux-gnueabihf-gcc，可以采用apt的方式安装。
+sudo apt install gcc-arm-none-eabi sudo apt install gcc-arm-linux-gnueabi arm-linux-gnueabihf-gcc -v arm-none-eabi-gcc -v 2. 配置 其中安装的交叉编译器并不能用来编译所有的芯片程序，大部分时候会受到库的影响和配置的影响。因此需要做出一定的修改，其关键参数如下：
+--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard --with-mode=thumb --disable-sjlj-exceptions --disable-werror --enable-multilib --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=arm-linux-gnueabihf --disable-werror : 设置警告不报错 --enable-multilib : 可以支持多芯片 这些都是默认的配置，可以做一些芯片来适应不同的芯片，如下：
+arm-linux-gnueabihf-gcc -v -mfpu=vfpv4 -mfloat-abi=soft -march=armv7 -mtune=cortex-a7 -mcpu=cortex-a7 二、测试代码 ​</description>
     </item>
     
   </channel>

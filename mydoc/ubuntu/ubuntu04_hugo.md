@@ -1,5 +1,5 @@
 ---
-title: "ubuntu01-hugo"
+title: "ubuntu04-hugo"
 date: 2021-02-01T16:06:09+08:00
 draft: false
 tags: ["ubuntu"]
@@ -81,11 +81,11 @@ git push -u origin master
 
 在gitee的仓库上设置静态网页，选择service->gitee pages，选择创建链接公网IP。
 
-![image-20210201203314357](../images/image-20210201203314357.png)
+![image-20210201203314357](/home/luocang/.config/Typora/typora-user-images/image-20210201203314357.png)
 
 我生成的静态网站位于docs下面，因此选择子目录为docs，这样生成了一个公网域名```http://shuishen-cang.gitee.io/hugo```，通过该域名便可以访问博客。
 
-![image-20210201203418218](../images/image-20210201203418218.png)
+![image-20210201203418218](/home/luocang/.config/Typora/typora-user-images/image-20210201203418218.png)
 
 由于之前生成静态网站的时候，并没有选择对应的域名，因此需要重新生成，否则网页没法显示相应的皮肤等。重新上传代码后，需要手动更新gitee pages，这里有点坑了，这点远不如github了，但是gitee的访问速度比github要快，因此也就将就一下了。
 
@@ -296,10 +296,10 @@ clean:
 
 ## 5.mermaid测试
 
-<div class="mermaid">
+```mermaid
 graph TD
 A-->B
-</div>
+```
 
 默认的m10c皮肤使用的背景颜色是深色的，这样使得图形看的不是很清晰，因此需要修改css文件，m10c的css文件路劲如下：
 
@@ -326,5 +326,3 @@ A-->B
 
 
 
-
-<script src="../js/mermaid.min.js"></script>

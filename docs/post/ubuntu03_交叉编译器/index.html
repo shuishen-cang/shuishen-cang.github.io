@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>ubuntu03-交叉编译器 // luocang-blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.21b1686763bf47744aadffb53465246543024e9fa17a5d5bbf22723c71d1feca.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ubuntu03-交叉编译器"/>
+<meta name="twitter:description" content="ubuntu-交叉编译器  一、安装交叉编译器 1. 安装 在linux下面安装交叉编译器用来编译ARM的程序，其中M系统采用arm-none-eabi-gcc，其中linux程序采用arm-linux-gnueabihf-gcc，可以采用apt的方式安装。
+sudo apt install gcc-arm-none-eabi sudo apt install gcc-arm-linux-gnueabi arm-linux-gnueabihf-gcc -v arm-none-eabi-gcc -v 2. 配置 其中安装的交叉编译器并不能用来编译所有的芯片程序，大部分时候会受到库的影响和配置的影响。因此需要做出一定的修改，其关键参数如下：
+--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard --with-mode=thumb --disable-sjlj-exceptions --disable-werror --enable-multilib --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=arm-linux-gnueabihf --disable-werror : 设置警告不报错 --enable-multilib : 可以支持多芯片 这些都是默认的配置，可以做一些芯片来适应不同的芯片，如下：
+arm-linux-gnueabihf-gcc -v -mfpu=vfpv4 -mfloat-abi=soft -march=armv7 -mtune=cortex-a7 -mcpu=cortex-a7 二、测试代码 ​"/>
+
+    <meta property="og:title" content="ubuntu03-交叉编译器" />
+<meta property="og:description" content="ubuntu-交叉编译器  一、安装交叉编译器 1. 安装 在linux下面安装交叉编译器用来编译ARM的程序，其中M系统采用arm-none-eabi-gcc，其中linux程序采用arm-linux-gnueabihf-gcc，可以采用apt的方式安装。
+sudo apt install gcc-arm-none-eabi sudo apt install gcc-arm-linux-gnueabi arm-linux-gnueabihf-gcc -v arm-none-eabi-gcc -v 2. 配置 其中安装的交叉编译器并不能用来编译所有的芯片程序，大部分时候会受到库的影响和配置的影响。因此需要做出一定的修改，其关键参数如下：
+--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard --with-mode=thumb --disable-sjlj-exceptions --disable-werror --enable-multilib --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=arm-linux-gnueabihf --disable-werror : 设置警告不报错 --enable-multilib : 可以支持多芯片 这些都是默认的配置，可以做一些芯片来适应不同的芯片，如下：
+arm-linux-gnueabihf-gcc -v -mfpu=vfpv4 -mfloat-abi=soft -march=armv7 -mtune=cortex-a7 -mcpu=cortex-a7 二、测试代码 ​" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/ubuntu03_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%99%A8/" />
+<meta property="article:published_time" content="2020-12-15T22:21:25+08:00" />
+<meta property="article:modified_time" content="2020-12-15T22:21:25+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>luocang-blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/shuixia">shuixia工作</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/ubuntu">ubuntu系统搭建</a>
+      </nav>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/shuishen-cang" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitee.com/shuishen-cang/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">ubuntu03-交叉编译器</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Dec 15, 2020
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          1 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://shuishen-cang.github.io/tags/ubuntu/">ubuntu</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <div align="center" style= 'font-size: 48px;'>
+    ubuntu-交叉编译器
+</div>
+<h1 id="一安装交叉编译器">一、安装交叉编译器</h1>
+<h2 id="1-安装">1. 安装</h2>
+<p>在linux下面安装交叉编译器用来编译ARM的程序，其中M系统采用<code>arm-none-eabi-gcc</code>，其中linux程序采用<code>arm-linux-gnueabihf-gcc</code>，可以采用apt的方式安装。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install gcc-arm-none-eabi
+sudo apt install gcc-arm-linux-gnueabi
+
+arm-linux-gnueabihf-gcc -v
+arm-none-eabi-gcc -v
+</code></pre></div><h2 id="2-配置">2. 配置</h2>
+<p>其中安装的交叉编译器并不能用来编译所有的芯片程序，大部分时候会受到库的影响和配置的影响。因此需要做出一定的修改，其关键参数如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">--with-arch<span style="color:#f92672">=</span>armv7-a 
+--with-fpu<span style="color:#f92672">=</span>vfpv3-d16 
+--with-float<span style="color:#f92672">=</span>hard 
+--with-mode<span style="color:#f92672">=</span>thumb 
+
+--disable-sjlj-exceptions 
+--disable-werror 
+--enable-multilib 
+--enable-checking<span style="color:#f92672">=</span>release 
+--build<span style="color:#f92672">=</span>x86_64-linux-gnu 
+--host<span style="color:#f92672">=</span>x86_64-linux-gnu 
+--target<span style="color:#f92672">=</span>arm-linux-gnueabihf 
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">--disable-werror : 设置警告不报错
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">--enable-multilib : 可以支持多芯片
+</code></pre></div><p>这些都是默认的配置，可以做一些芯片来适应不同的芯片，如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">arm-linux-gnueabihf-gcc -v -mfpu<span style="color:#f92672">=</span>vfpv4 -mfloat-abi<span style="color:#f92672">=</span>soft -march<span style="color:#f92672">=</span>armv7 -mtune<span style="color:#f92672">=</span>cortex-a7 -mcpu<span style="color:#f92672">=</span>cortex-a7
+</code></pre></div><h1 id="二测试代码">二、测试代码</h1>
+<p>​</p>
+<script src="../js/mermaid.min.js"></script>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
