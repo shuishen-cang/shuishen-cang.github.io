@@ -2,7 +2,7 @@
 title: "Lichee_05设备树"
 date: 2021-01-10T16:08:54+08:00
 tags: ["lichee"]
-draft: true
+draft: false
 ---
 
 <div align="center" style= 'font-size: 48px;'>
