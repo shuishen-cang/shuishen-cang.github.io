@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>shuixia03-liteos-gpio // luocang-blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.21b1686763bf47744aadffb53465246543024e9fa17a5d5bbf22723c71d1feca.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="shuixia03-liteos-gpio"/>
+<meta name="twitter:description" content="GPIO设备驱动测试使用说明-liteos [TOC]
+一、概述 ​	HI3559A芯片的CPU子系统分为两部分，一个是以为A73&#43;A53为主的SOC部分，另一个是为M7为主的Sensor Hub部分，其中SOC子系统与Sensor Hub子系统的外设均采用统一的外设接口，即寄存器组完全一样，并且可以通过地址转换实现跨子系统访问，但是SOC子系统与Sensor Hub子系统的中断系统完全肚子，并不能完全共享中断向量。
+​	主 SOC 子系统支持 19 组 GPIO（General Purpose Input/Output），即 GPIO0～GPIO18。每组 GPIO 提供 8 个可编程的输入输出管脚（GPIO18 只有 4 个）。
+​	Sensor Hub 子系统支持 5 组 GPIO，即 GPIO0~GPIO4。每组 GPIO 提供 8 个可编程的输入输出管脚（GPIO4 只有 2 个）。 ​	每个管脚可以配置为输入或者输出。这些管脚用于生成特定应用的输出信号或采集特定应用的输入信号。作为输入管脚时，GPIO 可作为中断源；作为输出管脚时，每个GPIO 都可以独立地清 0 或置 1。
+​	该文档就GPIO的操作使用以及GPIO的复用功能做详细讲解。
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+三、驱动编译 1. 官方GPIO驱动编译 ​	海思官方提供的程序兼容posix接口，实现了部分函数功能，gpio相关的驱动程序源码路径为 drivers/gpio，在编译脚本里指定源码路径与头文件路径，编译成功后，out目录下会生成名为 libgpio.a 的库文件，链接时通过-lgpio 指定对应库文件。"/>
+
+    <meta property="og:title" content="shuixia03-liteos-gpio" />
+<meta property="og:description" content="GPIO设备驱动测试使用说明-liteos [TOC]
+一、概述 ​	HI3559A芯片的CPU子系统分为两部分，一个是以为A73&#43;A53为主的SOC部分，另一个是为M7为主的Sensor Hub部分，其中SOC子系统与Sensor Hub子系统的外设均采用统一的外设接口，即寄存器组完全一样，并且可以通过地址转换实现跨子系统访问，但是SOC子系统与Sensor Hub子系统的中断系统完全肚子，并不能完全共享中断向量。
+​	主 SOC 子系统支持 19 组 GPIO（General Purpose Input/Output），即 GPIO0～GPIO18。每组 GPIO 提供 8 个可编程的输入输出管脚（GPIO18 只有 4 个）。
+​	Sensor Hub 子系统支持 5 组 GPIO，即 GPIO0~GPIO4。每组 GPIO 提供 8 个可编程的输入输出管脚（GPIO4 只有 2 个）。 ​	每个管脚可以配置为输入或者输出。这些管脚用于生成特定应用的输出信号或采集特定应用的输入信号。作为输入管脚时，GPIO 可作为中断源；作为输出管脚时，每个GPIO 都可以独立地清 0 或置 1。
+​	该文档就GPIO的操作使用以及GPIO的复用功能做详细讲解。
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+三、驱动编译 1. 官方GPIO驱动编译 ​	海思官方提供的程序兼容posix接口，实现了部分函数功能，gpio相关的驱动程序源码路径为 drivers/gpio，在编译脚本里指定源码路径与头文件路径，编译成功后，out目录下会生成名为 libgpio.a 的库文件，链接时通过-lgpio 指定对应库文件。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/shuixia03-liteos-gpio/" />
+<meta property="article:published_time" content="2021-02-01T16:06:09+08:00" />
+<meta property="article:modified_time" content="2021-02-01T16:06:09+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>luocang-blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/shuixia">shuixia工作</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/ubuntu">ubuntu系统搭建</a>
+      </nav>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/shuishen-cang" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitee.com/shuishen-cang/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">shuixia03-liteos-gpio</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 1, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://shuishen-cang.github.io/tags/shuixia/">shuixia</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <div align = "center" style="font-size:48px">GPIO设备驱动测试使用说明-liteos</div>
+<p>[TOC]</p>
+<h1 id="一概述">一、概述</h1>
+<p>​		HI3559A芯片的CPU子系统分为两部分，一个是以为A73+A53为主的SOC部分，另一个是为M7为主的Sensor Hub部分，其中SOC子系统与Sensor Hub子系统的外设均采用统一的外设接口，即寄存器组完全一样，并且可以通过地址转换实现跨子系统访问，但是SOC子系统与Sensor Hub子系统的中断系统完全肚子，并不能完全共享中断向量。</p>
+<p>​		主 SOC 子系统支持 19 组 GPIO（General Purpose Input/Output），即 GPIO0～GPIO18。每组 GPIO 提供 8 个可编程的输入输出管脚（GPIO18 只有 4 个）。</p>
+<p>​		Sensor Hub 子系统支持 5 组 GPIO，即 GPIO0~GPIO4。每组 GPIO 提供 8 个可编程的输入输出管脚（GPIO4 只有 2 个）。
+​		每个管脚可以配置为输入或者输出。这些管脚用于生成特定应用的输出信号或采集特定应用的输入信号。作为输入管脚时，GPIO 可作为中断源；作为输出管脚时，每个GPIO 都可以独立地清 0 或置 1。</p>
+<p>​		该文档就GPIO的操作使用以及GPIO的复用功能做详细讲解。</p>
+<h1 id="二-参考文件">二、 参考文件</h1>
+<p>GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》</p>
+<p>驱动操作使用指南《外围设备驱动 操作指南.pdf》</p>
+<p>寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》</p>
+<h1 id="三驱动编译">三、驱动编译</h1>
+<h2 id="1-官方gpio驱动编译">1. 官方GPIO驱动编译</h2>
+<p>​		海思官方提供的程序兼容posix接口，实现了部分函数功能，gpio相关的驱动程序源码路径为 drivers/gpio，在编译脚本里指定源码路径与头文件路径，编译成功后，out目录下会生成名为 libgpio.a 的库文件，链接时通过-lgpio 指定对应库文件。</p>
+<p>​		海思官方提供的API函数如下：</p>
+<ul>
+<li>
+<p>gpio_chip_init：GPIO 初始化接口。</p>
+</li>
+<li>
+<p>gpio_chip_deinit：GPIO 去初始化接口。</p>
+</li>
+<li>
+<p>gpio_get_direction：获取 GPIO 方向。</p>
+</li>
+<li>
+<p>gpio_direction_input：设置 GPIO 方向为输入。</p>
+</li>
+<li>
+<p>gpio_direction_output：设置 GPIO 方向为输出。</p>
+</li>
+<li>
+<p>gpio_get_value：获取 GPIO 值。</p>
+</li>
+<li>
+<p>gpio_set_value：设置 GPIO 值。</p>
+</li>
+<li>
+<p>gpio_irq_register：注册 GPIO 中断。</p>
+</li>
+<li>
+<p>gpio_set_irq_type：设置 GPIO 中断类型。</p>
+</li>
+<li>
+<p>gpio_irq_enable：使能 GPIO 中断。</p>
+</li>
+<li>
+<p>gpio_get_irq_status：获取中断状态。</p>
+</li>
+<li>
+<p>gpio_clear_irq：清除 GPIO 寄存器中断状态。</p>
+<p>但是在posix接口部分只提供了open()，close()，ioctl()函数，因此下面就该部分代码做一定的解读。</p>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;fcntl.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;linux/kernel.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;fs/fs.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;sys/ioctl.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;gpio.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;gpio_dev.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">struct</span> gpio_descriptor <span style="color:#f92672">*</span>gpio <span style="color:#f92672">=</span> NULL;
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">gpio_open</span>(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>filep)
+{
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">gpio_close</span>(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>filep)
+{
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">gpio_ioctl</span>(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>filep, <span style="color:#66d9ef">int</span> cmd, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> arg)
+{
+    <span style="color:#66d9ef">int</span> ret <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">struct</span> inode <span style="color:#f92672">*</span> inode <span style="color:#f92672">=</span> filep <span style="color:#f92672">-&gt;</span>f_inode;
+    <span style="color:#66d9ef">struct</span> gpio_descriptor <span style="color:#f92672">*</span>gd <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> gpio_descriptor <span style="color:#f92672">*</span>)(inode<span style="color:#f92672">-&gt;</span>i_private);
+
+    <span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>gd)
+    {
+        gpio_err(<span style="color:#e6db74">&#34;gpio_descriptor is null!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+    }
+
+    <span style="color:#66d9ef">switch</span>(cmd)
+    {
+        <span style="color:#66d9ef">case</span> GPIO_SET_DIR:
+            <span style="color:#66d9ef">if</span>(gd<span style="color:#f92672">-&gt;</span>ops<span style="color:#f92672">-&gt;</span>setdir)
+                ret <span style="color:#f92672">=</span> gd<span style="color:#f92672">-&gt;</span>ops<span style="color:#f92672">-&gt;</span>setdir(gd,(gpio_groupbit_info<span style="color:#f92672">*</span>)arg);
+            <span style="color:#66d9ef">else</span>
+                ret <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+
+            <span style="color:#66d9ef">break</span>;
+        <span style="color:#66d9ef">case</span> GPIO_GET_DIR:
+            <span style="color:#66d9ef">if</span>(gd<span style="color:#f92672">-&gt;</span>ops<span style="color:#f92672">-&gt;</span>getdir)
+                ret <span style="color:#f92672">=</span> gd<span style="color:#f92672">-&gt;</span>ops<span style="color:#f92672">-&gt;</span>getdir(gd,(gpio_groupbit_info<span style="color:#f92672">*</span>)arg);
+            <span style="color:#66d9ef">else</span>
+                ret <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+
+            <span style="color:#66d9ef">break</span>;
+        <span style="color:#66d9ef">case</span> GPIO_READ_BIT:
+            <span style="color:#66d9ef">if</span>(gd<span style="color:#f92672">-&gt;</span>ops<span style="color:#f92672">-&gt;</span>readbit)
+                ret <span style="color:#f92672">=</span> gd<span style="color:#f92672">-&gt;</span>ops<span style="color:#f92672">-&gt;</span>readbit(gd,(gpio_groupbit_info<span style="color:#f92672">*</span>)arg);
+            <span style="color:#66d9ef">else</span>
+                ret <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+            <span style="color:#66d9ef">break</span>;
+        <span style="color:#66d9ef">case</span> GPIO_WRITE_BIT:
+            <span style="color:#66d9ef">if</span>(gd<span style="color:#f92672">-&gt;</span>ops<span style="color:#f92672">-&gt;</span>writebit)
+                ret <span style="color:#f92672">=</span> gd<span style="color:#f92672">-&gt;</span>ops<span style="color:#f92672">-&gt;</span>writebit(gd,(gpio_groupbit_info<span style="color:#f92672">*</span>)arg);
+            <span style="color:#66d9ef">else</span>
+                ret <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+            <span style="color:#66d9ef">break</span>;
+
+        <span style="color:#66d9ef">default</span><span style="color:#f92672">:</span>
+            ret <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+    }
+
+    <span style="color:#66d9ef">return</span> ret;
+
+}
+
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> file_operations_vfs gpio_dev_ops <span style="color:#f92672">=</span>
+{
+    gpio_open,  <span style="color:#75715e">/* open */</span>
+    gpio_close, <span style="color:#75715e">/* close */</span>
+    <span style="color:#ae81ff">0</span>,  		<span style="color:#75715e">/* read */</span>
+    <span style="color:#ae81ff">0</span>, 			<span style="color:#75715e">/* write */</span>
+    <span style="color:#ae81ff">0</span>,          <span style="color:#75715e">/* seek */</span>
+    gpio_ioctl  <span style="color:#75715e">/* ioctl */</span>
+<span style="color:#75715e">#ifndef CONFIG_DISABLE_POLL
+</span><span style="color:#75715e"></span>        , <span style="color:#ae81ff">0</span> 	<span style="color:#75715e">/* poll */</span>
+<span style="color:#75715e">#endif
+</span><span style="color:#75715e"></span>};
+</code></pre></div><p>​		如上述代码所示：posix驱动部分只实现了open()，close()，ioctl()函数，其中open()，close()函数未做任何操作，ioctl()支持<code>GPIO_SET_DIR</code>，<code>GPIO_GET_DIR</code>，<code>GPIO_READ_BIT</code>，<code>GPIO_WRITE_BIT</code>等操作。</p>
+<p>​		在liteos代码目录下直接执行make便可以实现该部分代码的编译。</p>
+<h2 id="2gpio复用功能拓展">2.GPIO复用功能拓展</h2>
+<p>​		GPIO除了设计为GPIO功能之外，有时候还会设计为其他功能，例如uart，spi，PWM等，因此根据实际情况，可以选择使用作为第二功能。该部分寄存器位于《Hi3559A V100_PINOUT_EN.xlsx》中。</p>
+<p><img src="../images/image-20210202150325916.png" alt="image-20210202150325916"></p>
+<p>​		新建hal_gpioaf.c，hal_gpioaf.h。</p>
+<p><strong>hal_gpioaf.h</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#ifndef __HAL_GPIOAF_H__
+</span><span style="color:#75715e">#define __HAL_GPIOAF_H__
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;hal.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define IOREGL(N)              (0x1F000000 + N * 4)
+</span><span style="color:#75715e">#define IOREGM(N)              (0x1F001000 + (N - 76) * 4)
+</span><span style="color:#75715e">#define IOREGH(N)              (0x1F002000 + (N - 138) * 4)
+</span><span style="color:#75715e">#define IOREG(N)                (N &lt;= 75 ?  IOREGL(N): IOREGM(N))
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define AF_UART0_VAL            0x01
+</span><span style="color:#75715e">#define AF_UART0_TX             IOREG(53)
+</span><span style="color:#75715e">#define AF_UART0_RX             IOREG(54)
+</span><span style="color:#75715e">#define AF_UART1_VAL            0x01
+</span><span style="color:#75715e">#define AF_UART1_TX             IOREG(55)
+</span><span style="color:#75715e">#define AF_UART1_RX             IOREG(56)
+</span><span style="color:#75715e">#define AF_UART2_VAL            0x01
+</span><span style="color:#75715e">#define AF_UART2_TX             IOREG(57)
+</span><span style="color:#75715e">#define AF_UART2_RX             IOREG(58)
+</span><span style="color:#75715e">#define AF_UART3_VAL            0x01
+</span><span style="color:#75715e">#define AF_UART3_TX             IOREG(59)
+</span><span style="color:#75715e">#define AF_UART3_RX             IOREG(60)
+</span><span style="color:#75715e">#define AF_UART4_VAL            0x01
+</span><span style="color:#75715e">#define AF_UART4_TX             IOREG(61)
+</span><span style="color:#75715e">#define AF_UART4_RX             IOREG(62)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define AF_UARTO_Config()       {           \
+</span><span style="color:#75715e">    writeor(AF_UART0_TX, AF_UART0_VAL);     \
+</span><span style="color:#75715e">    writeor(AF_UART0_RX, AF_UART0_VAL);     \
+</span><span style="color:#75715e">}
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define AF_UART1_Config()       {           \
+</span><span style="color:#75715e">    writeor(AF_UART1_TX, AF_UART1_VAL);     \
+</span><span style="color:#75715e">    writeor(AF_UART1_RX, AF_UART1_VAL);     \
+</span><span style="color:#75715e">}
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define AF_UART2_Config()       {           \
+</span><span style="color:#75715e">    writeor(AF_UART2_TX, AF_UART2_VAL);     \
+</span><span style="color:#75715e">    writeor(AF_UART2_RX, AF_UART2_VAL);     \
+</span><span style="color:#75715e">}
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define AF_UART3_Config()       {           \
+</span><span style="color:#75715e">    writeor(AF_UART3_TX, AF_UART3_VAL);     \
+</span><span style="color:#75715e">    writeor(AF_UART3_RX, AF_UART3_VAL);     \
+</span><span style="color:#75715e">}
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define AF_UART4_Config()       {           \
+</span><span style="color:#75715e">    writeor(AF_UART4_TX, AF_UART4_VAL);     \
+</span><span style="color:#75715e">    writeor(AF_UART4_RX, AF_UART4_VAL);     \
+</span><span style="color:#75715e">}
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#endif
+</span></code></pre></div><p>​		上述代码中实现了UART部分的gpio复用功能，如需要实现其他功能的IO复用，可以类似于上述代码编写IO复用函数。</p>
+<h1 id="四-api描述">四、 API描述</h1>
+<h2 id="1-官方gpio驱动api">1. 官方GPIO驱动API</h2>
+<p>​		官方提供的posix接口只提供了ioctl函数，其中open，close函数的函数内容均为空，因此仅需要分析ioctl函数即可，ioctl()支持<code>GPIO_SET_DIR</code>，<code>GPIO_GET_DIR</code>，<code>GPIO_READ_BIT</code>，<code>GPIO_WRITE_BIT</code>等操作。</p>
+<p>​		ioctl可配置参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>命令号</th>
+<th>命令码</th>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPIO_SET_DIR</td>
+<td>4</td>
+<td>GPIO结构体</td>
+<td>设置一个GPIO的方向</td>
+</tr>
+<tr>
+<td>GPIO_GET_DIR</td>
+<td>5</td>
+<td>GPIO结构体</td>
+<td>获取一个GPIO的设置方向</td>
+</tr>
+<tr>
+<td>GPIO_READ_BIT</td>
+<td>6</td>
+<td>GPIO结构体</td>
+<td>读取一个GPIO的电平值</td>
+</tr>
+<tr>
+<td>GPIO_WRITE_BIT</td>
+<td>7</td>
+<td>GPIO结构体</td>
+<td>设置一个GPIO的电平值</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2gpio复用功能拓展-1">2.GPIO复用功能拓展</h2>
+<p>​		上述的GPIO复用功能拓展提供了五个GPIO函数，如果使用有需要，可以进一步编写相关的代码以实现更多设备的GPIO复用功能支持，上述代码支持的函数如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">AF_UARTO_Config()		<span style="color:#75715e">//设置相应的GPIO复用功能为UART0
+</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">AF_UART1_Config()		<span style="color:#75715e">//设置相应的GPIO复用功能为UART1
+</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">AF_UART2_Config()		<span style="color:#75715e">//设置相应的GPIO复用功能为UART2
+</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">AF_UART3_Config()		<span style="color:#75715e">//设置相应的GPIO复用功能为UART3
+</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">AF_UART4_Config()		<span style="color:#75715e">//设置相应的GPIO复用功能为UART4
+</span></code></pre></div><h1 id="五-应用实例">五、 应用实例</h1>
+<h2 id="1官方gpio驱动实例">1.官方GPIO驱动实例</h2>
+<p><img src="../images/image-20210202155813358.png" alt="image-20210202155813358"></p>
+<p>​		如上图所示：电脑通过网线连接HI3559A板卡，实现程序的烧写与调试，示波器通过探头连接到HI3559A的GPIO上，通过程序设置GPIO的输出电平，在示波器上观察IO点评的变化。</p>
+<div class="mermaid">
+graph TD
+A(gpio_dev_init)-->B(open)-->C(GPIO_SET_DIR)-->D(GPIO_WRITE_BIT)-->E(close)
+</div>
+<p>​		其中gpio_dev_init在liteos初始化时候便已经被调用了，因此使用上述代码只需要执行oepn，ioctl，close等函数，如上分析，新建user_gpio.c、user_gpio.h。</p>
+<p><strong>user_gpio.h</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#ifndef __USER_GPIO_H__
+</span><span style="color:#75715e">#define __USER_GPIO_H__
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;user.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;gpio.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">user_gpio_initial</span>(<span style="color:#66d9ef">void</span>);
+
+<span style="color:#75715e">#endif
+</span></code></pre></div><p><strong>user_gpio.c</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;user_gpio.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;gpio.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+
+<span style="color:#66d9ef">int</span> fd;
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">user_gpio_initial</span>(<span style="color:#66d9ef">void</span>){
+    fd <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#34;/dev/gpio&#34;</span>, O_RDWR);
+
+    gpio_groupbit_info group_bit_info; 
+    group_bit_info.groupnumber <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>; 
+    group_bit_info.bitnumber <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>; 
+    group_bit_info.direction <span style="color:#f92672">=</span> GPIO_DIR_OUT;
+
+    ioctl(fd, GPIO_SET_DIR, <span style="color:#f92672">&amp;</span>group_bit_info);
+
+    <span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+        LOS_Msleep(<span style="color:#ae81ff">10</span>);
+        group_bit_info.value <span style="color:#f92672">=</span> GPIO_VALUE_HIGH;
+        ioctl(fd, GPIO_WRITE_BIT, <span style="color:#f92672">&amp;</span>group_bit_info);
+
+        LOS_Msleep(<span style="color:#ae81ff">10</span>);
+        group_bit_info.value <span style="color:#f92672">=</span> GPIO_VALUE_LOW;
+        ioctl(fd, GPIO_WRITE_BIT, <span style="color:#f92672">&amp;</span>group_bit_info);
+    }
+    close(fd);
+}
+</code></pre></div><h2 id="2gpio复用驱动实例">2.GPIO复用驱动实例</h2>
+<p>​		在使用串口功能时候直接调用API函数即可。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">uartxxx_initial</span>(){
+    ...
+    AF_UARTxxx_Config()
+    ...
+    ...
+}
+</code></pre></div><h1 id="六注意事项">六、注意事项</h1>
+<ul>
+<li>官方提供的API不能跨子系统调用，如有必要，需要自行操作寄存器。</li>
+<li>注意项目的路径依赖问题。</li>
+</ul>
+<script src="../js/mermaid.min.js"></script>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

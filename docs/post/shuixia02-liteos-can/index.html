@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>shuixia01-liteos-can // luocang-blog</title>
+    <title>shuixia02-liteos-can // luocang-blog</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.68.3" />
@@ -12,7 +12,7 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="shuixia01-liteos-can"/>
+<meta name="twitter:title" content="shuixia02-liteos-can"/>
 <meta name="twitter:description" content="CAN设备驱动测试使用说明-liteos [TOC]
 一、概述 ​	控制器局域网络 CAN（Controller Area Network）最初是由德国 Bosch 公司设计并应用于汽车的监测和控制。由于其作为一种技术先进、可靠性高、功能完善、成本合理的远程网络通讯控制方式，因此 CAN 总线正逐步被广泛应用到各种控制领域,如中控车机等。 ​	芯片共支持 3 个 CAN 总线控制器，主 SOC 子系统有 2 个，Sensor Hub 子系统有 1个。
 ​	芯片的3个CAN总线控制器的地址在经过地址转换后均可以访问，即SOC系统可以访问Sensor Hub 的CAN总线控制器，但是SOC上的CAN总线控制器其中断连接到GIC中断控制器上，Sensor Hub 上的CAN总线控制器其中断连接在M7的中断控制器上，因此SOC使用Sensor Hub 的CAN总线控制器只能使用查询模式，而不能使用中断模式。
@@ -26,7 +26,7 @@
   支持错误的自我修复。
   支持自动重传模式。"/>
 
-    <meta property="og:title" content="shuixia01-liteos-can" />
+    <meta property="og:title" content="shuixia02-liteos-can" />
 <meta property="og:description" content="CAN设备驱动测试使用说明-liteos [TOC]
 一、概述 ​	控制器局域网络 CAN（Controller Area Network）最初是由德国 Bosch 公司设计并应用于汽车的监测和控制。由于其作为一种技术先进、可靠性高、功能完善、成本合理的远程网络通讯控制方式，因此 CAN 总线正逐步被广泛应用到各种控制领域,如中控车机等。 ​	芯片共支持 3 个 CAN 总线控制器，主 SOC 子系统有 2 个，Sensor Hub 子系统有 1个。
 ​	芯片的3个CAN总线控制器的地址在经过地址转换后均可以访问，即SOC系统可以访问Sensor Hub 的CAN总线控制器，但是SOC上的CAN总线控制器其中断连接到GIC中断控制器上，Sensor Hub 上的CAN总线控制器其中断连接在M7的中断控制器上，因此SOC使用Sensor Hub 的CAN总线控制器只能使用查询模式，而不能使用中断模式。
@@ -40,7 +40,7 @@
   支持错误的自我修复。
   支持自动重传模式。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://shuishen-cang.github.io/post/shuixia01-liteos-can/" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/shuixia02-liteos-can/" />
 <meta property="article:published_time" content="2021-02-01T16:06:09+08:00" />
 <meta property="article:modified_time" content="2021-02-01T16:06:09+08:00" />
 
@@ -81,7 +81,7 @@
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">shuixia01-liteos-can</h1>
+      <h1 class ="post-title">shuixia02-liteos-can</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
@@ -591,7 +591,6 @@ uint8_t tx_buff[<span style="color:#ae81ff">8</span>],rx_buff[<span style="color
 <li>官方的板卡上存在sleep引脚，需要配置该引脚。</li>
 <li>官方的板卡上有拨码开关，需要配置对应的拨码开关选择GPIO功能。</li>
 </ul>
-<script src="../js/mermaid.min.js"></script>
 <script src="../js/mermaid.min.js"></script>
     </div>
     <div class="post-footer">

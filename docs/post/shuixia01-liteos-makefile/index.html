@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>shuixia01-liteos-makefile // luocang-blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.21b1686763bf47744aadffb53465246543024e9fa17a5d5bbf22723c71d1feca.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="shuixia01-liteos-makefile"/>
+<meta name="twitter:description" content="Makefile修改使用说明-liteos [TOC]
+一、概述 ​	Makefile是一种控制自动编译的工具，Makefile关系到整个工程的编译规则。它告诉系统哪些文件先编译，哪些文件后编译，哪些文件在什么时候清理掉等等。因为是用来告知系统如何进行操作的，所以Makefile的语言风格跟shell很像，Makefile中也可以执行操作系统的命令。
+​	海思官方提供了liteos以及linux下面的makefile，用来编译程序，得到相应的库文件以及可执行文件，其中liteos部分提供了一个可用的makefile，顶层makefile通过调用底层makefile得到相应的编译结果，但是在sample中的makefile存在一些缺陷，其具体表现是只能编译单个文件，并不支持多文件的编译，但是在编写驱动以及应用程序的时候，往往需要多文件的编译以及多文件的支持，因此需要对makefile做一些修改，以下就makefile做一些讲解。
+二、 参考文件 三、 驱动编译 ​
+四、 API描述 ​
+五、 应用示例 1.官方makefile LITEOSTOPDIR ?= ../.. SAMPLE_OUT = . include $(LITEOSTOPDIR)/config.mk RM = -rm -rf LITEOS_LIBDEPS := --start-group $(LITEOS_LIBDEP) --end-group SRCS = $(wildcard sample.c) OBJS = $(patsubst %.c,$(SAMPLE_OUT)/%.o,$(SRCS)) all: $(OBJS) clean: @$(RM) *.o sample *.bin *.map *.asm $(OBJS): $(SAMPLE_OUT)/%.o : %.c ifneq ($(LITEOS_CPU_TYPE), arm926) ifneq ($(OUT)/lib/libipcm.a, $(wildcard $(OUT)/lib/libipcm.a)) echo &#34;$(OUT)&#34; cp -rf $(LITEOS_CPU_TYPE)/*.a $(OUT)/lib endif endif $(CC) $(LITEOS_CFLAGS) $(LITEOS_CXXFLAGS) -c $&lt; -o $@ $(LD) $(LITEOS_LDFLAGS) --gc-sections -Map=$(SAMPLE_OUT)/sample."/>
+
+    <meta property="og:title" content="shuixia01-liteos-makefile" />
+<meta property="og:description" content="Makefile修改使用说明-liteos [TOC]
+一、概述 ​	Makefile是一种控制自动编译的工具，Makefile关系到整个工程的编译规则。它告诉系统哪些文件先编译，哪些文件后编译，哪些文件在什么时候清理掉等等。因为是用来告知系统如何进行操作的，所以Makefile的语言风格跟shell很像，Makefile中也可以执行操作系统的命令。
+​	海思官方提供了liteos以及linux下面的makefile，用来编译程序，得到相应的库文件以及可执行文件，其中liteos部分提供了一个可用的makefile，顶层makefile通过调用底层makefile得到相应的编译结果，但是在sample中的makefile存在一些缺陷，其具体表现是只能编译单个文件，并不支持多文件的编译，但是在编写驱动以及应用程序的时候，往往需要多文件的编译以及多文件的支持，因此需要对makefile做一些修改，以下就makefile做一些讲解。
+二、 参考文件 三、 驱动编译 ​
+四、 API描述 ​
+五、 应用示例 1.官方makefile LITEOSTOPDIR ?= ../.. SAMPLE_OUT = . include $(LITEOSTOPDIR)/config.mk RM = -rm -rf LITEOS_LIBDEPS := --start-group $(LITEOS_LIBDEP) --end-group SRCS = $(wildcard sample.c) OBJS = $(patsubst %.c,$(SAMPLE_OUT)/%.o,$(SRCS)) all: $(OBJS) clean: @$(RM) *.o sample *.bin *.map *.asm $(OBJS): $(SAMPLE_OUT)/%.o : %.c ifneq ($(LITEOS_CPU_TYPE), arm926) ifneq ($(OUT)/lib/libipcm.a, $(wildcard $(OUT)/lib/libipcm.a)) echo &#34;$(OUT)&#34; cp -rf $(LITEOS_CPU_TYPE)/*.a $(OUT)/lib endif endif $(CC) $(LITEOS_CFLAGS) $(LITEOS_CXXFLAGS) -c $&lt; -o $@ $(LD) $(LITEOS_LDFLAGS) --gc-sections -Map=$(SAMPLE_OUT)/sample." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/shuixia01-liteos-makefile/" />
+<meta property="article:published_time" content="2021-02-01T16:06:09+08:00" />
+<meta property="article:modified_time" content="2021-02-01T16:06:09+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>luocang-blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/shuixia">shuixia工作</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/ubuntu">ubuntu系统搭建</a>
+      </nav>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/shuishen-cang" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitee.com/shuishen-cang/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">shuixia01-liteos-makefile</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 1, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          2 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://shuishen-cang.github.io/tags/shuixia/">shuixia</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <div align = "center" style="font-size:48px">Makefile修改使用说明-liteos</div>
+<p>[TOC]</p>
+<h1 id="一概述">一、概述</h1>
+<p>​		Makefile是一种控制自动编译的工具，Makefile关系到整个工程的编译规则。它告诉系统哪些文件先编译，哪些文件后编译，哪些文件在什么时候清理掉等等。因为是用来告知系统如何进行操作的，所以Makefile的语言风格跟shell很像，Makefile中也可以执行操作系统的命令。</p>
+<p>​		海思官方提供了liteos以及linux下面的makefile，用来编译程序，得到相应的库文件以及可执行文件，其中liteos部分提供了一个可用的makefile，顶层makefile通过调用底层makefile得到相应的编译结果，但是在sample中的makefile存在一些缺陷，其具体表现是只能编译单个文件，并不支持多文件的编译，但是在编写驱动以及应用程序的时候，往往需要多文件的编译以及多文件的支持，因此需要对makefile做一些修改，以下就makefile做一些讲解。</p>
+<h1 id="二-参考文件">二、 参考文件</h1>
+<h1 id="三-驱动编译">三、 驱动编译</h1>
+<p>​</p>
+<h1 id="四-api描述">四、 API描述</h1>
+<p>​</p>
+<h1 id="五-应用示例">五、 应用示例</h1>
+<h2 id="1官方makefile">1.官方makefile</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile">LITEOSTOPDIR <span style="color:#f92672">?=</span> ../..
+
+SAMPLE_OUT <span style="color:#f92672">=</span> .
+
+<span style="color:#960050;background-color:#1e0010">include</span> <span style="color:#66d9ef">$(</span>LITEOSTOPDIR<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/config.mk</span>
+RM <span style="color:#f92672">=</span> -rm -rf
+
+LITEOS_LIBDEPS <span style="color:#f92672">:=</span> --start-group <span style="color:#66d9ef">$(</span>LITEOS_LIBDEP<span style="color:#66d9ef">)</span> --end-group
+
+SRCS <span style="color:#f92672">=</span> <span style="color:#66d9ef">$(</span>wildcard sample.c<span style="color:#66d9ef">)</span>
+
+OBJS <span style="color:#f92672">=</span> <span style="color:#66d9ef">$(</span>patsubst %.c,<span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/%.o,<span style="color:#66d9ef">$(</span>SRCS<span style="color:#66d9ef">))</span>
+
+<span style="color:#a6e22e">all</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">$(</span>OBJS<span style="color:#66d9ef">)</span>
+
+<span style="color:#a6e22e">clean</span><span style="color:#f92672">:</span>
+	@<span style="color:#66d9ef">$(</span>RM<span style="color:#66d9ef">)</span> *.o  sample *.bin *.map *.asm
+
+<span style="color:#a6e22e">$(OBJS)</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/%.o : %.c
+<span style="color:#960050;background-color:#1e0010">ifneq</span> <span style="color:#960050;background-color:#1e0010">(</span><span style="color:#66d9ef">$(</span>LITEOS_CPU_TYPE<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#960050;background-color:#1e0010">arm926)</span>
+
+<span style="color:#960050;background-color:#1e0010">ifneq</span> <span style="color:#960050;background-color:#1e0010">(</span><span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/lib/libipcm.a,</span> <span style="color:#66d9ef">$(</span>wildcard <span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span>/lib/libipcm.a<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">)</span>
+	<span style="color:#960050;background-color:#1e0010">echo</span> <span style="color:#e6db74">&#34;$(OUT)&#34;</span>
+	<span style="color:#960050;background-color:#1e0010">cp</span> <span style="color:#960050;background-color:#1e0010">-rf</span> <span style="color:#66d9ef">$(</span>LITEOS_CPU_TYPE<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/*.a</span> <span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/lib</span>
+<span style="color:#960050;background-color:#1e0010">endif</span>
+<span style="color:#960050;background-color:#1e0010">endif</span>
+	<span style="color:#66d9ef">$(</span>CC<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_CFLAGS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_CXXFLAGS<span style="color:#66d9ef">)</span> <span style="color:#960050;background-color:#1e0010">-c</span> <span style="color:#66d9ef">$&lt;</span> <span style="color:#960050;background-color:#1e0010">-o</span> <span style="color:#66d9ef">$@</span>
+	<span style="color:#66d9ef">$(</span>LD<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_LDFLAGS<span style="color:#66d9ef">)</span> <span style="color:#960050;background-color:#1e0010">--gc-sections</span> -Map<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.map -o <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample ./$@ <span style="color:#66d9ef">$(</span>LITEOS_LIBDEPS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_TABLES_LDFLAGS<span style="color:#66d9ef">)</span>
+	<span style="color:#66d9ef">$(</span>OBJCOPY<span style="color:#66d9ef">)</span> -O binary <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.bin
+	<span style="color:#66d9ef">$(</span>OBJDUMP<span style="color:#66d9ef">)</span> -d <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample &gt;<span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.asm
+
+</code></pre></div><p>​		如上述代码所示：整个编译从make all开始(在all之前没有指定其他，因此make默认为make all)，make all会调用<code>$(OBJS)</code>，而<code>$(OBJS)</code>下面的代码是：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile"><span style="color:#a6e22e">$(OBJS)</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/%.o : %.c
+<span style="color:#960050;background-color:#1e0010">ifneq</span> <span style="color:#960050;background-color:#1e0010">(</span><span style="color:#66d9ef">$(</span>LITEOS_CPU_TYPE<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#960050;background-color:#1e0010">arm926)</span>
+
+<span style="color:#960050;background-color:#1e0010">ifneq</span> <span style="color:#960050;background-color:#1e0010">(</span><span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/lib/libipcm.a,</span> <span style="color:#66d9ef">$(</span>wildcard <span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span>/lib/libipcm.a<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">)</span>
+	<span style="color:#960050;background-color:#1e0010">echo</span> <span style="color:#e6db74">&#34;$(OUT)&#34;</span>
+	<span style="color:#960050;background-color:#1e0010">cp</span> <span style="color:#960050;background-color:#1e0010">-rf</span> <span style="color:#66d9ef">$(</span>LITEOS_CPU_TYPE<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/*.a</span> <span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/lib</span>
+<span style="color:#960050;background-color:#1e0010">endif</span>
+<span style="color:#960050;background-color:#1e0010">endif</span>
+	<span style="color:#66d9ef">$(</span>CC<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_CFLAGS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_CXXFLAGS<span style="color:#66d9ef">)</span> <span style="color:#960050;background-color:#1e0010">-c</span> <span style="color:#66d9ef">$&lt;</span> <span style="color:#960050;background-color:#1e0010">-o</span> <span style="color:#66d9ef">$@</span>
+	<span style="color:#66d9ef">$(</span>LD<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_LDFLAGS<span style="color:#66d9ef">)</span> <span style="color:#960050;background-color:#1e0010">--gc-sections</span> -Map<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.map -o <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample ./$@ <span style="color:#66d9ef">$(</span>LITEOS_LIBDEPS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_TABLES_LDFLAGS<span style="color:#66d9ef">)</span>
+	<span style="color:#66d9ef">$(</span>OBJCOPY<span style="color:#66d9ef">)</span> -O binary <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.bin
+	<span style="color:#66d9ef">$(</span>OBJDUMP<span style="color:#66d9ef">)</span> -d <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample &gt;<span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.asm
+</code></pre></div><p>​		在该种方式下，当<code>$(OBJS)</code>只存在一个.c文件时，并不影响程序的编译，但是在多个c文件的系统中，该部分makefile会重复调用编译，最后得不到可用的可执行文件，会使得编译后的结果无法在A53上正确执行，因此必须修改<code>$(OBJS)</code>下的编译规则以支持多文件的编译。</p>
+<h2 id="2修改makefile">2.修改makefile</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile">LITEOSTOPDIR <span style="color:#f92672">?=</span> ../..
+
+SAMPLE_OUT <span style="color:#f92672">=</span> ./build
+
+<span style="color:#960050;background-color:#1e0010">include</span> <span style="color:#66d9ef">$(</span>LITEOSTOPDIR<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/config.mk</span>
+RM <span style="color:#f92672">=</span> -rm -rf
+
+<span style="color:#960050;background-color:#1e0010">include</span> <span style="color:#960050;background-color:#1e0010">user/user.mk</span>
+<span style="color:#960050;background-color:#1e0010">include</span> <span style="color:#960050;background-color:#1e0010">hal/hal.mk</span>
+SRCS <span style="color:#f92672">+=</span> <span style="color:#66d9ef">$(</span>wildcard sample.c<span style="color:#66d9ef">)</span>
+OBJS <span style="color:#f92672">:=</span> <span style="color:#66d9ef">$(</span>SRCS:.c<span style="color:#f92672">=</span>.o<span style="color:#66d9ef">)</span>
+
+<span style="color:#75715e">#LITEOS_BASELIB += -lipcmsg_single_liteos
+</span><span style="color:#75715e"></span>LITEOS_LIBDEPS <span style="color:#f92672">:=</span> --start-group <span style="color:#66d9ef">$(</span>LITEOS_LIBDEP<span style="color:#66d9ef">)</span> --end-group
+LITEOS_CFLAGS  <span style="color:#f92672">+=</span> <span style="color:#66d9ef">$(</span>SINC<span style="color:#66d9ef">)</span>
+
+<span style="color:#a6e22e">all</span><span style="color:#f92672">:</span> chkbindir <span style="color:#66d9ef">$(</span>OBJS<span style="color:#66d9ef">)</span>
+<span style="color:#960050;background-color:#1e0010">ifneq</span> <span style="color:#960050;background-color:#1e0010">(</span><span style="color:#66d9ef">$(</span>LITEOS_CPU_TYPE<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#960050;background-color:#1e0010">arm926)</span>
+<span style="color:#960050;background-color:#1e0010">ifneq</span> <span style="color:#960050;background-color:#1e0010">(</span><span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/lib/libipcm.a,</span> <span style="color:#66d9ef">$(</span>wildcard <span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span>/lib/libipcm.a<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">)</span>
+	<span style="color:#960050;background-color:#1e0010">echo</span> <span style="color:#e6db74">&#34;$(OUT)&#34;</span>
+	<span style="color:#960050;background-color:#1e0010">cp</span> <span style="color:#960050;background-color:#1e0010">-rf</span> <span style="color:#66d9ef">$(</span>LITEOS_CPU_TYPE<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/*.a</span> <span style="color:#66d9ef">$(</span>OUT<span style="color:#66d9ef">)</span><span style="color:#960050;background-color:#1e0010">/lib</span>
+<span style="color:#960050;background-color:#1e0010">endif</span>
+<span style="color:#960050;background-color:#1e0010">endif</span>
+	<span style="color:#960050;background-color:#1e0010">@</span><span style="color:#66d9ef">$(</span>LD<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_LDFLAGS<span style="color:#66d9ef">)</span> <span style="color:#960050;background-color:#1e0010">--gc-sections</span> -Map<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.map -o <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample <span style="color:#66d9ef">$(</span>addprefix <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/,<span style="color:#66d9ef">$(</span>notdir <span style="color:#66d9ef">$(</span>OBJS<span style="color:#66d9ef">)))</span>  <span style="color:#66d9ef">$(</span>LITEOS_LIBDEPS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_TABLES_LDFLAGS<span style="color:#66d9ef">)</span>
+	@<span style="color:#66d9ef">$(</span>OBJCOPY<span style="color:#66d9ef">)</span> -O binary <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.bin
+	cp <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/sample.bin /workspace/05tftpboot/sample_a53
+
+<span style="color:#a6e22e">clean</span><span style="color:#f92672">:</span>
+	@if test -d <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span> ; <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#66d9ef">then</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	rm -rf <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span> ; 		<span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#66d9ef">fi</span>
+	@rm /workspace/05tftpboot/sample_a53
+
+<span style="color:#a6e22e">test</span><span style="color:#f92672">:</span> all
+	@echo <span style="color:#66d9ef">$(</span>LITEOS_CXXOPTS<span style="color:#66d9ef">)</span>
+
+<span style="color:#a6e22e">debug</span><span style="color:#f92672">:</span> all
+	python3 /workspace/04shell/download_python/makedebug_a53.py
+
+<span style="color:#a6e22e">flash</span><span style="color:#f92672">:</span>
+	python3 /workspace/04shell/download_python/class_downlinux_emmc.py	
+
+<span style="color:#a6e22e">$(OBJS)</span><span style="color:#f92672">:</span> %.o: %.c 
+	@<span style="color:#66d9ef">$(</span>CC<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_CFLAGS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>LITEOS_CXXFLAGS<span style="color:#66d9ef">)</span> -o <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span>/<span style="color:#66d9ef">$(</span>notdir $@<span style="color:#66d9ef">)</span> -c $^
+
+<span style="color:#a6e22e">chkbindir</span><span style="color:#f92672">:</span>
+	@if test ! -d <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span> ; 	<span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#66d9ef">then</span> 							<span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	mkdir <span style="color:#66d9ef">$(</span>SAMPLE_OUT<span style="color:#66d9ef">)</span> ; 			<span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#66d9ef">fi</span>
+</code></pre></div><p>​		如上述代码，将编译过程与连接过程分离开来，在链接过程中只执行链接过程，在编译过程中执行编译过程，这样便能使得编译与链接完全分离，并且在makefile中提供了make test；make debug；make flash等操作，以便于程序的测试，调试以及烧写等。</p>
+<h1 id="六注意事项">六、注意事项</h1>
+<ul>
+<li>liteos的程序静态库链接位置均采用相对位置，因此不能随意修改sdk中程序的位置，否则会提示缺少库文件等。</li>
+<li>使用make debug；make flash等操作必须先配置好tftp服务器以及设置好对应的脚本文件</li>
+</ul>
+<script src="../js/mermaid.min.js"></script>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

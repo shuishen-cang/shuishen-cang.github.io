@@ -11,11 +11,25 @@
     
     
     <item>
-      <title>shuixia01-liteos-can</title>
-      <link>https://shuishen-cang.github.io/post/shuixia01-liteos-can/</link>
+      <title>shuixia01-liteos-makefile</title>
+      <link>https://shuishen-cang.github.io/post/shuixia01-liteos-makefile/</link>
       <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
       
-      <guid>https://shuishen-cang.github.io/post/shuixia01-liteos-can/</guid>
+      <guid>https://shuishen-cang.github.io/post/shuixia01-liteos-makefile/</guid>
+      <description>Makefile修改使用说明-liteos [TOC]
+一、概述 ​	Makefile是一种控制自动编译的工具，Makefile关系到整个工程的编译规则。它告诉系统哪些文件先编译，哪些文件后编译，哪些文件在什么时候清理掉等等。因为是用来告知系统如何进行操作的，所以Makefile的语言风格跟shell很像，Makefile中也可以执行操作系统的命令。
+​	海思官方提供了liteos以及linux下面的makefile，用来编译程序，得到相应的库文件以及可执行文件，其中liteos部分提供了一个可用的makefile，顶层makefile通过调用底层makefile得到相应的编译结果，但是在sample中的makefile存在一些缺陷，其具体表现是只能编译单个文件，并不支持多文件的编译，但是在编写驱动以及应用程序的时候，往往需要多文件的编译以及多文件的支持，因此需要对makefile做一些修改，以下就makefile做一些讲解。
+二、 参考文件 三、 驱动编译 ​
+四、 API描述 ​
+五、 应用示例 1.官方makefile LITEOSTOPDIR ?= ../.. SAMPLE_OUT = . include $(LITEOSTOPDIR)/config.mk RM = -rm -rf LITEOS_LIBDEPS := --start-group $(LITEOS_LIBDEP) --end-group SRCS = $(wildcard sample.c) OBJS = $(patsubst %.c,$(SAMPLE_OUT)/%.o,$(SRCS)) all: $(OBJS) clean: @$(RM) *.o sample *.bin *.map *.asm $(OBJS): $(SAMPLE_OUT)/%.o : %.c ifneq ($(LITEOS_CPU_TYPE), arm926) ifneq ($(OUT)/lib/libipcm.a, $(wildcard $(OUT)/lib/libipcm.a)) echo &amp;#34;$(OUT)&amp;#34; cp -rf $(LITEOS_CPU_TYPE)/*.a $(OUT)/lib endif endif $(CC) $(LITEOS_CFLAGS) $(LITEOS_CXXFLAGS) -c $&amp;lt; -o $@ $(LD) $(LITEOS_LDFLAGS) --gc-sections -Map=$(SAMPLE_OUT)/sample.</description>
+    </item>
+    
+    <item>
+      <title>shuixia02-liteos-can</title>
+      <link>https://shuishen-cang.github.io/post/shuixia02-liteos-can/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/shuixia02-liteos-can/</guid>
       <description>CAN设备驱动测试使用说明-liteos [TOC]
 一、概述 ​	控制器局域网络 CAN（Controller Area Network）最初是由德国 Bosch 公司设计并应用于汽车的监测和控制。由于其作为一种技术先进、可靠性高、功能完善、成本合理的远程网络通讯控制方式，因此 CAN 总线正逐步被广泛应用到各种控制领域,如中控车机等。 ​	芯片共支持 3 个 CAN 总线控制器，主 SOC 子系统有 2 个，Sensor Hub 子系统有 1个。
 ​	芯片的3个CAN总线控制器的地址在经过地址转换后均可以访问，即SOC系统可以访问Sensor Hub 的CAN总线控制器，但是SOC上的CAN总线控制器其中断连接到GIC中断控制器上，Sensor Hub 上的CAN总线控制器其中断连接在M7的中断控制器上，因此SOC使用Sensor Hub 的CAN总线控制器只能使用查询模式，而不能使用中断模式。
@@ -28,6 +42,42 @@
   支持主动错误和被动错误的自我判定以及故障节点的隔离。
   支持错误的自我修复。
   支持自动重传模式。</description>
+    </item>
+    
+    <item>
+      <title>shuixia03-liteos-gpio</title>
+      <link>https://shuishen-cang.github.io/post/shuixia03-liteos-gpio/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/shuixia03-liteos-gpio/</guid>
+      <description>GPIO设备驱动测试使用说明-liteos [TOC]
+一、概述 ​	HI3559A芯片的CPU子系统分为两部分，一个是以为A73+A53为主的SOC部分，另一个是为M7为主的Sensor Hub部分，其中SOC子系统与Sensor Hub子系统的外设均采用统一的外设接口，即寄存器组完全一样，并且可以通过地址转换实现跨子系统访问，但是SOC子系统与Sensor Hub子系统的中断系统完全肚子，并不能完全共享中断向量。
+​	主 SOC 子系统支持 19 组 GPIO（General Purpose Input/Output），即 GPIO0～GPIO18。每组 GPIO 提供 8 个可编程的输入输出管脚（GPIO18 只有 4 个）。
+​	Sensor Hub 子系统支持 5 组 GPIO，即 GPIO0~GPIO4。每组 GPIO 提供 8 个可编程的输入输出管脚（GPIO4 只有 2 个）。 ​	每个管脚可以配置为输入或者输出。这些管脚用于生成特定应用的输出信号或采集特定应用的输入信号。作为输入管脚时，GPIO 可作为中断源；作为输出管脚时，每个GPIO 都可以独立地清 0 或置 1。
+​	该文档就GPIO的操作使用以及GPIO的复用功能做详细讲解。
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+三、驱动编译 1. 官方GPIO驱动编译 ​	海思官方提供的程序兼容posix接口，实现了部分函数功能，gpio相关的驱动程序源码路径为 drivers/gpio，在编译脚本里指定源码路径与头文件路径，编译成功后，out目录下会生成名为 libgpio.a 的库文件，链接时通过-lgpio 指定对应库文件。</description>
+    </item>
+    
+    <item>
+      <title>shuixia04-liteos-pwm</title>
+      <link>https://shuishen-cang.github.io/post/shuixia04-liteos-pwm/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/shuixia04-liteos-pwm/</guid>
+      <description>PWM设备驱动测试使用说明-liteos [TOC]
+一、概述 ​	脉冲宽度调制是一种模拟控制方式，根据相应载荷的变化来调制晶体管，来实现晶体管或MOS导通时间的改变，从而实现开关稳压电源输出的改变。这种方式能使电源的输出电压在工作条件变化时保持恒定，是利用微处理器的数字信号对模拟电路进行控制的一种非常有效的技术。PWM调制是利用数字输出来对模拟电路进行控制的一种非常有效的技术，广泛应用在从测量、通信到功率控制与变换的许多领域中。
+​	HI3559A芯片的CPU子系统分为两部分，一个是以为A73+A53为主的SOC部分，另一个是为M7为主的Sensor Hub部分，其中SOC子系统与Sensor Hub子系统的外设均采用统一的外设接口，即寄存器组完全一样，并且可以通过地址转换实现跨子系统访问，但是SOC子系统与Sensor Hub子系统的中断系统完全肚子，并不能完全共享中断向量。
+​	主 SOC 子系统提供 1 组 2 路独立的脉宽调制信号输出。 ​	Sensor Hub 子系统提供 1 组 8 路独立的脉宽调制信号输出
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+三、 驱动编译 ​	海思官方没有提供PWM相关的驱动，因此需要自行操作寄存器进行PWM驱动编写，其编写流程如下：
+graph TD A(使能PWM时钟)--B(配置GPIO复用功能)--C(配置周期占空比)--D(使能输出)  ​	具体操作如下：
+​	在hal_gpioaf.h中添加如下代码：
+...... #define AF_PWM_VAL 0x01 #define AF_PWM0_OUT IOREG(73) #define AF_PWM1_OUT IOREG(74) ...... #define AF_PWM0_Config(){ \ writeor(AF_PWM0_OUT, AF_PWM_VAL); \ }  #define AF_PWM1_Config(){ \ writeor(AF_PWM1_OUT, AF_PWM_VAL); \ } ​	新建hal_pwm.</description>
     </item>
     
     <item>

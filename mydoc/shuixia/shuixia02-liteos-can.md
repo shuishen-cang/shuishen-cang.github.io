@@ -1,5 +1,5 @@
 ---
-title: "shuixia01-liteos-can"
+title: "shuixia02-liteos-can"
 date: 2021-02-01T16:06:09+08:00
 draft: false
 tags: ["shuixia"]
@@ -63,11 +63,12 @@ GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
 
 ​		CAN总线控制器在使用前需要先配置CAN设备的基本属性以及配置波特率相关、报文对象相关属性，其初始化以及收发相关过程如下：
 
-<div class="mermaid">
+```mermaid
 graph TD
 a0(配置GPIO)-->a(初始化报文对象)-->b(修改波特率相关寄存器)-->c(配置接收掩码)-->d(查询接收邮箱)-->f(读取数据)
 c-->e(等待中断)-->f
-</div>
+```
+
 
 
 **Makefile**
@@ -542,7 +543,7 @@ void user_can_initial(void){
 }
 ```
 
-![image-20210201151929006](../images/image-20210201151929006.png)
+![image-20210201151929006](/home/luocang/.config/Typora/typora-user-images/image-20210201151929006.png)
 
 ​		将上述代码拷贝到SDK目录下，其具体路径为：```osdrv/platform/liteos_a53/liteos/sample/sample_osdrv```，对程序进行编译，make之后便可以得到可执行文件，将该文件烧写到板卡上便可以执行，其测试步骤如上图所示：电脑连接一个USB转CAN的设备，使用上位机给HI3559A发送CAN数据帧，HI3559A接收到CAN数据帧后便可以反馈其数据包，形成闭环。
 
@@ -555,10 +556,8 @@ void user_can_initial(void){
 * 官方的板卡上存在sleep引脚，需要配置该引脚。
 * 官方的板卡上有拨码开关，需要配置对应的拨码开关选择GPIO功能。
 
-<script src="../js/mermaid.min.js"></script>
 
 
 
 
 
-<script src="../js/mermaid.min.js"></script>
