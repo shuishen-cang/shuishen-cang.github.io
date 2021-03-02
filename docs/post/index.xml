@@ -81,6 +81,125 @@ graph TD A(使能PWM时钟)--B(配置GPIO复用功能)--C(配置周期占空比)
     </item>
     
     <item>
+      <title>shuixia05-liteos-can_user</title>
+      <link>https://shuishen-cang.github.io/post/shuixia05-liteos-can_user/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/shuixia05-liteos-can_user/</guid>
+      <description>CAN设备用户操作使用说明-liteos [TOC]
+一、概述 ​	之前在《CAN设备驱动测试使用说明-liteos》文档中初步说明了can驱动的编写，并且提供了一个demo实例，该实例初步实现了CAN口的收发，但是在大部分应用中，不能实现简单的收发，在发送的过程中，驱动实现了一个长度为16x8的数据fifo，能够满足大部分的应用，但是在接收中没有做任何处理，因此该部分不能直接在应用层中使用，本文件就can设备的进一步使用做一些说明。
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+can驱动使用说明《CAN设备驱动测试使用说明-liteos》
+三、驱动编译 1.hal_can.c/hal_can.h ​	参考《CAN设备驱动测试使用说明-liteos》
+2.user_can.c/user_can.h ​	在hal_can.c/hal_can.h的基础上新建立一个线程，在CAN接口的接收中断中唤醒该线程，线程读取数据，并且在线程中对接收的CAN数据进行解析，解析之后做出处理。
+graph TD A(创建线程)--B(创建事件)--C(等待事件)--D(处理事件)--C  ​	在hal_can.h中添加如下代码：
+extern EVENT_CB_S can_wait_event; #define can_event_signal(event, bit) LOS_EventWrite(event, bit) #define can_event_wait(event, bit, timeout) LOS_EventRead(event, bit,\ LOS_WAITMODE_AND + LOS_WAITMODE_CLR, timeout) ​	在hal_can.c中添加如下代码：
+irqreturn_t can_isr(int a, void *arg){ ... if(reg &amp;amp; 0x10){ ... can_event_signal(&amp;amp;can_wait_event,canid == 0 ? 0x01 : 0x10); } else if(reg &amp;amp; 0x08){ //txok  .</description>
+    </item>
+    
+    <item>
+      <title>shuixia06-liteos-uart_user</title>
+      <link>https://shuishen-cang.github.io/post/shuixia06-liteos-uart_user/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/shuixia06-liteos-uart_user/</guid>
+      <description>UART设备用户操作使用说明-liteos [TOC]
+一、概述 ​	通用异步收发器 UART（Universal Asynchronous Receiver Transmitter）是一个异步串行的通信接口，主要功能是将来自外围设备的数据进行串并转换之后传入内部总线，以及将数据进行并串转换之后输出到外部设备。UART 的主要功能是和外部芯片的UART 进行对接，从而实现两芯片间的通信。 ​	主 SOC 子系统提供 5 个 UART 单元：
+  UART0：2 线 UART，主要用于调试。
+  UART1/3：4 线 UART。
+  UART2/4：2 线 UART。
+  Sensor Hub 子系统提供了 7 个 UART。
+  UART0/1/2：4 线 UART。
+  UART3/4/5/6：2 线 UART
+UART 模块有以下特点：
+  支持 64 x 8bit 的发送 FIFO 和 64 x 12bit 的接收 FIFO。
+  支持数据位和停止位的位宽可编程。数据位可通过编程设定为 5/6/7/8 比特；停止位可通过编程设定为 1bit 或 2bit。</description>
+    </item>
+    
+    <item>
+      <title>shuixia07-liteos-spi_user</title>
+      <link>https://shuishen-cang.github.io/post/shuixia07-liteos-spi_user/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/shuixia07-liteos-spi_user/</guid>
+      <description>CAN设备用户操作使用说明-liteos [TOC]
+一、概述 ​	SPI 控制器实现数据的串并、并串转换，可以作为 Master 与外部设备进行同步串行通信。支持 MOTOROLA 的 SPI、TI 串行同步、MicroWire 三种外设接口协议。
+​	芯片总共有 12 组 SPI 接口，其中主 SOC 侧有 7 组 SPI0~6，Sensor Hub 子系统有 5组，Sensor Hub SPI0~4。
+  其中 SOC 侧的 SPI0~3 支持 2 片选，SPI4 支持 4 片选，SPI5（master）/SPI6（slave）为 SOC 与 SensorHub 内部通讯专用。
+  Sensor Hub SPI0/1 支持 3 片选，Sensor Hub SPI2 支持单片选，Sensor Hub SPI3（master）/ Sensor Hub SPI4（slave）为 SOC 与 Sensor Hub 内部通讯专用。
+  SOC 侧的 SPI0~4 只支持 Master 接口，工作参考时钟为 APB 总线时钟，SPI 输出的SPI_CLK 最大支持 24.</description>
+    </item>
+    
+    <item>
+      <title>shuixia08-liteos-i2c_user</title>
+      <link>https://shuishen-cang.github.io/post/shuixia08-liteos-i2c_user/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/shuixia08-liteos-i2c_user/</guid>
+      <description>I2C设备用户操作使用说明-liteos [TOC]
+一、概述 ​	I2C 模块的作用是完成 CPU 对 I2C 总线上连接的从设备的读写。
+​	I2C 控制器为 Master 接口，完成 CPU 对 I2C 总线上连接的从设备的读写访问。芯片共有 20 个 I2C 控制器，主 SOC 子系统有 12 个，Sensor Hub 子系统有 8 个。
+​	I2C 控制器具有以下功能特点：
+ 芯片的 I2C 是 Master 接口，支持标准时序和非标准时序。 支持多主设备时的总线仲裁。 支持 Clock synchronization 和 Bit and Byte waiting。 支持标准地址（7bit）和扩展地址（10bit）。 传输速率支持标准模式（100kbit/s）和快速模式（400kbit/s）。 支持 General Call 和 Start Byte 功能。 不支持 CBUS 器件。 支持 DMA 操作。 支持 64 x 8bit 的 TX FIFO 和 64 x 8bit 的 RX FIFO  二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.</description>
+    </item>
+    
+    <item>
+      <title>shuixia09-linux-makefile</title>
+      <link>https://shuishen-cang.github.io/post/shuixia09-linux-makefile/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/shuixia09-linux-makefile/</guid>
+      <description>Makefile修改使用说明-linux [TOC]
+一、概述 ​	Makefile是一种控制自动编译的工具，Makefile关系到整个工程的编译规则。它告诉系统哪些文件先编译，哪些文件后编译，哪些文件在什么时候清理掉等等。因为是用来告知系统如何进行操作的，所以Makefile的语言风格跟shell很像，Makefile中也可以执行操作系统的命令。
+​	海思官方提供了liteos以及linux下面的makefile，用来编译程序，得到相应的库文件以及可执行文件，其中liteos部分提供了一个可用的makefile，顶层makefile通过调用底层makefile得到相应的编译结果，但是在sample中的makefile存在一些缺陷，其具体表现是只能编译单个文件，并不支持多文件的编译，但是在编写驱动以及应用程序的时候，往往需要多文件的编译以及多文件的支持，因此需要对makefile做一些修改，以下就makefile做一些讲解。
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+三、驱动编译 ​	linux的驱动分为内核驱动和模块驱动，内核驱动编译到内核里面，不方便后期的更改，一般后期添加的驱动都是以模块驱动的方式加载，驱动编译成.ko文件的模块，在用户程序空间以insmod的方式插入到内核。
+​	linux的驱动根据类型分为字符驱动、块驱动和网络驱动，一般的外设都是以字符驱动的形式加载到内核空间，块驱动和网络驱动更多是作为字符驱动的上层驱动提供，因此本文只考虑字符驱动。
+​	字符驱动的makefile如下：
+Makefile
+obj-m+=hello.o # KERNEL_PATH = /lib/modules/$(shell uname -r)/build/ CROSS_COMPILE := aarch64-himix100-linux- ARCH_TYPE = arm64 KERNEL_PATH = /workspace/02sdk/Hi3559AV100R001C02SPC020/01.software/board/Hi3559AV100_SDK_V2.0.2.0/osdrv/opensource/kernel/linux-4.9.y_multi-core/ all: make -C ${KERNEL_PATH} M=${PWD} ARCH=${ARCH_TYPE} CROSS_COMPILE=${CROSS_COMPILE} modules clean: make -C $(KERNEL_PATH) M=$(PWD) clean .PHONE:install remove install:all sudo insmod hello.ko sudo dmesg -c | grep hello remove: sudo rmmod hello hello.</description>
+    </item>
+    
+    <item>
+      <title>shuixia10-linux-gpioaf</title>
+      <link>https://shuishen-cang.github.io/post/shuixia10-linux-gpioaf/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/shuixia10-linux-gpioaf/</guid>
+      <description>GPIO复用驱动测试使用说明-linux [TOC]
+一、概述 ​	HI3559A每个管脚可以配置为输入或者输出。这些管脚用于生成特定应用的输出信号或采集特定应用的输入信号。作为输入管脚时，GPIO 可作为中断源；作为输出管脚时，每个GPIO 都可以独立地清 0 或置 1。
+​	该文档就GPIO的复用功能驱动部分做详细讲解。
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+三、驱动编译 ​	linux的的字符串驱动一般作为platform驱动编译，platform驱动具有良好的移植性，但是设计起来较为复杂，本文就单文件驱动进行设计，linux驱动的设计步骤如下：
+ 实现基本的驱动功能函数 申请主次设备号 申请cdev设备，初始化cdev并且设置相关函数 创建一个class设备，并且在class下创建device  graph TD d4--d5(class_create) d5--d6(device_create) d5--d7(device_create) subgraph register_chrdev d1(alloc_chrdev)--d2(cdev_alloc)--d3(cdev_init)--d4(cdev_add) end  ​	系统提供的驱动部分的函数如下:
+   函数 说明     alloc_chrdev 申请一组可用的主从设备号，当主设备号为零的时候表明是动态分配   cdev_alloc 申请一个可用的dev对象，用于存储操作函数相关的结构体   cdev_init 将操作函数结构体赋值   cdev_add 将cdev与主从设备号关联起来   class_create 在/sys/class/路径下面创建一个类用于存储驱动相关信息   device_create 在class_create创建的类下面创建一个device，分配唯一的主从设备号，并且uevent给udev在/dev下面创建软连接    ​	字符驱动的文件如下：</description>
+    </item>
+    
+    <item>
+      <title>shuixia11-linux-pwm</title>
+      <link>https://shuishen-cang.github.io/post/shuixia11-linux-pwm/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/shuixia11-linux-pwm/</guid>
+      <description>PWM复用驱动测试使用说明-linux [TOC]
+一、概述 ​	脉冲宽度调制是一种模拟控制方式，根据相应载荷的变化来调制晶体管，来实现晶体管或MOS导通时间的改变，从而实现开关稳压电源输出的改变。这种方式能使电源的输出电压在工作条件变化时保持恒定，是利用微处理器的数字信号对模拟电路进行控制的一种非常有效的技术。PWM调制是利用数字输出来对模拟电路进行控制的一种非常有效的技术，广泛应用在从测量、通信到功率控制与变换的许多领域中。
+​	HI3559A芯片的CPU子系统分为两部分，一个是以为A73+A53为主的SOC部分，另一个是为M7为主的Sensor Hub部分，其中SOC子系统与Sensor Hub子系统的外设均采用统一的外设接口，即寄存器组完全一样，并且可以通过地址转换实现跨子系统访问，但是SOC子系统与Sensor Hub子系统的中断系统完全肚子，并不能完全共享中断向量。
+​	主 SOC 子系统提供 1 组 2 路独立的脉宽调制信号输出。 ​	Sensor Hub 子系统提供 1 组 8 路独立的脉宽调制信号输出
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+三、驱动编译 ​	linux的的字符串驱动一般作为platform驱动编译，platform驱动具有良好的移植性，但是设计起来较为复杂，本文就单文件驱动进行设计，linux驱动的设计步骤如下：
+ 实现基本的驱动功能函数 申请主次设备号 申请cdev设备，初始化cdev并且设置相关函数 创建一个class设备，并且在class下创建device  graph TD d4--d5(class_create) d5--d6(device_create) d5--d7(device_create) subgraph register_chrdev d1(alloc_chrdev)--d2(cdev_alloc)--d3(cdev_init)--d4(cdev_add) end  ​	系统提供的驱动部分的函数如下:
+   函数 说明     alloc_chrdev 申请一组可用的主从设备号，当主设备号为零的时候表明是动态分配   cdev_alloc 申请一个可用的dev对象，用于存储操作函数相关的结构体   cdev_init 将操作函数结构体赋值   cdev_add 将cdev与主从设备号关联起来   class_create 在/sys/class/路径下面创建一个类用于存储驱动相关信息   device_create 在class_create创建的类下面创建一个device，分配唯一的主从设备号，并且uevent给udev在/dev下面创建软连接    ​	字符驱动的文件如下：</description>
+    </item>
+    
+    <item>
       <title>ubuntu01-setup</title>
       <link>https://shuishen-cang.github.io/post/ubuntu01_setup/</link>
       <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
@@ -101,6 +220,31 @@ graph TD A(使能PWM时钟)--B(配置GPIO复用功能)--C(配置周期占空比)
 2. 设置皮肤 皮肤可以在hugo的官网https://www.gohugo.org/theme/中获取，为了后期的兼容，在下载后需要去除.git文件夹。
 cd themes git clone git@github.com:TiTi/hurock.git cd hurock/ rm -rf .git/ 3. 配置皮肤 选择使用皮肤需要在config.toml里面设置。
 cd ../../ subl config.toml #修改为以下代码 baseURL = &amp;#34;https://shuishen-cang.github.io/&amp;#34; languageCode = &amp;#34;en-us&amp;#34; title = &amp;#34;洛沧-blog&amp;#34; theme = &amp;#34;hurock&amp;#34; 4. helloworld hugo new post/hello.md subl content/post/hello.md # 修改为以下代码 --- title: &amp;#34;Hello&amp;#34; date: 2021-02-01T20:06:38+08:00 draft: false --- helloworld 5.</description>
+    </item>
+    
+    <item>
+      <title>ubuntu05-vuecli</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu05_vuecli/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu05_vuecli/</guid>
+      <description>ubuntu下安装vue cli  一、安装环境 ​	本文主要介绍vue脚手架工具vue-cli的安装。
+luocang@luocang-SC:~$ sudo apt-get install nodejs luocang@luocang-SC:~$ node -v v10.19.0 luocang@luocang-SC:~$ sudo apt install npm luocang@luocang-SC:~$ sudo npm install -g cnpm --registry=https://registry.npm.taobao.org luocang@luocang-SC:~$ sudo cnpm install -g @vue/cli luocang@luocang-SC:~$ vue -V @vue/cli 4.5.11 luocang@luocang-SC:~$ npm config set registry https://registry.npm.taobao.org 二、构建项目 ​	vue-cli构建element项目可以有两种方法，一种是使用vue ui的可视化界面生成，另外一种是vue create的方式生成，这里使用vue ui的方式生成。
+1. 创建项目 ​	使用vue-cli可以快速设置一个vue项目：
+vue ui ​	使用该指令后会自动访问localhost:8000端口，不选择git初始化，preset选择手动，其中特性选择了vue版本，babel，router以及使用配置文件。Vue版本选择2.x即可。
+​	上述一些列操作也可以使用vue create完成。
+2. 运行项目 ​	运行项目有两种方式，其实本质都是一样的。
+​	第一种
+$ cd 01helloworld $ npm run serve ​	第二种</description>
+    </item>
+    
+    <item>
+      <title>ubuntu06-shelljs</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu06_shelljs/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu06_shelljs/</guid>
+      <description>ubuntu下安装vue cli  一、安装环境 </description>
     </item>
     
     <item>
@@ -159,10 +303,10 @@ hal_gpio.c
       
       <guid>https://shuishen-cang.github.io/post/lichee_01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</guid>
       <description>Lichee_01开发环境  [toc]
-一、开发环境搭建 1. 建立docker容器 手上有一块lichee板子很久了，lichee的资料相对较全，最近又在学习linux，因此拿这个平台验证一下也不错，要开发芯片，必须先搭建交叉编译环境，考虑到电脑上已经安装了一个树莓派的交叉编译环境了，那么就在docker里面安装交叉编译器吧。
-先搭建一个最基本的docker开发环境吧，采用ubuntu18为基础
-docker pull ubuntu:18.04 docker images 可以看到已经存在ubuntu镜像了，然后在workspace下面建立一个目录用来作为lichee的开发目录，其目录为~/workspace/02prj/01lichee_zero下面，因此采用以下命令创建一个容器。
-docker run -it --name=lichee -v ~/workspace/02prj/01lichee_zero:/workspace ubuntu:18.04 /bin/bash # 进入docker容器后 apt update apt install nano nano /etc/apt/sources.list # 修改为 deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb-src http://mirrors.</description>
+一、开发环境搭建 1. 建立docker容器 ​	手上有一块lichee板子很久了，lichee的资料相对较全，最近又在学习linux，因此拿这个平台验证一下也不错，要开发芯片，必须先搭建交叉编译环境，考虑到电脑上已经安装了一个树莓派的交叉编译环境了，那么就在docker里面安装交叉编译器吧。
+​	先搭建一个最基本的docker开发环境吧，采用ubuntu18为基础。
+docker pull ubuntu:18.04 docker images ​	可以看到已经存在ubuntu镜像了，然后在workspace下面建立一个目录用来作为lichee的开发目录，其目录为~/workspace/02prj/01lichee_zero下面，因此采用以下命令创建一个容器。
+docker run -it --name=lichee -v ~/workspace/02prj/01lichee_zero:/workspace ubuntu:18.04 /bin/bash # 进入docker容器后 apt update apt install nano nano /etc/apt/sources.list # 修改为 deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse deb-src http://mirrors.</description>
     </item>
     
     <item>
@@ -178,6 +322,18 @@ apt-get install libncurses5-dev apt-get install device-tree-compiler apt-get ins
     </item>
     
     <item>
+      <title>vue_01element项目创建</title>
+      <link>https://shuishen-cang.github.io/post/01element.md/</link>
+      <pubDate>Sun, 27 Dec 2020 21:31:22 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/01element.md/</guid>
+      <description>vue_01element项目创建  [toc]
+一、创建项目 ​	使用vue ui创建一个工程，工程名称为mydoc，选择安装了router和vuex。创建工程后先安装axios和element，安装过程如下：
+​	运行该部分程序后便可以实现了基本功能。
+二、修改界面 </description>
+    </item>
+    
+    <item>
       <title>ubuntu02-qt开发环境搭建</title>
       <link>https://shuishen-cang.github.io/post/ubuntu02_qt%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
       <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
@@ -190,6 +346,16 @@ apt-get install libncurses5-dev apt-get install device-tree-compiler apt-get ins
 三、命令编译 ​	先clean工程，查看qmake的目录，我的qmake路径为：/home/installed/Qt5.9.9/5.9.9/gcc_64/bin/qmake
 ​	控制台进入qtest工程下面。
 cd ~/Desktop/qtest/ /home/installed/Qt5.9.9/5.9.9/gcc_64/bin/qmake &amp;#34;OBJECTS_DIR=build&amp;#34; qtest.pro make ls ./qtest ​	程序已经能够正常运行，说明具备基本的docker镜像下开发条件。</description>
+    </item>
+    
+    <item>
+      <title>ubuntu02-开发环境搭建</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu02_%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu02_%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>ubuntu开发环境搭建-安装软件  一、安装typora wget -qO - https://typora.io/linux/public-key.asc | sudo apt-key add - sudo add-apt-repository &amp;#39;deb https://typora.io/linux ./&amp;#39; sudo apt-get update sudo apt-get install typora 二、安装vscode ​	先在官网下载vscode的安装包，然后使用下面命令安装。
+sudo dpkg -i xxx.deb 三、安装sublime wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add - sudo apt-add-repository &amp;#34;deb https://download.sublimetext.com/ apt/stable/&amp;#34; sudo apt update sudo apt install sublime-text 四、安装其他 sudo apt install python3-pip # fsearch sudo add-apt-repository ppa:christian-boxdoerfer/fsearch-daily sudo apt update sudo apt install fsearch-trunk ​</description>
     </item>
     
     <item>

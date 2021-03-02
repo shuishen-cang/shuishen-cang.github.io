@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>ubuntu05-vuecli // luocang-blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.21b1686763bf47744aadffb53465246543024e9fa17a5d5bbf22723c71d1feca.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ubuntu05-vuecli"/>
+<meta name="twitter:description" content="ubuntu下安装vue cli  一、安装环境 ​	本文主要介绍vue脚手架工具vue-cli的安装。
+luocang@luocang-SC:~$ sudo apt-get install nodejs luocang@luocang-SC:~$ node -v v10.19.0 luocang@luocang-SC:~$ sudo apt install npm luocang@luocang-SC:~$ sudo npm install -g cnpm --registry=https://registry.npm.taobao.org luocang@luocang-SC:~$ sudo cnpm install -g @vue/cli luocang@luocang-SC:~$ vue -V @vue/cli 4.5.11 luocang@luocang-SC:~$ npm config set registry https://registry.npm.taobao.org 二、构建项目 ​	vue-cli构建element项目可以有两种方法，一种是使用vue ui的可视化界面生成，另外一种是vue create的方式生成，这里使用vue ui的方式生成。
+1. 创建项目 ​	使用vue-cli可以快速设置一个vue项目：
+vue ui ​	使用该指令后会自动访问localhost:8000端口，不选择git初始化，preset选择手动，其中特性选择了vue版本，babel，router以及使用配置文件。Vue版本选择2.x即可。
+​	上述一些列操作也可以使用vue create完成。
+2. 运行项目 ​	运行项目有两种方式，其实本质都是一样的。
+​	第一种
+$ cd 01helloworld $ npm run serve ​	第二种"/>
+
+    <meta property="og:title" content="ubuntu05-vuecli" />
+<meta property="og:description" content="ubuntu下安装vue cli  一、安装环境 ​	本文主要介绍vue脚手架工具vue-cli的安装。
+luocang@luocang-SC:~$ sudo apt-get install nodejs luocang@luocang-SC:~$ node -v v10.19.0 luocang@luocang-SC:~$ sudo apt install npm luocang@luocang-SC:~$ sudo npm install -g cnpm --registry=https://registry.npm.taobao.org luocang@luocang-SC:~$ sudo cnpm install -g @vue/cli luocang@luocang-SC:~$ vue -V @vue/cli 4.5.11 luocang@luocang-SC:~$ npm config set registry https://registry.npm.taobao.org 二、构建项目 ​	vue-cli构建element项目可以有两种方法，一种是使用vue ui的可视化界面生成，另外一种是vue create的方式生成，这里使用vue ui的方式生成。
+1. 创建项目 ​	使用vue-cli可以快速设置一个vue项目：
+vue ui ​	使用该指令后会自动访问localhost:8000端口，不选择git初始化，preset选择手动，其中特性选择了vue版本，babel，router以及使用配置文件。Vue版本选择2.x即可。
+​	上述一些列操作也可以使用vue create完成。
+2. 运行项目 ​	运行项目有两种方式，其实本质都是一样的。
+​	第一种
+$ cd 01helloworld $ npm run serve ​	第二种" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/ubuntu05_vuecli/" />
+<meta property="article:published_time" content="2021-02-01T16:06:09+08:00" />
+<meta property="article:modified_time" content="2021-02-01T16:06:09+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>luocang-blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/shuixia">shuixia工作</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/ubuntu">ubuntu系统搭建</a>
+      </nav>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/shuishen-cang" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitee.com/shuishen-cang/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">ubuntu05-vuecli</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 1, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          2 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://shuishen-cang.github.io/tags/ubuntu/">ubuntu</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <div align="center" style= 'font-size: 48px;'>
+    ubuntu下安装vue cli
+</div>
+<h1 id="一安装环境">一、安装环境</h1>
+<p>​		本文主要介绍vue脚手架工具vue-cli的安装。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">luocang@luocang-SC:~$ sudo apt-get install nodejs
+luocang@luocang-SC:~$ node -v
+v10.19.0
+luocang@luocang-SC:~$ sudo apt install npm
+luocang@luocang-SC:~$ sudo npm install -g cnpm --registry<span style="color:#f92672">=</span>https://registry.npm.taobao.org
+luocang@luocang-SC:~$ sudo cnpm install -g @vue/cli
+luocang@luocang-SC:~$ vue -V
+@vue/cli 4.5.11
+luocang@luocang-SC:~$ npm config set registry https://registry.npm.taobao.org
+</code></pre></div><h1 id="二构建项目">二、构建项目</h1>
+<p>​		vue-cli构建element项目可以有两种方法，一种是使用vue ui的可视化界面生成，另外一种是vue create的方式生成，这里使用vue ui的方式生成。</p>
+<h2 id="1-创建项目">1. 创建项目</h2>
+<p>​		使用vue-cli可以快速设置一个vue项目：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vue ui
+</code></pre></div><p><img src="../images/image-20210204175509797.png" alt="image-20210204175509797">		<img src="../images/image-20210204175618771.png" alt="image-20210204175618771"></p>
+<p><img src="../images/image-20210204175636151.png" alt="image-20210204175636151"></p>
+<p>​		使用该指令后会自动访问localhost:8000端口，不选择git初始化，preset选择手动，其中特性选择了vue版本，babel，router以及使用配置文件。Vue版本选择2.x即可。</p>
+<p>​		上述一些列操作也可以使用vue create完成。</p>
+<h2 id="2-运行项目">2. 运行项目</h2>
+<p>​		运行项目有两种方式，其实本质都是一样的。</p>
+<p>​		第一种</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> $ cd 01helloworld
+ $ npm run serve
+</code></pre></div><p>​		第二种</p>
+<p><img src="../images/image-20210204181949491.png" alt="image-20210204181949491"></p>
+<p>然后访问<code>localhost:8080</code>就可以看到设置好的网页。</p>
+<p><img src="../images/image-20210204113821806.png" alt="image-20210204113821806"></p>
+<h2 id="3安装插件">3.安装插件</h2>
+<p>​		在插件里面安装element，在依赖项中安装axios。</p>
+<h1 id="三代码分析">三、代码分析</h1>
+<h2 id="1代码运行">1.代码运行</h2>
+<p>​		使用<code>code ./</code>进入项目的目录文件夹下。</p>
+<p>​		发现其目录文件结构如下：</p>
+<div class="mermaid">
+graph LR
+A(index.html)-->B(main.js)-->C(app.vue)-->D(helloworld.vue)
+</div>
+<p>​		修改<code>app.vue</code>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vue" data-lang="vue">&lt;<span style="color:#f92672">template</span>&gt;
+  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+    &lt;<span style="color:#f92672">img</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;./assets/logo.png&#34;</span>&gt;
+    &lt;<span style="color:#f92672">el-row</span>&gt;
+      &lt;<span style="color:#f92672">el-button</span>&gt;<span style="color:#a6e22e">默认按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+      &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;primary&#34;</span>&gt;<span style="color:#a6e22e">主要按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+      &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;success&#34;</span>&gt;<span style="color:#a6e22e">成功按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+      &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;info&#34;</span>&gt;<span style="color:#a6e22e">信息按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+      &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;warning&#34;</span>&gt;<span style="color:#a6e22e">警告按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+      &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;danger&#34;</span>&gt;<span style="color:#a6e22e">危险按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+    <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-row&gt;</span>
+  &lt;/<span style="color:#f92672">div</span>&gt;
+&lt;/<span style="color:#f92672">template</span>&gt;
+
+&lt;<span style="color:#f92672">script</span>&gt;
+
+&lt;/<span style="color:#f92672">script</span>&gt;
+
+&lt;<span style="color:#f92672">style</span>&gt;
+  <span style="color:#960050;background-color:#1e0010">#</span><span style="color:#a6e22e">app</span> {
+    <span style="color:#a6e22e">font</span><span style="color:#f92672">-</span><span style="color:#a6e22e">family</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Avenir&#39;</span>, <span style="color:#a6e22e">Helvetica</span>, <span style="color:#a6e22e">Arial</span>, <span style="color:#a6e22e">sans</span><span style="color:#f92672">-</span><span style="color:#a6e22e">serif</span>;
+    <span style="color:#f92672">-</span><span style="color:#a6e22e">webkit</span><span style="color:#f92672">-</span><span style="color:#a6e22e">font</span><span style="color:#f92672">-</span><span style="color:#a6e22e">smoothing</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">antialiased</span>;
+    <span style="color:#f92672">-</span><span style="color:#a6e22e">moz</span><span style="color:#f92672">-</span><span style="color:#a6e22e">osx</span><span style="color:#f92672">-</span><span style="color:#a6e22e">font</span><span style="color:#f92672">-</span><span style="color:#a6e22e">smoothing</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">grayscale</span>;
+    <span style="color:#a6e22e">text</span><span style="color:#f92672">-</span><span style="color:#a6e22e">align</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">center</span>;
+    <span style="color:#a6e22e">color</span><span style="color:#f92672">:</span> <span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">2</span><span style="color:#a6e22e">c3e50</span>;
+    <span style="color:#a6e22e">margin</span><span style="color:#f92672">-</span><span style="color:#a6e22e">top</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">60</span><span style="color:#a6e22e">px</span>;
+  }
+&lt;/<span style="color:#f92672">style</span>&gt;
+</code></pre></div><p>​		更新后的网页如下：</p>
+<p><img src="../images/image-20210204185336897.png" alt="image-20210204185336897"></p>
+<p>​		说明element运行成功。</p>
+<h2 id="2代码修改">2.代码修改</h2>
+<p>​		修改element.js。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vue</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;vue&#39;</span>
+<span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Button</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;element-ui&#39;</span>
+<span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">TableColumn</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;element-ui&#39;</span>
+<span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Table</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;element-ui&#39;</span>
+<span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Tag</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;element-ui&#39;</span>
+<span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Popover</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;element-ui&#39;</span>
+
+
+<span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">Button</span>)
+<span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">TableColumn</span>)
+<span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">Table</span>)
+<span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">Tag</span>)
+<span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">Popover</span>)
+</code></pre></div><p>​		修改App.vue</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vue" data-lang="vue"><span style="color:#75715e">&lt;!--</span>
+ <span style="color:#f92672">*</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">Author</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">your</span> <span style="color:#a6e22e">name</span>
+ <span style="color:#f92672">*</span> <span style="color:#960050;background-color:#1e0010">@</span>Date<span style="color:#f92672">:</span> <span style="color:#ae81ff">2021</span><span style="color:#f92672">-</span><span style="color:#ae81ff">02</span><span style="color:#f92672">-</span><span style="color:#ae81ff">04</span> <span style="color:#ae81ff">18</span><span style="color:#f92672">:</span><span style="color:#ae81ff">18</span><span style="color:#f92672">:</span><span style="color:#ae81ff">14</span>
+ <span style="color:#f92672">*</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">LastEditTime</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2021</span><span style="color:#f92672">-</span><span style="color:#ae81ff">02</span><span style="color:#f92672">-</span><span style="color:#ae81ff">04</span> <span style="color:#ae81ff">19</span><span style="color:#f92672">:</span><span style="color:#ae81ff">03</span><span style="color:#f92672">:</span><span style="color:#ae81ff">23</span>
+ <span style="color:#f92672">*</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">LastEditors</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">Please</span> <span style="color:#a6e22e">set</span> <span style="color:#a6e22e">LastEditors</span>
+ <span style="color:#f92672">*</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">Description</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">In</span> <span style="color:#a6e22e">User</span> <span style="color:#a6e22e">Settings</span> <span style="color:#a6e22e">Edit</span>
+ <span style="color:#f92672">*</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">FilePath</span><span style="color:#f92672">:</span> <span style="color:#960050;background-color:#1e0010">/01helloworld/src/App.vue</span>
+<span style="color:#f92672">--&gt;</span>
+&lt;<span style="color:#f92672">template</span>&gt;
+  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+    &lt;<span style="color:#f92672">img</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;./assets/logo.png&#34;</span>&gt;
+    &lt;<span style="color:#f92672">el-row</span>&gt;
+      &lt;<span style="color:#f92672">el-button</span>&gt;<span style="color:#a6e22e">默认按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+      &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;primary&#34;</span>&gt;<span style="color:#a6e22e">主要按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+      &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;success&#34;</span>&gt;<span style="color:#a6e22e">成功按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+      &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;info&#34;</span>&gt;<span style="color:#a6e22e">信息按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+      &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;warning&#34;</span>&gt;<span style="color:#a6e22e">警告按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+      &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;danger&#34;</span>&gt;<span style="color:#a6e22e">危险按钮</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+    <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-row&gt;</span>
+
+    &lt;<span style="color:#f92672">el-table</span> <span style="color:#f92672">:data</span><span style="color:#e6db74">=&#34;tableData&#34;</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width: 100%&#34;</span>&gt;
+      &lt;<span style="color:#f92672">el-table-column</span> <span style="color:#a6e22e">label</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;日期&#34;</span> <span style="color:#a6e22e">width</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;180&#34;</span>&gt;
+        &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">slot</span><span style="color:#f92672">-scope</span><span style="color:#960050;background-color:#1e0010">=&#34;</span><span style="color:#a6e22e">scope</span><span style="color:#960050;background-color:#1e0010">&#34;</span>&gt;
+          &lt;<span style="color:#f92672">i</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;el-icon-time&#34;</span>&gt;&lt;/<span style="color:#f92672">i</span>&gt;
+          &lt;<span style="color:#f92672">span</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;margin-left: 10px&#34;</span>&gt;{{ <span style="color:#a6e22e">scope</span>.<span style="color:#a6e22e">row</span>.<span style="color:#a6e22e">date</span> }}&lt;/<span style="color:#f92672">span</span>&gt;
+        &lt;/<span style="color:#f92672">template</span>&gt;
+      <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-table-column&gt;</span>
+      &lt;<span style="color:#f92672">el-table-column</span> <span style="color:#a6e22e">label</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;姓名&#34;</span> <span style="color:#a6e22e">width</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;180&#34;</span>&gt;
+        &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">slot</span><span style="color:#f92672">-scope</span><span style="color:#960050;background-color:#1e0010">=&#34;</span><span style="color:#a6e22e">scope</span><span style="color:#960050;background-color:#1e0010">&#34;</span>&gt;
+          &lt;<span style="color:#f92672">el-popover</span> <span style="color:#a6e22e">trigger</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;hover&#34;</span> <span style="color:#a6e22e">placement</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;top&#34;</span>&gt;
+            &lt;<span style="color:#f92672">p</span>&gt;<span style="color:#a6e22e">姓名</span><span style="color:#f92672">:</span> {{ <span style="color:#a6e22e">scope</span>.<span style="color:#a6e22e">row</span>.<span style="color:#a6e22e">name</span> }}&lt;/<span style="color:#f92672">p</span>&gt;
+            &lt;<span style="color:#f92672">p</span>&gt;<span style="color:#a6e22e">住址</span><span style="color:#f92672">:</span> {{ <span style="color:#a6e22e">scope</span>.<span style="color:#a6e22e">row</span>.<span style="color:#a6e22e">address</span> }}&lt;/<span style="color:#f92672">p</span>&gt;
+            &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">slot</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;reference&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;name-wrapper&#34;</span>&gt;
+              &lt;<span style="color:#f92672">el-tag</span> <span style="color:#a6e22e">size</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;medium&#34;</span>&gt;{{ <span style="color:#a6e22e">scope</span>.<span style="color:#a6e22e">row</span>.<span style="color:#a6e22e">name</span> }}<span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-tag&gt;</span>
+            &lt;/<span style="color:#f92672">div</span>&gt;
+          <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-popover&gt;</span>
+        &lt;/<span style="color:#f92672">template</span>&gt;
+      <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-table-column&gt;</span>
+      &lt;<span style="color:#f92672">el-table-column</span> <span style="color:#a6e22e">label</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;操作&#34;</span>&gt;
+        &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">slot</span><span style="color:#f92672">-scope</span><span style="color:#960050;background-color:#1e0010">=&#34;</span><span style="color:#a6e22e">scope</span><span style="color:#960050;background-color:#1e0010">&#34;</span>&gt;
+          &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">size</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;mini&#34;</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">click</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;handleEdit(scope.$index, scope.row)&#34;</span>&gt;<span style="color:#a6e22e">编辑</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+          &lt;<span style="color:#f92672">el-button</span> <span style="color:#a6e22e">size</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;mini&#34;</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;danger&#34;</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">click</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;handleDelete(scope.$index, scope.row)&#34;</span>&gt;<span style="color:#a6e22e">删除</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-button&gt;</span>
+        &lt;/<span style="color:#f92672">template</span>&gt;
+      <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-table-column&gt;</span>
+    <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/el-table&gt;</span>
+  &lt;/<span style="color:#f92672">div</span>&gt;
+&lt;/<span style="color:#f92672">template</span>&gt;
+
+&lt;<span style="color:#f92672">script</span>&gt;
+  <span style="color:#75715e">// import HelloWorld from &#39;./components/HelloWorld.vue&#39;
+</span><span style="color:#75715e"></span>
+  <span style="color:#75715e">// export default {
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">//   name: &#39;app&#39;,
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">//   components: {
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">//     HelloWorld
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">//   }
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// }
+</span><span style="color:#75715e"></span>
+  <span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+    <span style="color:#a6e22e">data</span>() {
+      <span style="color:#66d9ef">return</span> {
+        <span style="color:#a6e22e">tableData</span><span style="color:#f92672">:</span> [{
+          <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2016-05-02&#39;</span>,
+          <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;王小虎&#39;</span>,
+          <span style="color:#a6e22e">address</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;上海市普陀区金沙江路 1518 弄&#39;</span>
+        }, {
+          <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2016-05-04&#39;</span>,
+          <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;王小虎&#39;</span>,
+          <span style="color:#a6e22e">address</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;上海市普陀区金沙江路 1517 弄&#39;</span>
+        }, {
+          <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2016-05-01&#39;</span>,
+          <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;王小虎&#39;</span>,
+          <span style="color:#a6e22e">address</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;上海市普陀区金沙江路 1519 弄&#39;</span>
+        }, {
+          <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2016-05-03&#39;</span>,
+          <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;王小虎&#39;</span>,
+          <span style="color:#a6e22e">address</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;上海市普陀区金沙江路 1516 弄&#39;</span>
+        }]
+      }
+    },
+    <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+      <span style="color:#a6e22e">handleEdit</span>(<span style="color:#a6e22e">index</span>, <span style="color:#a6e22e">row</span>) {
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">index</span>, <span style="color:#a6e22e">row</span>);
+      },
+      <span style="color:#a6e22e">handleDelete</span>(<span style="color:#a6e22e">index</span>, <span style="color:#a6e22e">row</span>) {
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">index</span>, <span style="color:#a6e22e">row</span>);
+      }
+    }
+  }
+&lt;/<span style="color:#f92672">script</span>&gt;
+
+&lt;<span style="color:#f92672">style</span>&gt;
+  <span style="color:#960050;background-color:#1e0010">#</span><span style="color:#a6e22e">app</span> {
+    <span style="color:#a6e22e">font</span><span style="color:#f92672">-</span><span style="color:#a6e22e">family</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Avenir&#39;</span>, <span style="color:#a6e22e">Helvetica</span>, <span style="color:#a6e22e">Arial</span>, <span style="color:#a6e22e">sans</span><span style="color:#f92672">-</span><span style="color:#a6e22e">serif</span>;
+    <span style="color:#f92672">-</span><span style="color:#a6e22e">webkit</span><span style="color:#f92672">-</span><span style="color:#a6e22e">font</span><span style="color:#f92672">-</span><span style="color:#a6e22e">smoothing</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">antialiased</span>;
+    <span style="color:#f92672">-</span><span style="color:#a6e22e">moz</span><span style="color:#f92672">-</span><span style="color:#a6e22e">osx</span><span style="color:#f92672">-</span><span style="color:#a6e22e">font</span><span style="color:#f92672">-</span><span style="color:#a6e22e">smoothing</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">grayscale</span>;
+    <span style="color:#a6e22e">text</span><span style="color:#f92672">-</span><span style="color:#a6e22e">align</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">center</span>;
+    <span style="color:#a6e22e">color</span><span style="color:#f92672">:</span> <span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">2</span><span style="color:#a6e22e">c3e50</span>;
+    <span style="color:#a6e22e">margin</span><span style="color:#f92672">-</span><span style="color:#a6e22e">top</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">60</span><span style="color:#a6e22e">px</span>;
+  }
+&lt;/<span style="color:#f92672">style</span>&gt;
+</code></pre></div><p>​		运行后的结果：</p>
+<p><img src="../images/image-20210204220603574.png" alt="image-20210204220603574"></p>
+<p>​		说明elementUI已经成功运行。</p>
+<script src="../js/mermaid.min.js"></script>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

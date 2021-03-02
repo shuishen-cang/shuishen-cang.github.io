@@ -34,6 +34,31 @@ cd ../../ subl config.toml #修改为以下代码 baseURL = &amp;#34;https://shu
     </item>
     
     <item>
+      <title>ubuntu05-vuecli</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu05_vuecli/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu05_vuecli/</guid>
+      <description>ubuntu下安装vue cli  一、安装环境 ​	本文主要介绍vue脚手架工具vue-cli的安装。
+luocang@luocang-SC:~$ sudo apt-get install nodejs luocang@luocang-SC:~$ node -v v10.19.0 luocang@luocang-SC:~$ sudo apt install npm luocang@luocang-SC:~$ sudo npm install -g cnpm --registry=https://registry.npm.taobao.org luocang@luocang-SC:~$ sudo cnpm install -g @vue/cli luocang@luocang-SC:~$ vue -V @vue/cli 4.5.11 luocang@luocang-SC:~$ npm config set registry https://registry.npm.taobao.org 二、构建项目 ​	vue-cli构建element项目可以有两种方法，一种是使用vue ui的可视化界面生成，另外一种是vue create的方式生成，这里使用vue ui的方式生成。
+1. 创建项目 ​	使用vue-cli可以快速设置一个vue项目：
+vue ui ​	使用该指令后会自动访问localhost:8000端口，不选择git初始化，preset选择手动，其中特性选择了vue版本，babel，router以及使用配置文件。Vue版本选择2.x即可。
+​	上述一些列操作也可以使用vue create完成。
+2. 运行项目 ​	运行项目有两种方式，其实本质都是一样的。
+​	第一种
+$ cd 01helloworld $ npm run serve ​	第二种</description>
+    </item>
+    
+    <item>
+      <title>ubuntu06-shelljs</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu06_shelljs/</link>
+      <pubDate>Mon, 01 Feb 2021 16:06:09 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu06_shelljs/</guid>
+      <description>ubuntu下安装vue cli  一、安装环境 </description>
+    </item>
+    
+    <item>
       <title>ubuntu02-qt开发环境搭建</title>
       <link>https://shuishen-cang.github.io/post/ubuntu02_qt%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
       <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
@@ -46,6 +71,16 @@ cd ../../ subl config.toml #修改为以下代码 baseURL = &amp;#34;https://shu
 三、命令编译 ​	先clean工程，查看qmake的目录，我的qmake路径为：/home/installed/Qt5.9.9/5.9.9/gcc_64/bin/qmake
 ​	控制台进入qtest工程下面。
 cd ~/Desktop/qtest/ /home/installed/Qt5.9.9/5.9.9/gcc_64/bin/qmake &amp;#34;OBJECTS_DIR=build&amp;#34; qtest.pro make ls ./qtest ​	程序已经能够正常运行，说明具备基本的docker镜像下开发条件。</description>
+    </item>
+    
+    <item>
+      <title>ubuntu02-开发环境搭建</title>
+      <link>https://shuishen-cang.github.io/post/ubuntu02_%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Tue, 15 Dec 2020 22:21:25 +0800</pubDate>
+      
+      <guid>https://shuishen-cang.github.io/post/ubuntu02_%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>ubuntu开发环境搭建-安装软件  一、安装typora wget -qO - https://typora.io/linux/public-key.asc | sudo apt-key add - sudo add-apt-repository &amp;#39;deb https://typora.io/linux ./&amp;#39; sudo apt-get update sudo apt-get install typora 二、安装vscode ​	先在官网下载vscode的安装包，然后使用下面命令安装。
+sudo dpkg -i xxx.deb 三、安装sublime wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add - sudo apt-add-repository &amp;#34;deb https://download.sublimetext.com/ apt/stable/&amp;#34; sudo apt update sudo apt install sublime-text 四、安装其他 sudo apt install python3-pip # fsearch sudo add-apt-repository ppa:christian-boxdoerfer/fsearch-daily sudo apt update sudo apt install fsearch-trunk ​</description>
     </item>
     
     <item>

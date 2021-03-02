@@ -138,7 +138,7 @@ cat lk.txt
 sudo apt-get update
 
 sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-sudo curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | apt-key add -
+sudo curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
 
 sudo apt-key fingerprint 0EBFCD88
 # 正常输出为：

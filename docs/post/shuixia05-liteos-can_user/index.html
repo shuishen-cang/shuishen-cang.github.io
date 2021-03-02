@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>shuixia05-liteos-can_user // luocang-blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.21b1686763bf47744aadffb53465246543024e9fa17a5d5bbf22723c71d1feca.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="shuixia05-liteos-can_user"/>
+<meta name="twitter:description" content="CAN设备用户操作使用说明-liteos [TOC]
+一、概述 ​	之前在《CAN设备驱动测试使用说明-liteos》文档中初步说明了can驱动的编写，并且提供了一个demo实例，该实例初步实现了CAN口的收发，但是在大部分应用中，不能实现简单的收发，在发送的过程中，驱动实现了一个长度为16x8的数据fifo，能够满足大部分的应用，但是在接收中没有做任何处理，因此该部分不能直接在应用层中使用，本文件就can设备的进一步使用做一些说明。
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+can驱动使用说明《CAN设备驱动测试使用说明-liteos》
+三、驱动编译 1.hal_can.c/hal_can.h ​	参考《CAN设备驱动测试使用说明-liteos》
+2.user_can.c/user_can.h ​	在hal_can.c/hal_can.h的基础上新建立一个线程，在CAN接口的接收中断中唤醒该线程，线程读取数据，并且在线程中对接收的CAN数据进行解析，解析之后做出处理。
+graph TD A(创建线程)--B(创建事件)--C(等待事件)--D(处理事件)--C  ​	在hal_can.h中添加如下代码：
+extern EVENT_CB_S can_wait_event; #define can_event_signal(event, bit) LOS_EventWrite(event, bit) #define can_event_wait(event, bit, timeout) LOS_EventRead(event, bit,\ LOS_WAITMODE_AND &#43; LOS_WAITMODE_CLR, timeout) ​	在hal_can.c中添加如下代码：
+irqreturn_t can_isr(int a, void *arg){ ... if(reg &amp; 0x10){ ... can_event_signal(&amp;can_wait_event,canid == 0 ? 0x01 : 0x10); } else if(reg &amp; 0x08){ //txok  ."/>
+
+    <meta property="og:title" content="shuixia05-liteos-can_user" />
+<meta property="og:description" content="CAN设备用户操作使用说明-liteos [TOC]
+一、概述 ​	之前在《CAN设备驱动测试使用说明-liteos》文档中初步说明了can驱动的编写，并且提供了一个demo实例，该实例初步实现了CAN口的收发，但是在大部分应用中，不能实现简单的收发，在发送的过程中，驱动实现了一个长度为16x8的数据fifo，能够满足大部分的应用，但是在接收中没有做任何处理，因此该部分不能直接在应用层中使用，本文件就can设备的进一步使用做一些说明。
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+can驱动使用说明《CAN设备驱动测试使用说明-liteos》
+三、驱动编译 1.hal_can.c/hal_can.h ​	参考《CAN设备驱动测试使用说明-liteos》
+2.user_can.c/user_can.h ​	在hal_can.c/hal_can.h的基础上新建立一个线程，在CAN接口的接收中断中唤醒该线程，线程读取数据，并且在线程中对接收的CAN数据进行解析，解析之后做出处理。
+graph TD A(创建线程)--B(创建事件)--C(等待事件)--D(处理事件)--C  ​	在hal_can.h中添加如下代码：
+extern EVENT_CB_S can_wait_event; #define can_event_signal(event, bit) LOS_EventWrite(event, bit) #define can_event_wait(event, bit, timeout) LOS_EventRead(event, bit,\ LOS_WAITMODE_AND &#43; LOS_WAITMODE_CLR, timeout) ​	在hal_can.c中添加如下代码：
+irqreturn_t can_isr(int a, void *arg){ ... if(reg &amp; 0x10){ ... can_event_signal(&amp;can_wait_event,canid == 0 ? 0x01 : 0x10); } else if(reg &amp; 0x08){ //txok  ." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/shuixia05-liteos-can_user/" />
+<meta property="article:published_time" content="2021-02-01T16:06:09+08:00" />
+<meta property="article:modified_time" content="2021-02-01T16:06:09+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>luocang-blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/shuixia">shuixia工作</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/ubuntu">ubuntu系统搭建</a>
+      </nav>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/shuishen-cang" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitee.com/shuishen-cang/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">shuixia05-liteos-can_user</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 1, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          2 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://shuishen-cang.github.io/tags/shuixia/">shuixia</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <div align = "center" style="font-size:48px">CAN设备用户操作使用说明-liteos</div>
+<p>[TOC]</p>
+<h1 id="一概述">一、概述</h1>
+<p>​		之前在《CAN设备驱动测试使用说明-liteos》文档中初步说明了can驱动的编写，并且提供了一个demo实例，该实例初步实现了CAN口的收发，但是在大部分应用中，不能实现简单的收发，在发送的过程中，驱动实现了一个长度为16x8的数据fifo，能够满足大部分的应用，但是在接收中没有做任何处理，因此该部分不能直接在应用层中使用，本文件就can设备的进一步使用做一些说明。</p>
+<h1 id="二-参考文件">二、 参考文件</h1>
+<p>GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》</p>
+<p>驱动操作使用指南《外围设备驱动 操作指南.pdf》</p>
+<p>寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》</p>
+<p>can驱动使用说明《CAN设备驱动测试使用说明-liteos》</p>
+<h1 id="三驱动编译">三、驱动编译</h1>
+<h2 id="1hal_canchal_canh">1.hal_can.c/hal_can.h</h2>
+<p>​		参考《CAN设备驱动测试使用说明-liteos》</p>
+<h2 id="2user_cancuser_canh">2.user_can.c/user_can.h</h2>
+<p>​		在hal_can.c/hal_can.h的基础上新建立一个线程，在CAN接口的接收中断中唤醒该线程，线程读取数据，并且在线程中对接收的CAN数据进行解析，解析之后做出处理。</p>
+<div class="mermaid">
+graph TD
+A(创建线程)-->B(创建事件)-->C(等待事件)-->D(处理事件)-->C
+</div>
+<p>​		在<strong>hal_can.h</strong>中添加如下代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">extern</span> EVENT_CB_S can_wait_event;
+<span style="color:#75715e">#define can_event_signal(event, bit)                LOS_EventWrite(event, bit)
+</span><span style="color:#75715e">#define can_event_wait(event, bit, timeout)         LOS_EventRead(event, bit,\
+</span><span style="color:#75715e">                                                    LOS_WAITMODE_AND + LOS_WAITMODE_CLR, timeout)
+</span></code></pre></div><p>​			在<strong>hal_can.c</strong>中添加如下代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">irqreturn_t <span style="color:#a6e22e">can_isr</span>(<span style="color:#66d9ef">int</span> a, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg){
+    ...
+    <span style="color:#66d9ef">if</span>(reg <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x10</span>){    
+        ...
+        can_event_signal(<span style="color:#f92672">&amp;</span>can_wait_event,canid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> <span style="color:#ae81ff">0x01</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0x10</span>);     
+    }
+    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(reg <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x08</span>){                                <span style="color:#75715e">//txok
+</span><span style="color:#75715e"></span>        ...  
+    }
+    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>((reg <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x07</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">&amp;&amp;</span> (reg <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x07</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">7</span>)){
+        ...
+    }
+
+    <span style="color:#66d9ef">return</span> IRQ_HANDLED;
+}
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">can_start</span>(<span style="color:#66d9ef">int</span> canid, uint32_t bandrate){
+    ...
+<span style="color:#75715e">#if CANIR_EN
+</span><span style="color:#75715e"></span>    ...
+
+    LOS_EventInit(<span style="color:#f92672">&amp;</span>can_wait_event);             		<span style="color:#75715e">//event初始化
+</span><span style="color:#75715e"></span><span style="color:#75715e">#endif
+</span><span style="color:#75715e"></span>    ...
+}
+</code></pre></div><p>​		修改<strong>user_can.c</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;user_can.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+pthread_mutex_t mutex_can;
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">can_readmsg</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg)
+{
+    uint8_t     len, i, send_len;
+    uint16_t    recv_flag;
+    uint8_t     rx_buff[<span style="color:#ae81ff">8</span>];
+    uint8_t     tx_buff[<span style="color:#ae81ff">8</span>];
+    uint32_t    recv_id, send_id;
+
+    pthread_mutex_init(<span style="color:#f92672">&amp;</span>mutex_can, NULL);<span style="color:#75715e">//todo
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+        can_event_wait(<span style="color:#f92672">&amp;</span>can_wait_event, <span style="color:#ae81ff">0x01</span>, <span style="color:#ae81ff">0xFFFFFFFF</span>);     <span style="color:#75715e">//等待中断唤醒,一直等待
+</span><span style="color:#75715e"></span>
+        recv_flag <span style="color:#f92672">=</span> hal_can_receive(<span style="color:#ae81ff">1</span>);
+        <span style="color:#66d9ef">for</span>(i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">16</span>;i <span style="color:#f92672">++</span>){
+            <span style="color:#66d9ef">if</span>(recv_flag <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x01</span>){
+                len <span style="color:#f92672">=</span> hal_can_readmsg(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>recv_id, rx_buff, i <span style="color:#f92672">+</span> <span style="color:#ae81ff">17</span>);
+
+                pthread_mutex_lock(<span style="color:#f92672">&amp;</span>mutex_can);
+                memcpy(tx_buff, rx_buff, <span style="color:#ae81ff">8</span>);
+                send_id <span style="color:#f92672">=</span> recv_id;
+                send_len <span style="color:#f92672">=</span> len;
+                pthread_mutex_unlock(<span style="color:#f92672">&amp;</span>mutex_can);
+                
+                hal_can_transmit(<span style="color:#ae81ff">1</span>,send_id, tx_buff, len);
+            }
+            recv_flag <span style="color:#f92672">&gt;&gt;=</span> <span style="color:#ae81ff">1</span>;
+        }
+    }
+}
+
+
+uint8_t tx_buff[<span style="color:#ae81ff">8</span>],rx_buff[<span style="color:#ae81ff">8</span>];
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">user_can_initial</span>(<span style="color:#66d9ef">void</span>){
+    uint16_t recv_flag,i,len;
+    uint32_t recv_id,ret <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    pthread_t id;
+    hal_can_initial(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">500000</span>);
+
+    pthread_attr_t use_attr;
+    use_attr.inheritsched <span style="color:#f92672">=</span> PTHREAD_EXPLICIT_SCHED;
+    use_attr.detachstate <span style="color:#f92672">=</span> PTHREAD_CREATE_DETACHED;
+    ret <span style="color:#f92672">=</span> pthread_create(<span style="color:#f92672">&amp;</span>id, <span style="color:#f92672">&amp;</span>use_attr, can_readmsg, NULL);
+    <span style="color:#66d9ef">if</span> (ret) {
+        dprintf(<span style="color:#e6db74">&#34;can read thread create failed!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+    }
+}
+</code></pre></div><h1 id="四api说明">四、API说明</h1>
+<p>​		hal部分：参考《CAN设备驱动测试使用说明-liteos》</p>
+<p>​		<strong>user部分</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：can用户实用程序的初始化
+</span><span style="color:#75715e">		初始化了can0设备以及can1设备，其中为can1设备创建了一个接收线程(can0引脚与uart0复用了)
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		void
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		void
+</span><span style="color:#75715e">******************************************************************************/</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">user_can_initial</span>(<span style="color:#66d9ef">void</span>);
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：can1的接收线程入口函数
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		void
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		void
+</span><span style="color:#75715e">******************************************************************************/</span>
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">can_readmsg</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg);
+</code></pre></div><h1 id="五使用说明">五、使用说明</h1>
+<p>​		将上述代码拷贝到SDK目录下，其具体路径为：<code>osdrv/platform/liteos_a53/liteos/sample/sample_osdrv</code>，对程序进行编译，make之后便可以得到可执行文件，将该文件烧写到板卡上便可以执行，其测试步骤如上图所示：电脑连接一个USB转CAN的设备，使用上位机给HI3559A发送CAN数据帧，HI3559A接收到CAN数据帧后便可以反馈其数据包，形成闭环。</p>
+<p><img src="../images/image-20210201151929006.png" alt="image-20210201151929006"></p>
+<h1 id="六注意事项">六、注意事项</h1>
+<ul>
+<li>使用CAN设备之前必须先配置IO复用功能。</li>
+<li>CAN0与uart0复用功能，需要谨慎使用。</li>
+<li>官方的板卡上存在sleep引脚，需要配置该引脚。</li>
+<li>官方的板卡上有拨码开关，需要配置对应的拨码开关选择GPIO功能。</li>
+</ul>
+<script src="../js/mermaid.min.js"></script>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>shuixia07-liteos-spi_user // luocang-blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.21b1686763bf47744aadffb53465246543024e9fa17a5d5bbf22723c71d1feca.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="shuixia07-liteos-spi_user"/>
+<meta name="twitter:description" content="CAN设备用户操作使用说明-liteos [TOC]
+一、概述 ​	SPI 控制器实现数据的串并、并串转换，可以作为 Master 与外部设备进行同步串行通信。支持 MOTOROLA 的 SPI、TI 串行同步、MicroWire 三种外设接口协议。
+​	芯片总共有 12 组 SPI 接口，其中主 SOC 侧有 7 组 SPI0~6，Sensor Hub 子系统有 5组，Sensor Hub SPI0~4。
+  其中 SOC 侧的 SPI0~3 支持 2 片选，SPI4 支持 4 片选，SPI5（master）/SPI6（slave）为 SOC 与 SensorHub 内部通讯专用。
+  Sensor Hub SPI0/1 支持 3 片选，Sensor Hub SPI2 支持单片选，Sensor Hub SPI3（master）/ Sensor Hub SPI4（slave）为 SOC 与 Sensor Hub 内部通讯专用。
+  SOC 侧的 SPI0~4 只支持 Master 接口，工作参考时钟为 APB 总线时钟，SPI 输出的SPI_CLK 最大支持 24."/>
+
+    <meta property="og:title" content="shuixia07-liteos-spi_user" />
+<meta property="og:description" content="CAN设备用户操作使用说明-liteos [TOC]
+一、概述 ​	SPI 控制器实现数据的串并、并串转换，可以作为 Master 与外部设备进行同步串行通信。支持 MOTOROLA 的 SPI、TI 串行同步、MicroWire 三种外设接口协议。
+​	芯片总共有 12 组 SPI 接口，其中主 SOC 侧有 7 组 SPI0~6，Sensor Hub 子系统有 5组，Sensor Hub SPI0~4。
+  其中 SOC 侧的 SPI0~3 支持 2 片选，SPI4 支持 4 片选，SPI5（master）/SPI6（slave）为 SOC 与 SensorHub 内部通讯专用。
+  Sensor Hub SPI0/1 支持 3 片选，Sensor Hub SPI2 支持单片选，Sensor Hub SPI3（master）/ Sensor Hub SPI4（slave）为 SOC 与 Sensor Hub 内部通讯专用。
+  SOC 侧的 SPI0~4 只支持 Master 接口，工作参考时钟为 APB 总线时钟，SPI 输出的SPI_CLK 最大支持 24." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/shuixia07-liteos-spi_user/" />
+<meta property="article:published_time" content="2021-02-01T16:06:09+08:00" />
+<meta property="article:modified_time" content="2021-02-01T16:06:09+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>luocang-blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/shuixia">shuixia工作</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/ubuntu">ubuntu系统搭建</a>
+      </nav>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/shuishen-cang" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitee.com/shuishen-cang/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">shuixia07-liteos-spi_user</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 1, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://shuishen-cang.github.io/tags/shuixia/">shuixia</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <div align = "center" style="font-size:48px">CAN设备用户操作使用说明-liteos</div>
+<p>[TOC]</p>
+<h1 id="一概述">一、概述</h1>
+<p>​		SPI 控制器实现数据的串并、并串转换，可以作为 Master 与外部设备进行同步串行通信。支持 MOTOROLA 的 SPI、TI 串行同步、MicroWire 三种外设接口协议。</p>
+<p>​		芯片总共有 12 组 SPI 接口，其中主 SOC 侧有 7 组 SPI0~6，Sensor Hub 子系统有 5组，Sensor Hub SPI0~4。</p>
+<ul>
+<li>
+<p>其中 SOC 侧的 SPI0~3 支持 2 片选，SPI4 支持 4 片选，SPI5（master）/SPI6（slave）为 SOC 与 SensorHub 内部通讯专用。</p>
+</li>
+<li>
+<p>Sensor Hub SPI0/1 支持 3 片选，Sensor Hub SPI2 支持单片选，Sensor Hub SPI3（master）/ Sensor Hub SPI4（slave）为 SOC 与 Sensor Hub 内部通讯专用。</p>
+</li>
+<li>
+<p>SOC 侧的 SPI0~4 只支持 Master 接口，工作参考时钟为 APB 总线时钟，SPI 输出的SPI_CLK 最大支持 24.75MHz。</p>
+</li>
+<li>
+<p>Sensor Hub SPI0~3 只支持 Master 接口，工作时钟可以为时钟源的 2 分频、4 分频、8 分频，SPI 输出的 SPI_CLK 最大支持 48MHz。</p>
+</li>
+</ul>
+<p>SPI 的功能特点有：</p>
+<ul>
+<li>
+<p>接口时钟频率可编程。</p>
+</li>
+<li>
+<p>收/发分开的宽度 16bit、深度为 256 的 FIFO。</p>
+</li>
+<li>
+<p>串行数据帧长度可编程：4bit～16bit。</p>
+</li>
+<li>
+<p>内部提供环回测试模式。</p>
+</li>
+<li>
+<p>支持 DMA 操作。</p>
+</li>
+<li>
+<p>支持 SPI、MicroWire、TI 同步串行三种接口，支持单帧和连续帧格式。</p>
+</li>
+<li>
+<p>支持 SPI 全双工工作模式，时钟极性、相位可配置。</p>
+</li>
+<li>
+<p>支持 MicroWire 半双工工作模式。</p>
+</li>
+<li>
+<p>支持 TI 同步串行接口全双工工作模式。</p>
+</li>
+</ul>
+<h1 id="二-参考文件">二、 参考文件</h1>
+<p>GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》</p>
+<p>驱动操作使用指南《外围设备驱动 操作指南.pdf》</p>
+<p>寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》</p>
+<h1 id="三驱动编译">三、驱动编译</h1>
+<h2 id="1官方驱动">1.官方驱动</h2>
+<p>​		官方提供了SPI驱动，其源码路径为 drivers/spi，要在编译脚本里指定 SPI 源码路径与头文件路径，编译成功后，out 目录下会生成名为 libspi.a 的库文件，链接时需要通过-lspi 参数指定该库文件。</p>
+<p>​	<strong>文件列表</strong></p>
+<table>
+<thead>
+<tr>
+<th>文件名称</th>
+<th>描述</th>
+<th><strong>备注</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>drivers/spi/***.c</td>
+<td>接口源文件</td>
+<td></td>
+</tr>
+<tr>
+<td>drivers/spi/libuart.a</td>
+<td>静态库文件</td>
+<td></td>
+</tr>
+<tr>
+<td>等等</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>使用步骤</strong></p>
+<ul>
+<li>
+<p>步骤 1. 驱动初始化，调用如下接口：</p>
+<p>​	spi_dev_init();</p>
+</li>
+<li>
+<p>步骤 2. 开发者需要根据设备硬件特性配置相关的管脚复用。</p>
+<p>​	具体请参考《Hi3559AV100_PINOUT_CN》中管脚控制寄存器页签。</p>
+</li>
+<li>
+<p>步骤 3. 用户可根据需要调用模块的读写函数对设备进行访问。</p>
+</li>
+</ul>
+<h2 id="2用户驱动">2.用户驱动</h2>
+<p>​		官方的驱动很大一部分需要用户了解一些底层知识，因此在官方驱动的基础上封装了一层用户驱动。</p>
+<p>​		用户驱动的使用如下：</p>
+<ul>
+<li>
+<p>调用SPI初始化函数</p>
+<p>​	hal_spi_initial()</p>
+</li>
+<li>
+<p>创建接受线程，等待接收数据被唤醒</p>
+<p>​	hal_spi_read()</p>
+</li>
+<li>
+<p>发送数据</p>
+<p>​	hal_spi_write()</p>
+</li>
+<li>
+<p>数据收发</p>
+<p>​	hal_spi_convert()</p>
+</li>
+</ul>
+<h1 id="四api说明">四、API说明</h1>
+<h2 id="1官方驱动-1">1.官方驱动</h2>
+<p>​	官方提供的驱动如下所示：提供了open()函数、ioctl()函数，因此仅需要考克open()、ioctl()函数(如需要使用额外的功能，还需要用户自行操作底层API)。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">struct</span> file_operations_vfs spidev_ops <span style="color:#f92672">=</span>
+{
+    spidev_open,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    spidev_ioctl,
+<span style="color:#75715e">#ifndef CONFIG_DISABLE_POLL
+</span><span style="color:#75715e"></span>    NULL,
+<span style="color:#75715e">#endif
+</span><span style="color:#75715e"></span>    NULL
+};
+</code></pre></div><p><strong>open()</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：posix标准函数，用于打开一个设备
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		__path：设备、端口设备为：&#34;/dev/spidev0.0&#34; &#34;/dev/spidev0.1&#34;等
+</span><span style="color:#75715e">​		__oflag：打开方式：O_RDWR：可读可写
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		文件句柄，负数：错误 非负数：打开成功
+</span><span style="color:#75715e">******************************************************************************/</span>
+open (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>__path, <span style="color:#66d9ef">int</span> __oflag, ...)
+</code></pre></div><p><strong>ioctl()</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：posix标准函数，用来设置一个设备
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		__fd：open()返回的文件句柄
+</span><span style="color:#75715e">​		cmd：设置的参数类型
+</span><span style="color:#75715e">​		arg：设置的参数
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		读取数据时，返回的数据
+</span><span style="color:#75715e">******************************************************************************/</span>
+<span style="color:#66d9ef">int</span>     (<span style="color:#f92672">*</span>ioctl)(FAR <span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>filep, <span style="color:#66d9ef">int</span> cmd, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> arg);
+</code></pre></div><p>可设置的参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>命令码</th>
+<th>参数</th>
+<th>返回值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SPI_IOC_RD_MODE</td>
+<td>0x0801</td>
+<td></td>
+<td>模式</td>
+<td>获取当前设置的模式</td>
+</tr>
+<tr>
+<td>SPI_IOC_RD_LSB_FIRST</td>
+<td>0x0802</td>
+<td></td>
+<td>LSB?</td>
+<td>读取是否为LSB(驱动不支持)</td>
+</tr>
+<tr>
+<td>SPI_IOC_RD_BITS_PER_WORD</td>
+<td>0x0803</td>
+<td></td>
+<td>位数</td>
+<td>获取每次传输的比特数</td>
+</tr>
+<tr>
+<td>SPI_IOC_RD_MAX_SPEED_HZ</td>
+<td>0x0804</td>
+<td></td>
+<td></td>
+<td>获取最大的spi速度</td>
+</tr>
+<tr>
+<td>SPI_IOC_WR_MODE</td>
+<td>0x0805</td>
+<td>模式</td>
+<td></td>
+<td>设置模式</td>
+</tr>
+<tr>
+<td>SPI_IOC_WR_LSB_FIRST</td>
+<td>0x0806</td>
+<td>LSB</td>
+<td></td>
+<td>设置为LSB传输(驱动不支持)</td>
+</tr>
+<tr>
+<td>SPI_IOC_WR_BITS_PER_WORD</td>
+<td>0x0807</td>
+<td>位数</td>
+<td></td>
+<td>设置传输的位数4~32</td>
+</tr>
+<tr>
+<td>SPI_IOC_WR_MAX_SPEED_HZ</td>
+<td>0x0808</td>
+<td>速度</td>
+<td></td>
+<td>设置SPI传输速度</td>
+</tr>
+<tr>
+<td>SPI_IOC_MESSAGE(N)</td>
+<td>0x0809</td>
+<td></td>
+<td></td>
+<td>传输一个数据包</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2用户驱动-1">2.用户驱动</h2>
+<p>*<em>int hal_spi_initial(const char <em>path, uint8_t bits, uint8_t spi_mode, uint8_t cs, uint8_t lsb)</em></em></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/****************************************************
+</span><span style="color:#75715e"> * 函数功能：SPI接口初始化
+</span><span style="color:#75715e"> * 输入参数：
+</span><span style="color:#75715e"> *  path：spi设备，端口设备为：&#34;/dev/spidev0.0&#34; &#34;/dev/spidev0.1&#34;等
+</span><span style="color:#75715e"> *  bits：数据位数 4~32
+</span><span style="color:#75715e"> *  spi_mode：SPI模式，极性和数据边沿
+</span><span style="color:#75715e"> *  cs： cs的有效电平 0、1
+</span><span style="color:#75715e"> *  lsb： isb传输
+</span><span style="color:#75715e"> * 输出参数：
+</span><span style="color:#75715e"> *  文件句柄
+</span><span style="color:#75715e"> * *************************************************/</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">hal_spi_initial</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>path, uint8_t bits, uint8_t spi_mode, uint8_t cs, uint8_t lsb);
+</code></pre></div><p><em><em>int hal_spi_read(int fd,uint8_t</em> rx_buff, uint8_t len)</em>*</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/****************************************************
+</span><span style="color:#75715e"> * 函数功能：SPI读取数据
+</span><span style="color:#75715e"> * 输入参数：
+</span><span style="color:#75715e"> *  fd：文件句柄
+</span><span style="color:#75715e"> *  rx_buff：接收数据的指针
+</span><span style="color:#75715e"> *  len：接收数据的长度
+</span><span style="color:#75715e"> * 输出参数：
+</span><span style="color:#75715e"> *  1：传输成功 0：传输错误
+</span><span style="color:#75715e"> * *************************************************/</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">hal_spi_read</span>(<span style="color:#66d9ef">int</span> fd,uint8_t<span style="color:#f92672">*</span> rx_buff, uint8_t len);
+</code></pre></div><p><em><em>int hal_spi_write(int fd,uint8_t</em> tx_buff, uint8_t len);</em>*</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/****************************************************
+</span><span style="color:#75715e"> * 函数功能：SPI发送数据
+</span><span style="color:#75715e"> * 输入参数：
+</span><span style="color:#75715e"> *  fd：文件句柄
+</span><span style="color:#75715e"> *  tx_buff：发送数据的指针
+</span><span style="color:#75715e"> *  len：发送数据的长度
+</span><span style="color:#75715e"> * 输出参数：
+</span><span style="color:#75715e"> *  1：传输成功 0：传输错误
+</span><span style="color:#75715e"> * *************************************************/</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">hal_spi_write</span>(<span style="color:#66d9ef">int</span> fd,uint8_t<span style="color:#f92672">*</span> tx_buff, uint8_t len);
+</code></pre></div><p>**int hal_spi_convert(int fd, uint8_t <em>tx_buff, uint8_t <em>rx_buff,uint8_t len)</em></em></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/****************************************************
+</span><span style="color:#75715e"> * 函数功能：SPI交换数据
+</span><span style="color:#75715e"> * 输入参数：
+</span><span style="color:#75715e"> *  fd：文件句柄
+</span><span style="color:#75715e"> *  tx_buff：发送数据的指针
+</span><span style="color:#75715e"> *  rx_buff：接收数据的指针
+</span><span style="color:#75715e"> *  len：发送数据的长度
+</span><span style="color:#75715e"> * 输出参数：
+</span><span style="color:#75715e"> *  1：传输成功 0：传输错误
+</span><span style="color:#75715e"> * *************************************************/</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">hal_spi_convert</span>(<span style="color:#66d9ef">int</span> fd, uint8_t <span style="color:#f92672">*</span>tx_buff, uint8_t <span style="color:#f92672">*</span>rx_buff,uint8_t len);
+</code></pre></div><p><strong>void hal_spi_close(int fd)</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/****************************************************
+</span><span style="color:#75715e"> * 函数功能：关闭SPI端口
+</span><span style="color:#75715e"> * 输入参数：
+</span><span style="color:#75715e"> *  fd：文件句柄
+</span><span style="color:#75715e"> * 输出参数：
+</span><span style="color:#75715e"> *  void
+</span><span style="color:#75715e"> * *************************************************/</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hal_spi_close</span>(<span style="color:#66d9ef">int</span> fd);
+</code></pre></div><h1 id="五使用说明">五、使用说明</h1>
+<p><img src="../images/image-20210205131705775.png" alt="image-20210205131705775"></p>
+<p>​		如图所示：我目前使用的板卡对外提供了一组SPI接口，其中CSN0表示接口为SPI3.0。查找《Hi3559A V100_PINOUT_EN》，找到IO口复用的地址寄存器为reg41~reg44。在hal_gpioaf.h中添加如下代码:</p>
+<p><strong>hal_gpioaf.h</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#define AF_SPI3_VUE             0x01
+</span><span style="color:#75715e">#define AF_SPI3_SCLK            IOREG(41)
+</span><span style="color:#75715e">#define AF_SPI3_MOSI            IOREG(42)
+</span><span style="color:#75715e">#define AF_SPI3_MISO            IOREG(43)
+</span><span style="color:#75715e">#define AF_SPI3_CSN0            IOREG(44)
+</span><span style="color:#75715e">#define AF_SPI3_CSN1            IOREG(45)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define AF_SPI3_0_Config()       {          \
+</span><span style="color:#75715e">    writeor(AF_SPI3_SCLK, AF_SPI3_VUE);     \
+</span><span style="color:#75715e">    writeor(AF_SPI3_MOSI, AF_SPI3_VUE);     \
+</span><span style="color:#75715e">    writeor(AF_SPI3_MISO, AF_SPI3_VUE);     \
+</span><span style="color:#75715e">    writeor(AF_SPI3_CSN0, AF_SPI3_VUE);     \
+</span><span style="color:#75715e">}
+</span></code></pre></div><p>​		新建user_spi.c、user_spi.h。</p>
+<p><strong>user_spi.h</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#ifndef __USER_SPI_H__
+</span><span style="color:#75715e">#define __USER_SPI_H__
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;user.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">user_spi_initial</span>(<span style="color:#66d9ef">void</span>);
+
+<span style="color:#75715e">#endif
+</span></code></pre></div><p><strong>user_spi.c</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;user_spi.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+uint8_t tx_buff[<span style="color:#ae81ff">256</span>] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">8</span>};
+uint8_t rx_buff[<span style="color:#ae81ff">256</span>];
+
+<span style="color:#66d9ef">int</span> spi_fd;
+<span style="color:#75715e">#define SPI_PORT            &#34;/dev/spidev3.0&#34;
+</span><span style="color:#75715e"></span>pthread_mutex_t mutex_spi;
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">spi_readmsg</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg){
+    <span style="color:#66d9ef">int</span> fd, i;
+
+    pthread_mutex_init(<span style="color:#f92672">&amp;</span>mutex_spi, NULL);               <span style="color:#75715e">//todo
+</span><span style="color:#75715e"></span>
+    fd <span style="color:#f92672">=</span> hal_spi_initial(SPI_PORT, <span style="color:#ae81ff">8</span>, SPI_MODE_0, <span style="color:#ae81ff">0</span> , <span style="color:#ae81ff">0</span>);
+
+    hal_spi_convert(fd, tx_buff, rx_buff,<span style="color:#ae81ff">8</span>);
+
+    dprintf(<span style="color:#e6db74">&#34;recv:&#34;</span>);
+    <span style="color:#66d9ef">for</span>(i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">8</span>;i <span style="color:#f92672">++</span>){
+        dprintf(<span style="color:#e6db74">&#34;%x,&#34;</span>,rx_buff[i]);
+    }
+}
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">user_spi_initial</span>(<span style="color:#66d9ef">void</span>){
+    pthread_t id;
+    <span style="color:#66d9ef">int</span> ret;
+    pthread_attr_t use_attr;
+
+    use_attr.inheritsched <span style="color:#f92672">=</span> PTHREAD_EXPLICIT_SCHED;
+    use_attr.detachstate <span style="color:#f92672">=</span> PTHREAD_CREATE_DETACHED;
+    ret <span style="color:#f92672">=</span> pthread_create(<span style="color:#f92672">&amp;</span>id, <span style="color:#f92672">&amp;</span>use_attr, spi_readmsg, NULL);
+    <span style="color:#66d9ef">if</span> (ret) {
+        dprintf(<span style="color:#e6db74">&#34;spi read thread create failed!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+    }
+}
+</code></pre></div><p><img src="../images/image-20210205154106391.png" alt="image-20210205154106391"></p>
+<p>​		将相关代码拷贝到SDK目录下，其具体路径为：<code>osdrv/platform/liteos_a53/liteos/sample/sample_osdrv</code>，对程序进行编译，make之后便可以得到可执行文件，将该文件烧写到板卡上便可以执行，其测试步骤如上图所示：使用电脑作为串口监视助手，能够打印系统系统，短接SPI3的MISO和MOSI，运行上述程序，串口打印成功接收数据。</p>
+<h1 id="六注意事项">六、注意事项</h1>
+<ul>
+<li>使用设备之前必须先配置IO复用</li>
+<li>SPI的设备含有多个CSN的，必须选择合适的设备，例如spidev3.0、spidev3.1。</li>
+</ul>
+<script src="../js/mermaid.min.js"></script>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

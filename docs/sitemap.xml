@@ -38,6 +38,41 @@
   </url>
   
   <url>
+    <loc>https://shuishen-cang.github.io/post/shuixia05-liteos-can_user/</loc>
+    <lastmod>2021-02-01T16:06:09+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shuishen-cang.github.io/post/shuixia06-liteos-uart_user/</loc>
+    <lastmod>2021-02-01T16:06:09+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shuishen-cang.github.io/post/shuixia07-liteos-spi_user/</loc>
+    <lastmod>2021-02-01T16:06:09+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shuishen-cang.github.io/post/shuixia08-liteos-i2c_user/</loc>
+    <lastmod>2021-02-01T16:06:09+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shuishen-cang.github.io/post/shuixia09-linux-makefile/</loc>
+    <lastmod>2021-02-01T16:06:09+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shuishen-cang.github.io/post/shuixia10-linux-gpioaf/</loc>
+    <lastmod>2021-02-01T16:06:09+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shuishen-cang.github.io/post/shuixia11-linux-pwm/</loc>
+    <lastmod>2021-02-01T16:06:09+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://shuishen-cang.github.io/tags/</loc>
     <lastmod>2021-02-01T16:06:09+08:00</lastmod>
   </url>
@@ -54,6 +89,16 @@
   
   <url>
     <loc>https://shuishen-cang.github.io/post/ubuntu04_hugo/</loc>
+    <lastmod>2021-02-01T16:06:09+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shuishen-cang.github.io/post/ubuntu05_vuecli/</loc>
+    <lastmod>2021-02-01T16:06:09+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shuishen-cang.github.io/post/ubuntu06_shelljs/</loc>
     <lastmod>2021-02-01T16:06:09+08:00</lastmod>
   </url>
   
@@ -88,7 +133,17 @@
   </url>
   
   <url>
+    <loc>https://shuishen-cang.github.io/post/01element.md/</loc>
+    <lastmod>2020-12-27T21:31:22+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://shuishen-cang.github.io/post/ubuntu02_qt%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
+    <lastmod>2020-12-15T22:21:25+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shuishen-cang.github.io/post/ubuntu02_%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
     <lastmod>2020-12-15T22:21:25+08:00</lastmod>
   </url>
   

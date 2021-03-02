@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>shuixia11-linux-pwm // luocang-blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.21b1686763bf47744aadffb53465246543024e9fa17a5d5bbf22723c71d1feca.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="shuixia11-linux-pwm"/>
+<meta name="twitter:description" content="PWM复用驱动测试使用说明-linux [TOC]
+一、概述 ​	脉冲宽度调制是一种模拟控制方式，根据相应载荷的变化来调制晶体管，来实现晶体管或MOS导通时间的改变，从而实现开关稳压电源输出的改变。这种方式能使电源的输出电压在工作条件变化时保持恒定，是利用微处理器的数字信号对模拟电路进行控制的一种非常有效的技术。PWM调制是利用数字输出来对模拟电路进行控制的一种非常有效的技术，广泛应用在从测量、通信到功率控制与变换的许多领域中。
+​	HI3559A芯片的CPU子系统分为两部分，一个是以为A73&#43;A53为主的SOC部分，另一个是为M7为主的Sensor Hub部分，其中SOC子系统与Sensor Hub子系统的外设均采用统一的外设接口，即寄存器组完全一样，并且可以通过地址转换实现跨子系统访问，但是SOC子系统与Sensor Hub子系统的中断系统完全肚子，并不能完全共享中断向量。
+​	主 SOC 子系统提供 1 组 2 路独立的脉宽调制信号输出。 ​	Sensor Hub 子系统提供 1 组 8 路独立的脉宽调制信号输出
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+三、驱动编译 ​	linux的的字符串驱动一般作为platform驱动编译，platform驱动具有良好的移植性，但是设计起来较为复杂，本文就单文件驱动进行设计，linux驱动的设计步骤如下：
+ 实现基本的驱动功能函数 申请主次设备号 申请cdev设备，初始化cdev并且设置相关函数 创建一个class设备，并且在class下创建device  graph TD d4--d5(class_create) d5--d6(device_create) d5--d7(device_create) subgraph register_chrdev d1(alloc_chrdev)--d2(cdev_alloc)--d3(cdev_init)--d4(cdev_add) end  ​	系统提供的驱动部分的函数如下:
+   函数 说明     alloc_chrdev 申请一组可用的主从设备号，当主设备号为零的时候表明是动态分配   cdev_alloc 申请一个可用的dev对象，用于存储操作函数相关的结构体   cdev_init 将操作函数结构体赋值   cdev_add 将cdev与主从设备号关联起来   class_create 在/sys/class/路径下面创建一个类用于存储驱动相关信息   device_create 在class_create创建的类下面创建一个device，分配唯一的主从设备号，并且uevent给udev在/dev下面创建软连接    ​	字符驱动的文件如下："/>
+
+    <meta property="og:title" content="shuixia11-linux-pwm" />
+<meta property="og:description" content="PWM复用驱动测试使用说明-linux [TOC]
+一、概述 ​	脉冲宽度调制是一种模拟控制方式，根据相应载荷的变化来调制晶体管，来实现晶体管或MOS导通时间的改变，从而实现开关稳压电源输出的改变。这种方式能使电源的输出电压在工作条件变化时保持恒定，是利用微处理器的数字信号对模拟电路进行控制的一种非常有效的技术。PWM调制是利用数字输出来对模拟电路进行控制的一种非常有效的技术，广泛应用在从测量、通信到功率控制与变换的许多领域中。
+​	HI3559A芯片的CPU子系统分为两部分，一个是以为A73&#43;A53为主的SOC部分，另一个是为M7为主的Sensor Hub部分，其中SOC子系统与Sensor Hub子系统的外设均采用统一的外设接口，即寄存器组完全一样，并且可以通过地址转换实现跨子系统访问，但是SOC子系统与Sensor Hub子系统的中断系统完全肚子，并不能完全共享中断向量。
+​	主 SOC 子系统提供 1 组 2 路独立的脉宽调制信号输出。 ​	Sensor Hub 子系统提供 1 组 8 路独立的脉宽调制信号输出
+二、 参考文件 GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》
+驱动操作使用指南《外围设备驱动 操作指南.pdf》
+寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》
+三、驱动编译 ​	linux的的字符串驱动一般作为platform驱动编译，platform驱动具有良好的移植性，但是设计起来较为复杂，本文就单文件驱动进行设计，linux驱动的设计步骤如下：
+ 实现基本的驱动功能函数 申请主次设备号 申请cdev设备，初始化cdev并且设置相关函数 创建一个class设备，并且在class下创建device  graph TD d4--d5(class_create) d5--d6(device_create) d5--d7(device_create) subgraph register_chrdev d1(alloc_chrdev)--d2(cdev_alloc)--d3(cdev_init)--d4(cdev_add) end  ​	系统提供的驱动部分的函数如下:
+   函数 说明     alloc_chrdev 申请一组可用的主从设备号，当主设备号为零的时候表明是动态分配   cdev_alloc 申请一个可用的dev对象，用于存储操作函数相关的结构体   cdev_init 将操作函数结构体赋值   cdev_add 将cdev与主从设备号关联起来   class_create 在/sys/class/路径下面创建一个类用于存储驱动相关信息   device_create 在class_create创建的类下面创建一个device，分配唯一的主从设备号，并且uevent给udev在/dev下面创建软连接    ​	字符驱动的文件如下：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/shuixia11-linux-pwm/" />
+<meta property="article:published_time" content="2021-02-01T16:06:09+08:00" />
+<meta property="article:modified_time" content="2021-02-01T16:06:09+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>luocang-blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/shuixia">shuixia工作</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/ubuntu">ubuntu系统搭建</a>
+      </nav>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/shuishen-cang" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitee.com/shuishen-cang/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">shuixia11-linux-pwm</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 1, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          5 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://shuishen-cang.github.io/tags/shuixia/">shuixia</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <div align = "center" style="font-size:48px">PWM复用驱动测试使用说明-linux</div>
+<p>[TOC]</p>
+<h1 id="一概述">一、概述</h1>
+<p>​		脉冲宽度调制是一种模拟控制方式，根据相应载荷的变化来调制晶体管，来实现晶体管或MOS导通时间的改变，从而实现开关稳压电源输出的改变。这种方式能使电源的输出电压在工作条件变化时保持恒定，是利用微处理器的数字信号对模拟电路进行控制的一种非常有效的技术。PWM调制是利用数字输出来对模拟电路进行控制的一种非常有效的技术，广泛应用在从测量、通信到功率控制与变换的许多领域中。</p>
+<p>​		HI3559A芯片的CPU子系统分为两部分，一个是以为A73+A53为主的SOC部分，另一个是为M7为主的Sensor Hub部分，其中SOC子系统与Sensor Hub子系统的外设均采用统一的外设接口，即寄存器组完全一样，并且可以通过地址转换实现跨子系统访问，但是SOC子系统与Sensor Hub子系统的中断系统完全肚子，并不能完全共享中断向量。</p>
+<p>​		主 SOC 子系统提供 1 组 2 路独立的脉宽调制信号输出。
+​		Sensor Hub 子系统提供 1 组 8 路独立的脉宽调制信号输出</p>
+<h1 id="二-参考文件">二、 参考文件</h1>
+<p>GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》</p>
+<p>驱动操作使用指南《外围设备驱动 操作指南.pdf》</p>
+<p>寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》</p>
+<h1 id="三驱动编译">三、驱动编译</h1>
+<p>​		linux的的字符串驱动一般作为platform驱动编译，platform驱动具有良好的移植性，但是设计起来较为复杂，本文就单文件驱动进行设计，linux驱动的设计步骤如下：</p>
+<ul>
+<li>实现基本的驱动功能函数</li>
+<li>申请主次设备号</li>
+<li>申请cdev设备，初始化cdev并且设置相关函数</li>
+<li>创建一个class设备，并且在class下创建device</li>
+</ul>
+<div class="mermaid">
+graph TD
+d4-->d5(class_create)
+d5-->d6(device_create) 
+d5-->d7(device_create)
+subgraph register_chrdev
+	d1(alloc_chrdev)-->d2(cdev_alloc)-->d3(cdev_init)-->d4(cdev_add)
+end
+</div>
+<p>​		系统提供的驱动部分的函数如下:</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>alloc_chrdev</td>
+<td>申请一组可用的主从设备号，当主设备号为零的时候表明是动态分配</td>
+</tr>
+<tr>
+<td>cdev_alloc</td>
+<td>申请一个可用的dev对象，用于存储操作函数相关的结构体</td>
+</tr>
+<tr>
+<td>cdev_init</td>
+<td>将操作函数结构体赋值</td>
+</tr>
+<tr>
+<td>cdev_add</td>
+<td>将cdev与主从设备号关联起来</td>
+</tr>
+<tr>
+<td>class_create</td>
+<td>在/sys/class/路径下面创建一个类用于存储驱动相关信息</td>
+</tr>
+<tr>
+<td>device_create</td>
+<td>在class_create创建的类下面创建一个device，分配唯一的主从设备号，并且uevent给udev在/dev下面创建软连接</td>
+</tr>
+</tbody>
+</table>
+<p>​		字符驱动的文件如下：</p>
+<p><strong>Makefile</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile">obj-m<span style="color:#f92672">+=</span>hipwm.o
+<span style="color:#75715e"># KERNEL_PATH = /lib/modules/$(shell uname -r)/build/
+</span><span style="color:#75715e"></span>CROSS_COMPILE <span style="color:#f92672">:=</span> aarch64-himix100-linux-
+ARCH_TYPE <span style="color:#f92672">=</span> arm64
+KERNEL_PATH <span style="color:#f92672">=</span> /workspace/02sdk/Hi3559AV100R001C02SPC020/01.software/board/Hi3559AV100_SDK_V2.0.2.0/osdrv/opensource/kernel/linux-4.9.y_multi-core/
+<span style="color:#a6e22e">all</span><span style="color:#f92672">:</span>
+	make -C <span style="color:#e6db74">${</span>KERNEL_PATH<span style="color:#e6db74">}</span> M<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>PWD<span style="color:#e6db74">}</span> ARCH<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>ARCH_TYPE<span style="color:#e6db74">}</span> CROSS_COMPILE<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>CROSS_COMPILE<span style="color:#e6db74">}</span> modules
+<span style="color:#a6e22e">clean</span><span style="color:#f92672">:</span>
+	make -C <span style="color:#66d9ef">$(</span>KERNEL_PATH<span style="color:#66d9ef">)</span> M<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>PWD<span style="color:#66d9ef">)</span> clean
+
+<span style="color:#a6e22e">.PHONE</span><span style="color:#f92672">:</span>install remove
+
+<span style="color:#a6e22e">install</span><span style="color:#f92672">:</span>all
+	sudo insmod hipwm.ko
+	sudo dmesg -c | grep hipwm
+
+<span style="color:#a6e22e">remove</span><span style="color:#f92672">:</span>
+	sudo rmmod hipwm
+</code></pre></div><p><strong>hipwm.c</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;hipwm.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">void</span> __iomem <span style="color:#f92672">*</span>hipwm0_int_base;
+<span style="color:#66d9ef">void</span> __iomem <span style="color:#f92672">*</span>hipwm1_int_base;
+<span style="color:#66d9ef">void</span> __iomem <span style="color:#f92672">*</span>hiperi_cfg_base;
+uint8_t is_open <span style="color:#f92672">=</span> false;
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tops_open</span>(<span style="color:#66d9ef">struct</span> inode <span style="color:#f92672">*</span>inode,<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>file){
+    hipwm0_int_base <span style="color:#f92672">=</span> ioremap(PWM0_BASE, <span style="color:#ae81ff">128</span>);    
+    hipwm1_int_base <span style="color:#f92672">=</span> ioremap(PWM1_BASE, <span style="color:#ae81ff">128</span>);    
+    hiperi_cfg_base <span style="color:#f92672">=</span> ioremap(PERI_CRG101, <span style="color:#ae81ff">128</span>);
+
+    SYS_WRITELOR(hiperi_cfg_base, PWM_50M);
+    SYS_WRITELOR(hiperi_cfg_base, EN_PWM);
+
+
+    is_open <span style="color:#f92672">=</span> true;
+
+
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tops_release</span>(<span style="color:#66d9ef">struct</span> inode <span style="color:#f92672">*</span>inode,<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>file){
+    iounmap(hipwm0_int_base);
+    iounmap(hipwm1_int_base);
+
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;	
+}
+
+<span style="color:#66d9ef">static</span> ssize_t <span style="color:#a6e22e">tops_read</span>(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>file,<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> buff,size_t count,loff_t <span style="color:#f92672">*</span>f_pos){
+
+	<span style="color:#66d9ef">return</span> count;
+}
+
+<span style="color:#66d9ef">static</span> ssize_t <span style="color:#a6e22e">tops_write</span>(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>file,<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> buff,size_t count,loff_t <span style="color:#f92672">*</span>f_pos){
+
+	<span style="color:#66d9ef">return</span> count;
+}
+
+
+uint32_t pwm0_freq <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+uint32_t pwm1_freq <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+uint32_t pwm0_duty <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+uint32_t pwm1_duty <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+uint32_t kk <span style="color:#f92672">=</span> <span style="color:#ae81ff">12</span>;
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">tops_ioctl</span>(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>file, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> cmd, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> arg){
+
+    uint32_t val;
+
+	<span style="color:#66d9ef">if</span> (_IOC_TYPE(cmd) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;U&#39;</span>) {
+		<span style="color:#66d9ef">switch</span> (_IOC_NR(cmd)) {
+            <span style="color:#66d9ef">case</span> _IOC_NR(HI_PWM0_REG_TOPS)<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">if</span>(copy_from_user((<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>val, (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)arg, <span style="color:#66d9ef">sizeof</span>(uint32_t))){
+                    printk(<span style="color:#e6db74">&#34;copy from user err&#34;</span>);
+                    <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>EFAULT;
+                }
+                
+                pwm0_freq <span style="color:#f92672">=</span> val;
+                <span style="color:#66d9ef">break</span>;
+            <span style="color:#66d9ef">case</span> _IOC_NR(HI_PWM1_REG_TOPS)<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">if</span>(copy_from_user((<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>val, (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)arg, <span style="color:#66d9ef">sizeof</span>(uint32_t))){
+                    printk(<span style="color:#e6db74">&#34;copy from user err&#34;</span>);
+                    <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>EFAULT;
+                }
+                
+                pwm1_freq <span style="color:#f92672">=</span> val;
+                <span style="color:#66d9ef">break</span>;
+            <span style="color:#66d9ef">case</span> _IOC_NR(HI_PWM0_REG_DUTY)<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">if</span>(copy_from_user((<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>val, (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)arg, <span style="color:#66d9ef">sizeof</span>(uint32_t))){
+                    printk(<span style="color:#e6db74">&#34;copy from user err&#34;</span>);
+                    <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>EFAULT;
+                }
+                
+                pwm0_duty <span style="color:#f92672">=</span> val;
+                SYS_WRITEL(PWM0_CFG0(hipwm0_int_base), pwm0_freq);
+                SYS_WRITEL(PWM0_CFG1(hipwm0_int_base), pwm0_duty);
+                SYS_WRITEL(PWM0_CTRL(hipwm0_int_base), <span style="color:#ae81ff">0x51</span>);
+                <span style="color:#66d9ef">break</span>;
+            <span style="color:#66d9ef">case</span> _IOC_NR(HI_PWM1_REG_DUTY)<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">if</span>(copy_from_user((<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>val, (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)arg, <span style="color:#66d9ef">sizeof</span>(uint32_t))){
+                    printk(<span style="color:#e6db74">&#34;copy from user err&#34;</span>);
+                    <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>EFAULT;
+                }
+                
+                pwm1_duty <span style="color:#f92672">=</span> val;
+                SYS_WRITEL(PWM0_CFG0(hipwm1_int_base), pwm1_freq);
+                SYS_WRITEL(PWM0_CFG1(hipwm1_int_base), pwm1_duty);
+                SYS_WRITEL(PWM0_CTRL(hipwm1_int_base), <span style="color:#ae81ff">0x51</span>);
+                <span style="color:#66d9ef">break</span>;
+        }
+        
+    }
+
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> file_operations hipwm_fops <span style="color:#f92672">=</span> {
+	.owner <span style="color:#f92672">=</span> THIS_MODULE,
+	.read <span style="color:#f92672">=</span> tops_read,
+	.write <span style="color:#f92672">=</span> tops_write,
+	.open <span style="color:#f92672">=</span> tops_open,
+	.release <span style="color:#f92672">=</span> tops_release,
+    .unlocked_ioctl <span style="color:#f92672">=</span> tops_ioctl
+};
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">struct</span>       class <span style="color:#f92672">*</span>dev_class;
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> 			major;
+<span style="color:#75715e">#define             HIPWM  &#34;hipwm&#34;
+</span><span style="color:#75715e"></span>
+MODULE_LICENSE(<span style="color:#e6db74">&#34;GPL&#34;</span>);              
+
+<span style="color:#75715e">//设置初始化入口函数
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> __init <span style="color:#a6e22e">hipwm_init</span>(<span style="color:#66d9ef">void</span>)
+{
+    printk(KERN_DEBUG <span style="color:#e6db74">&#34;hipwm!!!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+
+    major <span style="color:#f92672">=</span> register_chrdev(<span style="color:#ae81ff">0</span>, HIPWM, <span style="color:#f92672">&amp;</span>hipwm_fops);
+	<span style="color:#66d9ef">if</span> (major <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>){
+        printk(KERN_ALERT <span style="color:#e6db74">&#34;can find valid majon</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);   
+		<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>EFAULT;
+    }
+
+	dev_class <span style="color:#f92672">=</span> class_create(THIS_MODULE, HIPWM);
+	device_create(dev_class, NULL, MKDEV(major, <span style="color:#ae81ff">0</span>), NULL, <span style="color:#e6db74">&#34;hello_udev&#34;</span>);
+
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+
+<span style="color:#75715e">//设置出口函数
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> __exit <span style="color:#a6e22e">hipwm_exit</span>(<span style="color:#66d9ef">void</span>)
+{
+    class_destroy(dev_class);
+	unregister_chrdev(major, HIPWM);
+    printk(KERN_DEBUG <span style="color:#e6db74">&#34;goodbye hipwm!!!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+}
+
+<span style="color:#75715e">//将上述定义的init()和exit()函数定义为模块入口/出口函数
+</span><span style="color:#75715e"></span>module_init(hipwm_init);
+module_exit(hipwm_exit);
+</code></pre></div><p><strong>hipwm.h</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#ifndef __HIPWM_H__
+</span><span style="color:#75715e">#define __HIPWM_H__
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/init.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/kernel.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/module.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/fs.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/cdev.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/slab.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/uaccess.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/semaphore.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/miscdevice.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/vmalloc.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/wait.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/poll.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/sched.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/proc_fs.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/seq_file.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/mutex.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/spinlock.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/timer.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;asm/io.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/delay.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/kthread.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/irq.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/interrupt.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/err.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/device.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/gpio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define	HI_USER_DRV  &#39;U&#39;
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define HI_PWM0_REG_TOPS  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 0, uint32_t)
+</span><span style="color:#75715e">#define HI_PWM1_REG_TOPS  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 1, uint32_t)
+</span><span style="color:#75715e">#define HI_PWM0_REG_DUTY  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 2, uint32_t)
+</span><span style="color:#75715e">#define HI_PWM1_REG_DUTY  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 3, uint32_t)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define PWM0_BASE       0x12130000    
+</span><span style="color:#75715e">#define PWM1_BASE       0x12130020 
+</span><span style="color:#75715e">#define PERI_CRG101     0x12010194
+</span><span style="color:#75715e">#define EN_PWM          (1 &lt;&lt; 19)
+</span><span style="color:#75715e">#define PWM_3M          (0 &lt;&lt; 20)
+</span><span style="color:#75715e">#define PWM_24M         (2 &lt;&lt; 20)
+</span><span style="color:#75715e">#define PWM_50M         (1 &lt;&lt; 20)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define PWM0_CFG0(b)    (b + 0) 
+</span><span style="color:#75715e">#define PWM0_CFG1(b)    (b + 4)
+</span><span style="color:#75715e">#define PWM0_CFG2(b)    (b + 8) 
+</span><span style="color:#75715e">#define PWM0_CTRL(b)    (b + 12)    
+</span><span style="color:#75715e">#define PWM0_STATE0(b)  (b + 16)  
+</span><span style="color:#75715e">#define PWM0_STATE1(b)  (b + 20)  
+</span><span style="color:#75715e">#define PWM0_STATE2(b)  (b + 24) 
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define SYS_WRITEL(Addr, Value)     ((*(volatile unsigned int *)(Addr)) = (Value))
+</span><span style="color:#75715e">#define SYS_WRITELOR(Addr, Value)   ((*(volatile unsigned int *)(Addr)) |= (Value))
+</span><span style="color:#75715e">#define SYS_READ(Addr)              (*((volatile int *)(Addr)))
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#endif#ifndef __GPIOAF_H__
+</span><span style="color:#75715e">#define __GPIOAF_H__
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/init.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/kernel.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/module.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/fs.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/cdev.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/slab.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/uaccess.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/semaphore.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/miscdevice.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/vmalloc.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/wait.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/poll.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/sched.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/proc_fs.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/seq_file.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/mutex.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/spinlock.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/timer.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;asm/io.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/delay.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/kthread.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/irq.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/interrupt.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/err.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/device.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/gpio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define MAX_REGS    64
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">struct</span> hi_user_reg {
+    uint32_t    reg_start;
+    uint32_t    reg_num;
+    uint32_t    reg_value[<span style="color:#ae81ff">64</span>];
+};
+
+<span style="color:#75715e">#define	HI_USER_DRV  &#39;U&#39;
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define HI_USER_REG_WRITE  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 1, struct hi_user_reg)
+</span><span style="color:#75715e">#define HI_USER_REG_READ  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 2, struct hi_user_reg)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define SYS_WRITEL(Addr, Value) ((*(volatile unsigned int *)(Addr)) = (Value))
+</span><span style="color:#75715e">#define SYS_READ(Addr)          (*((volatile int *)(Addr)))
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#endif
+</span></code></pre></div><p>​		编译该部分代码即可生成相对应的hipwm.ko<code>文件，在用户程序空间</code>insmod hipwm.ko```即可插入该部分驱动。</p>
+<h1 id="四-api描述">四、 API描述</h1>
+<p>​		如上述的驱动代码，其中仅实现了ioctl部分的代码，其余的oepn()、close()、read()、write()等函数都没有具体实现的定义，因此仅需要关注ioctl部分即可,ioctl实现了对硬件寄存器的读写，因此可以用来设置gpio的复用功能。</p>
+<p>​</p>
+<p>可设置的参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>cmd宏定义</th>
+<th>指令码</th>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HI_PWM0_REG_TOPS</td>
+<td>1</td>
+<td>uint32_t</td>
+<td>pwm0计数器的TOP值</td>
+</tr>
+<tr>
+<td>HI_PWM1_REG_TOPS</td>
+<td>2</td>
+<td>uint32_t</td>
+<td>pwm1计数器的TOP值</td>
+</tr>
+<tr>
+<td>HI_PWM0_REG_DUTY</td>
+<td>3</td>
+<td>uint32_t</td>
+<td>pwm0的高电平周期</td>
+</tr>
+<tr>
+<td>HI_PWM1_REG_DUTY</td>
+<td>4</td>
+<td>uint32_t</td>
+<td>pwm1的高电平周期</td>
+</tr>
+</tbody>
+</table>
+<h1 id="五-应用示例">五、 应用示例</h1>
+<p>​		编译上述驱动便会在dev下生成一个udev设备，该设备的设备名为<code>/dev/hipwm0</code>，访问该设备可以直接操作硬件寄存器，便可以在应用层实现PWM的使用与设置。</p>
+<p><strong>Makefile</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile">PROJECT <span style="color:#f92672">=</span> test
+BUILDDIR <span style="color:#f92672">:=</span> ./build
+CFLAGS <span style="color:#f92672">+=</span> -O0 -g3 -pipe -lpthread -lm -Wall -Wextra -Wundef <span style="color:#75715e">#-DRC_AUTOPILOT_EXT# -mfpu=vfpv3-fp16</span>
+CC <span style="color:#f92672">=</span> aarch64-himix100-linux-gcc
+
+ALLINC <span style="color:#f92672">+=</span> 	.	
+
+ALLCSRC <span style="color:#f92672">+=</span> 	main.c 	<span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>			hal_hipwm.c
+
+CSRC <span style="color:#f92672">=</span> <span style="color:#66d9ef">$(</span>ALLCSRC<span style="color:#66d9ef">)</span>
+CINC <span style="color:#f92672">+=</span> <span style="color:#66d9ef">$(</span>ALLINC<span style="color:#66d9ef">)</span>	
+INCL	  		<span style="color:#f92672">:=</span> <span style="color:#66d9ef">$(</span>addprefix -I, <span style="color:#66d9ef">$(</span>CINC<span style="color:#66d9ef">))</span>
+COBJS 			<span style="color:#f92672">:=</span> <span style="color:#66d9ef">$(</span>CSRC:.c<span style="color:#f92672">=</span>.o<span style="color:#66d9ef">)</span>
+CPPOBJS 		<span style="color:#f92672">:=</span> <span style="color:#66d9ef">$(</span>CPPSRC:.cpp<span style="color:#f92672">=</span>.o<span style="color:#66d9ef">)</span>
+ASMOBJS 		<span style="color:#f92672">:=</span> <span style="color:#66d9ef">$(</span>ASMSRC:.s<span style="color:#f92672">=</span>.o<span style="color:#66d9ef">)</span>
+ASMXOBJS		<span style="color:#f92672">:=</span> <span style="color:#66d9ef">$(</span>ASMXSRC:.S<span style="color:#f92672">=</span>.o<span style="color:#66d9ef">)</span>
+OBJS <span style="color:#f92672">=</span> <span style="color:#66d9ef">$(</span>ASMXOBJS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>ASMOBJS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>COBJS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>CPPOBJS<span style="color:#66d9ef">)</span>
+
+<span style="color:#a6e22e">all</span><span style="color:#f92672">:</span> chkbindir <span style="color:#66d9ef">$(</span>OBJS<span style="color:#66d9ef">)</span>
+	<span style="color:#66d9ef">$(</span>CC<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>CFLAGS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>addprefix <span style="color:#66d9ef">$(</span>BUILDDIR<span style="color:#66d9ef">)</span>/,<span style="color:#66d9ef">$(</span>notdir <span style="color:#66d9ef">$(</span>OBJS<span style="color:#66d9ef">)))</span> -o <span style="color:#66d9ef">$(</span>BUILDDIR<span style="color:#66d9ef">)</span>/<span style="color:#66d9ef">$(</span>PROJECT<span style="color:#66d9ef">)</span>
+
+<span style="color:#a6e22e">.PHONE</span><span style="color:#f92672">:</span> chkbindir clean
+
+<span style="color:#a6e22e">clean</span><span style="color:#f92672">:</span>
+	rm -rf <span style="color:#66d9ef">$(</span>BUILDDIR<span style="color:#66d9ef">)</span>
+
+<span style="color:#a6e22e">chkbindir</span><span style="color:#f92672">:</span>
+	@if test ! -d <span style="color:#66d9ef">$(</span>BUILDDIR<span style="color:#66d9ef">)</span> ; <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#66d9ef">then</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	mkdir <span style="color:#66d9ef">$(</span>BUILDDIR<span style="color:#66d9ef">)</span> ; <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#66d9ef">fi</span>
+
+<span style="color:#a6e22e">$(COBJS) </span><span style="color:#f92672">:</span> %.o : %.c
+	<span style="color:#66d9ef">$(</span>CC<span style="color:#66d9ef">)</span> -c <span style="color:#66d9ef">$(</span>CFLAGS<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>INCL<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>IINCDIR<span style="color:#66d9ef">)</span> $&lt; -o <span style="color:#66d9ef">$(</span>BUILDDIR<span style="color:#66d9ef">)</span>/<span style="color:#66d9ef">$(</span>notdir $@<span style="color:#66d9ef">)</span>	
+</code></pre></div><p><strong>main.c</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;hal_hipwm.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>){
+    AF_PWM_Initial();
+    AF_PWM_Set(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">500</span>, <span style="color:#ae81ff">1000</span>);    <span style="color:#75715e">//50k,百分之五十占空比
+</span><span style="color:#75715e"></span>    AF_PWM_Set(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">500</span>, <span style="color:#ae81ff">5000</span>);    <span style="color:#75715e">//10k,百分之十占空比
+</span><span style="color:#75715e"></span>    AF_PWM_Close();
+
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p><strong>hal_hipwm.c</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;hal_hipwm.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define GPIOAF      &#34;/dev/gpioaf0&#34;      
+</span><span style="color:#75715e">#define HIPWM       &#34;/dev/hipwm0&#34; 
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> fd_pwm;
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">AF_PWM_Config</span>(<span style="color:#66d9ef">void</span>){
+    <span style="color:#66d9ef">int</span> fd;
+    <span style="color:#66d9ef">struct</span> hi_user_reg wreg;
+
+    fd <span style="color:#f92672">=</span> open(GPIOAF, O_RDWR);
+    <span style="color:#66d9ef">if</span>(fd <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>){
+        printf(<span style="color:#e6db74">&#34;can&#39;t open port!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+        <span style="color:#66d9ef">return</span>;       
+    }
+
+    wreg.reg_num <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;
+    wreg.reg_value[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> AF_PWM_VAL;
+    wreg.reg_value[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> AF_PWM_VAL;
+    wreg.reg_start <span style="color:#f92672">=</span> AF_PWM0_OUT;
+    ioctl(fd, HI_USER_REG_WRITEOR, <span style="color:#f92672">&amp;</span>wreg);
+
+    close(fd);
+}
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">AF_PWM_Initial</span>(<span style="color:#66d9ef">void</span>){
+    AF_PWM_Config();
+
+    fd_pwm <span style="color:#f92672">=</span> open(HIPWM, O_RDWR);
+}
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">AF_PWM_Set</span>(uint8_t ch,uint32_t duty, uint32_t tops){
+    <span style="color:#66d9ef">if</span>(ch <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>){
+        ioctl(fd_pwm, HI_PWM0_REG_TOPS, tops);
+        ioctl(fd_pwm, HI_PWM0_REG_DUTY, duty);
+    }
+    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(ch <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>){
+        ioctl(fd_pwm, HI_PWM1_REG_TOPS, tops);
+        ioctl(fd_pwm, HI_PWM1_REG_DUTY, duty);
+    }
+}
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">AF_PWM_Close</span>(<span style="color:#66d9ef">void</span>){
+    close(fd_pwm);
+}
+</code></pre></div><p><strong>hal_hipwm.h</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#ifndef __HAL_HIPWM_H__
+</span><span style="color:#75715e">#define __HAL_HIPWM_H__
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;fcntl.h&gt;          /* File Control Definitions             */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;termios.h&gt;        /* POSIX Terminal Control Definitions   */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unistd.h&gt;         /* UNIX Standard Definitions 	        */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;errno.h&gt;          /* ERROR Number Definitions             */</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdint.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;sys/statfs.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt; </span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sys/types.h&gt; </span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sys/stat.h&gt; </span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sys/ioctl.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define MAX_REGS    64
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">struct</span> hi_user_reg {
+    uint32_t    reg_start;
+    uint32_t    reg_num;
+    uint32_t    reg_value[<span style="color:#ae81ff">64</span>];
+};
+
+
+<span style="color:#75715e">#define	HI_USER_DRV  &#39;U&#39;
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define HI_PWM0_REG_TOPS  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 0, uint32_t)
+</span><span style="color:#75715e">#define HI_PWM1_REG_TOPS  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 1, uint32_t)
+</span><span style="color:#75715e">#define HI_PWM0_REG_DUTY  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 2, uint32_t)
+</span><span style="color:#75715e">#define HI_PWM1_REG_DUTY  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 3, uint32_t)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define HI_USER_REG_WRITE  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 1, struct hi_user_reg)
+</span><span style="color:#75715e">#define HI_USER_REG_READ  \
+</span><span style="color:#75715e">	_IOW(HI_USER_DRV, 2, struct hi_user_reg)
+</span><span style="color:#75715e">#define HI_USER_REG_WRITEOR \
+</span><span style="color:#75715e">    _IOW(HI_USER_DRV, 3, struct hi_user_reg)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define IOREGL(N)              (0x1F000000 + N * 4)
+</span><span style="color:#75715e">#define IOREGM(N)              (0x1F001000 + (N - 76) * 4)
+</span><span style="color:#75715e">#define IOREGH(N)              (0x1F002000 + (N - 138) * 4)
+</span><span style="color:#75715e">#define IOREG(N)                (N &lt;= 75 ?  IOREGL(N): IOREGM(N))
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define AF_PWM_VAL              0x01
+</span><span style="color:#75715e">#define AF_PWM0_OUT             IOREG(73)
+</span><span style="color:#75715e">#define AF_PWM1_OUT             IOREG(74)
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">AF_PWM_Initial</span>(<span style="color:#66d9ef">void</span>);
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">AF_PWM_Set</span>(uint8_t ch,uint32_t duty, uint32_t tops);
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">AF_PWM_Close</span>(<span style="color:#66d9ef">void</span>);
+
+<span style="color:#75715e">#endif
+</span></code></pre></div><h1 id="六注意事项">六、注意事项</h1>
+<ul>
+<li>使用应用程序之前，必须先insmod驱动。</li>
+<li>使用pwm之前需要先设置复用功能。</li>
+</ul>
+<script src="../js/mermaid.min.js"></script>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

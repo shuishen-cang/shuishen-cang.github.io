@@ -131,8 +131,7 @@ hal_gpio.c
 disabled
 </code></pre></div><p>表明mmc1已经关闭了。</p>
 <h1 id="二操作gpio">二、操作GPIO</h1>
-<p><img src="./images/pic04.png" alt="部分GPIO对应的导出数字"></p>
-<p><img src="../images/pic04.png" alt="部分GPIO对应的导出数字"></p>
+<p><img src="../images/image-20210202201609120.png" alt="image-20210202201609120"></p>
 <p>如图所示，PG0的编号为192，因此采用linux的标准操作尝试操作一下GPIO。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">echo <span style="color:#ae81ff">192</span> &gt; /sys/class/gpio/
 ls /sys/class/gpio/

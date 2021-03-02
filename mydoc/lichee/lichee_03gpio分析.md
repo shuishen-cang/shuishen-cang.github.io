@@ -44,9 +44,7 @@ disabled
 表明mmc1已经关闭了。
 
 # 二、操作GPIO
-![部分GPIO对应的导出数字](./images/pic04.png)
-
-![部分GPIO对应的导出数字](../images/pic04.png)
+![image-20210202201609120](/home/luocang/.config/Typora/typora-user-images/image-20210202201609120.png)
 
 如图所示，PG0的编号为192，因此采用linux的标准操作尝试操作一下GPIO。
 

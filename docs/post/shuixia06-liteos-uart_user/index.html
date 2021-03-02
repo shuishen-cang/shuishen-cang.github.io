@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>shuixia06-liteos-uart_user // luocang-blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://shuishen-cang.github.io/css/main.min.21b1686763bf47744aadffb53465246543024e9fa17a5d5bbf22723c71d1feca.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="shuixia06-liteos-uart_user"/>
+<meta name="twitter:description" content="UART设备用户操作使用说明-liteos [TOC]
+一、概述 ​	通用异步收发器 UART（Universal Asynchronous Receiver Transmitter）是一个异步串行的通信接口，主要功能是将来自外围设备的数据进行串并转换之后传入内部总线，以及将数据进行并串转换之后输出到外部设备。UART 的主要功能是和外部芯片的UART 进行对接，从而实现两芯片间的通信。 ​	主 SOC 子系统提供 5 个 UART 单元：
+  UART0：2 线 UART，主要用于调试。
+  UART1/3：4 线 UART。
+  UART2/4：2 线 UART。
+  Sensor Hub 子系统提供了 7 个 UART。
+  UART0/1/2：4 线 UART。
+  UART3/4/5/6：2 线 UART
+UART 模块有以下特点：
+  支持 64 x 8bit 的发送 FIFO 和 64 x 12bit 的接收 FIFO。
+  支持数据位和停止位的位宽可编程。数据位可通过编程设定为 5/6/7/8 比特；停止位可通过编程设定为 1bit 或 2bit。"/>
+
+    <meta property="og:title" content="shuixia06-liteos-uart_user" />
+<meta property="og:description" content="UART设备用户操作使用说明-liteos [TOC]
+一、概述 ​	通用异步收发器 UART（Universal Asynchronous Receiver Transmitter）是一个异步串行的通信接口，主要功能是将来自外围设备的数据进行串并转换之后传入内部总线，以及将数据进行并串转换之后输出到外部设备。UART 的主要功能是和外部芯片的UART 进行对接，从而实现两芯片间的通信。 ​	主 SOC 子系统提供 5 个 UART 单元：
+  UART0：2 线 UART，主要用于调试。
+  UART1/3：4 线 UART。
+  UART2/4：2 线 UART。
+  Sensor Hub 子系统提供了 7 个 UART。
+  UART0/1/2：4 线 UART。
+  UART3/4/5/6：2 线 UART
+UART 模块有以下特点：
+  支持 64 x 8bit 的发送 FIFO 和 64 x 12bit 的接收 FIFO。
+  支持数据位和停止位的位宽可编程。数据位可通过编程设定为 5/6/7/8 比特；停止位可通过编程设定为 1bit 或 2bit。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuishen-cang.github.io/post/shuixia06-liteos-uart_user/" />
+<meta property="article:published_time" content="2021-02-01T16:06:09+08:00" />
+<meta property="article:modified_time" content="2021-02-01T16:06:09+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://shuishen-cang.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>luocang-blog</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/tags/hi3559a">Hi3559a开发</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/lichee">lichee学习</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/shuixia">shuixia工作</a>
+            -------------(cang)
+          
+          <a class="app-header-menu-item" href="/tags/ubuntu">ubuntu系统搭建</a>
+      </nav>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/shuishen-cang" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitee.com/shuishen-cang/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">shuixia06-liteos-uart_user</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 1, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://shuishen-cang.github.io/tags/shuixia/">shuixia</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <div align = "center" style="font-size:48px">UART设备用户操作使用说明-liteos</div>
+<p>[TOC]</p>
+<h1 id="一概述">一、概述</h1>
+<p>​		通用异步收发器 UART（Universal Asynchronous Receiver Transmitter）是一个异步串行的通信接口，主要功能是将来自外围设备的数据进行串并转换之后传入内部总线，以及将数据进行并串转换之后输出到外部设备。UART 的主要功能是和外部芯片的UART 进行对接，从而实现两芯片间的通信。
+​		主 SOC 子系统提供 5 个 UART 单元：</p>
+<ul>
+<li>
+<p>UART0：2 线 UART，主要用于调试。</p>
+</li>
+<li>
+<p>UART1/3：4 线 UART。</p>
+</li>
+<li>
+<p>UART2/4：2 线 UART。</p>
+</li>
+<li>
+<p>Sensor Hub 子系统提供了 7 个 UART。</p>
+</li>
+<li>
+<p>UART0/1/2：4 线 UART。</p>
+</li>
+<li>
+<p>UART3/4/5/6：2 线 UART</p>
+<p>UART 模块有以下特点：</p>
+</li>
+<li>
+<p>支持 64 x 8bit 的发送 FIFO 和 64 x 12bit 的接收 FIFO。</p>
+</li>
+<li>
+<p>支持数据位和停止位的位宽可编程。数据位可通过编程设定为 5/6/7/8 比特；停止位可通过编程设定为 1bit 或 2bit。</p>
+</li>
+<li>
+<p>支持奇、偶校验方式或者无校验。</p>
+</li>
+<li>
+<p>支持传输速率可编程。</p>
+</li>
+<li>
+<p>支持接收 FIFO 中断、发送 FIFO 中断、接收超时中断、错误中断。</p>
+</li>
+<li>
+<p>支持初始中断状态查询和屏蔽后中断状态查询。</p>
+</li>
+<li>
+<p>支持通过编程禁止 UART 模块或者 UART 发送/接收功能以降低功耗。</p>
+</li>
+<li>
+<p>支持关断 UART 时钟以节省功耗。</p>
+</li>
+<li>
+<p>支持 DMA 操作。</p>
+</li>
+</ul>
+<h1 id="二-参考文件">二、 参考文件</h1>
+<p>GPIO复用功能描述文件《Hi3559A V100_PINOUT_EN.xlsx》</p>
+<p>驱动操作使用指南《外围设备驱动 操作指南.pdf》</p>
+<p>寄存器相关操作《Hi3559A╱C V100 ultra-HD Mobile Camera SoC 用户指南.pdf》</p>
+<h1 id="三驱动编译">三、驱动编译</h1>
+<h2 id="1官方驱动">1.官方驱动</h2>
+<p>​		源码路径为 drivers/uart。用户需要对 UART 设备进行访问操作时，首先要在编译脚本里指定 UART源码路径与头文件路径。编译成功后，out目录下会生成名为 libuart.a 的库文件。链接时需要通过-luart参数指定该库文件。</p>
+<p><strong>文件列表</strong></p>
+<table>
+<thead>
+<tr>
+<th>文件名称</th>
+<th>描述</th>
+<th><strong>备注</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>drivers/uart/***.c</td>
+<td>接口源文件</td>
+<td></td>
+</tr>
+<tr>
+<td>drivers/uart/libuart.a</td>
+<td>静态库文件</td>
+<td></td>
+</tr>
+<tr>
+<td>等等</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>使用步骤</strong></p>
+<ul>
+<li>
+<p>步骤 1. 在初始化函数中调用以下接口实现 UART 驱动注册：</p>
+<p>​	uart_dev_init();</p>
+<p>​	由于 shell多用 UART0 作为通信交互与调试信息打印。应该完成以上 UART 驱动注册。</p>
+<p>​	如果启用 dma 方式接收数据，要进行 dmac初始化，初始化函数中调用：</p>
+<p>​	hi_dmac_init();</p>
+</li>
+<li>
+<p>步骤 2. 开发者根据设备硬件特性配置相关的管脚复用。</p>
+<p>​	具体请参考《Hi3559AV100_PINOUT_CN》中管脚控制寄存器页签。</p>
+</li>
+<li>
+<p>步骤 3. 通过/dev/ uartdev-x 节点调用 open打开指定 UART。</p>
+</li>
+<li>
+<p>步骤 4. 打开 UART后可调用 ioctl 配置。</p>
+</li>
+<li>
+<p>步骤 5. 打开 UART后可调用 read，write读取数据，与发送数据，可采用 select阻塞 read。</p>
+</li>
+<li>
+<p>步骤 6. 不使用 UART 时，调用 close 关闭。关闭后 UART 控制器不会再接收串口接收线上的数据。</p>
+</li>
+</ul>
+<h2 id="2用户驱动">2.用户驱动</h2>
+<p>​		官方的驱动很大一部分需要用户了解一些底层知识，比如串口的基本信息，包括了设置串口的参数，自行设置IO口的复用功能，并且需要用户用户调用ioctl函数，ioctl函数包含一些数据结构体以及堵塞接收等等，因此在官方驱动的基础上封装了一层用户驱动。</p>
+<p>​		用户驱动的使用如下：</p>
+<ul>
+<li>
+<p>调用串口初始化函数</p>
+<p>​	hal_uart_initial()</p>
+</li>
+<li>
+<p>创建接受线程，等待接收数据被唤醒</p>
+<p>​	hal_uart_read()</p>
+</li>
+<li>
+<p>发送数据</p>
+<p>​	hal_uart_write()</p>
+</li>
+</ul>
+<h1 id="四api说明">四、API说明</h1>
+<h2 id="1官方驱动-1">1.官方驱动</h2>
+<p>​		官方提供的驱动如下所示：提供了open()函数、close()函数、read()函数、write()函数、ioctl()函数以及poll()函数，poll()函数用于用户程序阻塞访问，不对外提供接口，close()函数用于资源的释放，因此仅需要考克open()、write()、read()、ioctl()函数。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> file_operations_vfs uartdev_fops <span style="color:#f92672">=</span>
+{
+    .open   <span style="color:#f92672">=</span> uartdev_open,
+    .close  <span style="color:#f92672">=</span> uartdev_release,
+    .read   <span style="color:#f92672">=</span> uartdev_read,
+    .write  <span style="color:#f92672">=</span> uartdev_write,
+    .seek   <span style="color:#f92672">=</span> NULL,
+    .ioctl  <span style="color:#f92672">=</span> uartdev_ioctl,
+<span style="color:#75715e">#ifndef CONFIG_DISABLE_POLL
+</span><span style="color:#75715e"></span>    .poll   <span style="color:#f92672">=</span> uartdev_poll,
+<span style="color:#75715e">#endif
+</span><span style="color:#75715e"></span>    .unlink <span style="color:#f92672">=</span> NULL
+};
+</code></pre></div><p><strong>open()</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：posix标准函数，用于打开一个设备
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		__path：设备、串口设备为：&#34;/dev/uartdev-0&#34; &#34;/dev/uartdev-1&#34; &#34;/dev/uartdev-2&#34; &#34;/dev/uartdev-3&#34; &#34;/dev/uartdev-4&#34; 
+</span><span style="color:#75715e">​		__oflag：打开方式：O_RDWR：可读可写
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		文件句柄，负数：错误 非负数：打开成功
+</span><span style="color:#75715e">******************************************************************************/</span>
+open (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>__path, <span style="color:#66d9ef">int</span> __oflag, ...)
+</code></pre></div><p><strong>write()</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：posix标准函数，往设备写数据
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		__fd：open()返回的文件句柄
+</span><span style="color:#75715e">​		*__buf：将要发送的数据指针
+</span><span style="color:#75715e">​		__n：将要发送的数据长度
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		成功发送的数据长度
+</span><span style="color:#75715e">******************************************************************************/</span>
+ssize_t write (<span style="color:#66d9ef">int</span> __fd, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>__buf, size_t __n) 
+</code></pre></div><p><strong>read()</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：posix标准函数，往设备读数据
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		__fd：open()返回的文件句柄
+</span><span style="color:#75715e">​		*__buf：期望读取的数据指针
+</span><span style="color:#75715e">​		__n：期望读取的数据长度
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		成功读取的数据长度
+</span><span style="color:#75715e">******************************************************************************/</span>
+  ssize_t (<span style="color:#f92672">*</span>read)(FAR <span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>filep, FAR <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>buffer, size_t buflen);
+</code></pre></div><p><strong>ioctl()</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/******************************************************************************
+</span><span style="color:#75715e">函数功能：posix标准函数，用来设置一个设备
+</span><span style="color:#75715e">输入参数：
+</span><span style="color:#75715e">​		__fd：open()返回的文件句柄
+</span><span style="color:#75715e">​		cmd：设置的参数类型
+</span><span style="color:#75715e">​		arg：设置的参数
+</span><span style="color:#75715e">输出参数：
+</span><span style="color:#75715e">​		读取数据时，返回的数据
+</span><span style="color:#75715e">******************************************************************************/</span>
+<span style="color:#66d9ef">int</span>     (<span style="color:#f92672">*</span>ioctl)(FAR <span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>filep, <span style="color:#66d9ef">int</span> cmd, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> arg);
+</code></pre></div><p>可设置的参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>UART_CFG_BAUDRATE</th>
+<th>0x101</th>
+<th>波特率</th>
+<th>配置波特率，UART0 默认波特率为115200；UART1、UART2、UART3为9600支持最大波特率为 921600。</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UART_CFG_DMA_RX</td>
+<td>0x102</td>
+<td>0、1</td>
+<td>0：配置为中断接收方式；1：配置为 DMA接收方式默认为中断方式</td>
+</tr>
+<tr>
+<td>UART_CFG_DMA_TX</td>
+<td>0x103</td>
+<td>0、1</td>
+<td>暂未支持</td>
+</tr>
+<tr>
+<td>UART_CFG_RD_BLOCK</td>
+<td>0x104</td>
+<td>0、1</td>
+<td>0：配置为非阻塞方式 read；1：配置为事件阻塞方式 read ;默认为阻塞方式；</td>
+</tr>
+<tr>
+<td>UART_CFG_ATTR</td>
+<td>0x105</td>
+<td>&amp;uart_attr</td>
+<td>配置校验位，数据位，停止位，FIFO，CTS/RTS 等 默认值为：无校验位，8 位数据位，1 位停止位，禁能 CTS/RTS。 参考头文件 struct uart_attr</td>
+</tr>
+<tr>
+<td>UART_CFG_PRIVATE</td>
+<td>0x110</td>
+<td>自定义</td>
+<td>驱动自定命令</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2用户驱动-1">2.用户驱动</h2>
+<p><strong>void hal_uart_initial()</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/****************************************************
+</span><span style="color:#75715e"> * 函数功能：串口初始化
+</span><span style="color:#75715e"> * 输入参数：
+</span><span style="color:#75715e"> *  port：串口设备，2或者3
+</span><span style="color:#75715e"> *  bandrate：波特率
+</span><span style="color:#75715e"> *  stopbit：停止位 0:1bit  1:1.5bit   2:2bit
+</span><span style="color:#75715e"> *  parity：校验 0：无校验 1：奇校验 2：偶校验
+</span><span style="color:#75715e"> * *************************************************/</span>
+<span style="color:#66d9ef">void</span> hal_uart_initial(uint8_t port,uint32_t bandrate,uint8_t stopbit,uint8_t parity)
+</code></pre></div><p><strong>uint32_t hal_uart_write()</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/****************************************************
+</span><span style="color:#75715e"> * 函数功能：串口发送
+</span><span style="color:#75715e"> * 输入参数：
+</span><span style="color:#75715e"> *  port：串口号
+</span><span style="color:#75715e"> *  buff：发送的数据指针
+</span><span style="color:#75715e"> *  len： 发送的数据长度
+</span><span style="color:#75715e"> * 输出参数：
+</span><span style="color:#75715e"> *  成功发送的数据长度
+</span><span style="color:#75715e"> * *************************************************/</span>
+uint32_t <span style="color:#a6e22e">hal_uart_write</span>(uint8_t port,<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> buff,uint32_t len){
+    <span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>serial_flag[port])<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">return</span> write(serial_fd[port], buff, len);
+}
+</code></pre></div><p><strong>uint32_t hal_uart_read()</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/****************************************************
+</span><span style="color:#75715e"> * 函数功能：串口接收
+</span><span style="color:#75715e"> * 函数说明：接收会一直阻塞
+</span><span style="color:#75715e"> * 输入参数：
+</span><span style="color:#75715e"> *  port：串口号
+</span><span style="color:#75715e"> *  buff：接收的数据指针
+</span><span style="color:#75715e"> *  len： 接收的数据长度
+</span><span style="color:#75715e"> * 输出参数：
+</span><span style="color:#75715e"> *  成功接收的数据长度
+</span><span style="color:#75715e"> * *************************************************/</span>
+uint32_t hal_uart_read(uint8_t port,<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> buff,uint32_t len)
+</code></pre></div><p><strong>uint8_t hal_uart_wait()</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/****************************************************
+</span><span style="color:#75715e"> * 函数功能：等待串口有接收数据
+</span><span style="color:#75715e"> * 函数说明：没有数据时候会释放线程
+</span><span style="color:#75715e"> * 输入参数：
+</span><span style="color:#75715e"> *  port：串口号
+</span><span style="color:#75715e"> * 输出参数：
+</span><span style="color:#75715e"> *  1：有数据 0：无数据
+</span><span style="color:#75715e"> * *************************************************/</span>
+uint8_t hal_uart_wait(uint8_t port)
+</code></pre></div><h1 id="五使用说明">五、使用说明</h1>
+<p>​		由于用户驱动已经封装了一层API，因此直接调用用户API接口即可。</p>
+<ol>
+<li>调用hal_uart_initial()初始化</li>
+<li>创建接收线程</li>
+<li>线程函数中调用hal_uart_wait()等待数据</li>
+<li>读取数据</li>
+<li>反馈数据</li>
+</ol>
+<p><strong>user_uart.c</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;user_uart.h&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+uint8_t tx_buff[<span style="color:#ae81ff">256</span>] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">8</span>};
+uint8_t rx_buff[<span style="color:#ae81ff">256</span>];
+
+<span style="color:#75715e">#define TPORT   2       </span><span style="color:#75715e">//串口2
+</span><span style="color:#75715e"></span>pthread_mutex_t mutex_uart;
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">uart_readmsg</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg){
+    uint32_t recv_len,send_len;
+    pthread_mutex_init(<span style="color:#f92672">&amp;</span>mutex_uart, NULL);<span style="color:#75715e">//todo
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+        <span style="color:#66d9ef">if</span>(hal_uart_wait(TPORT)){
+            recv_len <span style="color:#f92672">=</span> hal_uart_read(TPORT,rx_buff,<span style="color:#ae81ff">256</span>);
+            <span style="color:#66d9ef">if</span>(recv_len){
+                pthread_mutex_lock(<span style="color:#f92672">&amp;</span>mutex_uart);
+                memcpy(tx_buff, rx_buff, recv_len);
+                send_len <span style="color:#f92672">=</span> recv_len;
+                pthread_mutex_unlock(<span style="color:#f92672">&amp;</span>mutex_uart);
+
+                hal_uart_write(TPORT, tx_buff, send_len);
+            }
+        }
+    }
+}
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">uart_test</span>(<span style="color:#66d9ef">void</span>){
+    pthread_t id;
+    <span style="color:#66d9ef">int</span> ret;
+    pthread_attr_t use_attr;
+
+    dprintf(<span style="color:#e6db74">&#34;start uart2 test!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+    hal_uart_initial(TPORT,<span style="color:#ae81ff">115200</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
+
+    use_attr.inheritsched <span style="color:#f92672">=</span> PTHREAD_EXPLICIT_SCHED;
+    use_attr.detachstate <span style="color:#f92672">=</span> PTHREAD_CREATE_DETACHED;
+    ret <span style="color:#f92672">=</span> pthread_create(<span style="color:#f92672">&amp;</span>id, <span style="color:#f92672">&amp;</span>use_attr, uart_readmsg, NULL);
+    <span style="color:#66d9ef">if</span> (ret) {
+        dprintf(<span style="color:#e6db74">&#34;can read thread create failed!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+    }
+}
+</code></pre></div><p><img src="../images/image-20210205123158685.png" alt="image-20210205123158685"></p>
+<p>​		将相关代码拷贝到SDK目录下，其具体路径为：<code>osdrv/platform/liteos_a53/liteos/sample/sample_osdrv</code>，对程序进行编译，make之后便可以得到可执行文件，将该文件烧写到板卡上便可以执行，其测试步骤如上图所示：电脑通过USB转TTL模块输出一个TTL的UART信号，与HI3559A上的UART模块直接相连，从而实现通信，在电脑上用串口调试助手给HI3559A板卡发送数据，HI3559A板卡接收到数据后反馈同样的信息给电脑。</p>
+<h1 id="六注意事项">六、注意事项</h1>
+<ul>
+<li>使用UART设备之前必须先配置IO复用功能(UART0、UART1、UART2已经默认配置为UART功能)。</li>
+<li>CAN0与uart0复用功能，需要谨慎使用。</li>
+<li>官方的板卡上有拨码开关，需要配置对应的拨码开关选择GPIO功能。</li>
+<li>TTL模块的TXD、RXD需要交换。</li>
+<li>电平为TTL电平，禁止使用RS422、RS232连接到板卡。</li>
+</ul>
+<script src="../js/mermaid.min.js"></script>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
